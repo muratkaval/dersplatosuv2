@@ -14,10 +14,12 @@ export default function CourseCard({ camp }: { camp: any }) {
 
   return (
     <Link href={`/kamplar/${camp.slug}`} className="course-card">
-      <div
-        className="course-thumb"
-        style={{ background: `url('${thumbnail}') center/cover no-repeat` }}
-      >
+      <div className="course-thumb" style={{ aspectRatio: "16 / 9", height: "auto" }}>
+        <img 
+          src={thumbnail} 
+          alt={camp.title} 
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} 
+        />
         <div className="course-play-btn"></div>
       </div>
       

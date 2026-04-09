@@ -1,4 +1,4 @@
-﻿.hero-instructor-stack {
+.hero-instructor-stack {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -893,7 +893,9 @@ ul {
 }
 
 .course-thumb {
-    height: 180px;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    width: 100%;
     position: relative;
     overflow: hidden;
     display: flex;
