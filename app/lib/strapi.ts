@@ -149,7 +149,7 @@ export function flattenStrapi(data: any): any {
 
 export async function getCamps(): Promise<Camp[]> {
   const data = await fetchWithFallback<{ data: any[] }>([
-    "/camps?populate[categories]=*&populate[lessons]=*&populate[instructors][populate][0]=photo&populate[cover]=*&populate[subject]=*&populate[books][populate][0]=cover&sort[0]=createdAt:desc&pagination[pageSize]=100",
+    "/camps?populate[categories]=*&populate[lessons]=*&populate[instructors][populate][photo]=*&populate[instructors][populate][subjects]=*&populate[cover]=*&populate[subject]=*&populate[books][populate][cover]=*&sort[0]=createdAt:desc&pagination[pageSize]=100",
     "/camps?populate=*&sort[0]=createdAt:desc&pagination[pageSize]=100",
     "/camps?pagination[pageSize]=100"
   ]);
@@ -166,10 +166,9 @@ export async function getCampBySlug(slug: string): Promise<any | null> {
   const found = allCamps.find((c) => c.slug === slug);
   if (!found) return null;
 
-  // Fetch full details using its documentId or id to be safe against missing slug fields on direct endpoints
   const details = await fetchWithFallback<{ data: any[] }>([
-    `/camps?filters[documentId][$eq]=${found.documentId || ''}&populate[categories]=*&populate[lessons]=*&populate[instructors][populate][0]=photo&populate[cover]=*&populate[subject]=*&populate[books][populate][0]=cover`,
-    `/camps?filters[id][$eq]=${found.id}&populate[categories]=*&populate[lessons]=*&populate[instructors][populate][0]=photo&populate[cover]=*&populate[subject]=*&populate[books][populate][0]=cover`,
+    `/camps?filters[documentId][$eq]=${found.documentId || ''}&populate[categories]=*&populate[lessons]=*&populate[instructors][populate][photo]=*&populate[instructors][populate][subjects]=*&populate[cover]=*&populate[subject]=*&populate[books][populate][cover]=*`,
+    `/camps?filters[id][$eq]=${found.id}&populate[categories]=*&populate[lessons]=*&populate[instructors][populate][photo]=*&populate[instructors][populate][subjects]=*&populate[cover]=*&populate[subject]=*&populate[books][populate][cover]=*`,
     `/camps?filters[id][$eq]=${found.id}&populate=*`
   ]);
 

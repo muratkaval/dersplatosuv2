@@ -44,7 +44,19 @@ export default function CourseCard({ camp }: { camp: any }) {
             <>
               <div className="avatar-stack" style={{ margin: 0 }}>
                 {normalizedInstructors.slice(0, 5).map((inst: any, idx: number) => {
-                  const pUrl = toMediaUrl(inst.photo?.url || inst.photo?.formats?.thumbnail?.url);
+                  const getAnyPhotoUrl = (instructor: any) => {
+                    if (!instructor) return "";
+                    const p = instructor.photo;
+                    if (!p) return "";
+                    const pObj = Array.isArray(p) ? p[0] : (p.data || p);
+                    const finalObj = pObj.attributes || pObj;
+                    const url = finalObj.url || 
+                                finalObj.formats?.thumbnail?.url || 
+                                finalObj.formats?.small?.url || 
+                                finalObj.formats?.medium?.url;
+                    return toMediaUrl(url);
+                  };
+                  const pUrl = getAnyPhotoUrl(inst);
                   return pUrl ? (
                     <img 
                       key={inst.id || idx}
@@ -75,23 +87,38 @@ export default function CourseCard({ camp }: { camp: any }) {
             <>
               {firstInstructor ? (
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  {toMediaUrl(firstInstructor.photo?.formats?.thumbnail?.url || firstInstructor.photo?.url) ? (
-                    <img 
-                      src={toMediaUrl(firstInstructor.photo?.formats?.thumbnail?.url || firstInstructor.photo?.url)} 
-                      style={{ width: "32px", height: "32px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--bg-hover)" }} 
-                      alt={firstInstructor.name}
-                    />
-                  ) : (
-                    <div 
-                      style={{ 
-                        width: "32px", height: "32px", borderRadius: "50%", 
-                        background: "var(--bg-secondary)", border: "2px solid var(--bg-hover)",
-                        display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem" 
-                      }}
-                    >
-                       👤
-                    </div>
-                  )}
+                  {(() => {
+                    const getAnyPhotoUrl = (instructor: any) => {
+                      if (!instructor) return "";
+                      const p = instructor.photo;
+                      if (!p) return "";
+                      const pObj = Array.isArray(p) ? p[0] : (p.data || p);
+                      const finalObj = pObj.attributes || pObj;
+                      const url = finalObj.url || 
+                                  finalObj.formats?.thumbnail?.url || 
+                                  finalObj.formats?.small?.url || 
+                                  finalObj.formats?.medium?.url;
+                      return toMediaUrl(url);
+                    };
+                    const pUrl = getAnyPhotoUrl(firstInstructor);
+                    return pUrl ? (
+                      <img 
+                        src={pUrl} 
+                        style={{ width: "32px", height: "32px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--bg-hover)" }} 
+                        alt={firstInstructor.name}
+                      />
+                    ) : (
+                      <div 
+                        style={{ 
+                          width: "32px", height: "32px", borderRadius: "50%", 
+                          background: "var(--bg-secondary)", border: "2px solid var(--bg-hover)",
+                          display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem" 
+                        }}
+                      >
+                         👤
+                      </div>
+                    );
+                  })()}
                   <span style={{ fontWeight: 600, fontSize: "0.9rem", color: "white" }}>
                     {firstInstructor.name}
                   </span>
