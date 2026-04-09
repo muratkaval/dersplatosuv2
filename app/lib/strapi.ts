@@ -255,3 +255,12 @@ export async function getSolutionVideos(bookId: string): Promise<any[]> {
   return flattenStrapi(data?.data || []);
 }
 
+export async function getSubjectBySlug(slug: string): Promise<any | null> {
+  const all = await getSubjects();
+  return all.find((s: any) => (s.slug || '') === slug) || null;
+}
+
+export async function getBookBySlug(slug: string): Promise<any | null> {
+  const all = await getBooks(false);
+  return all.find((b: any) => (b.slug || '') === slug) || null;
+}

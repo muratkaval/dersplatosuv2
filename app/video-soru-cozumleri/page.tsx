@@ -1,9 +1,8 @@
 import { Metadata } from "next";
+import Link from "next/link";
 import { PageContainer } from "../components/site-layout";
 import { getBooks, getSubjects } from "@/app/lib/strapi";
-import SolutionsView from "./solutions-view";
 import "./soru-cozumleri.css";
-import "../kitaplar/kitaplar.css"; // Reuse some grid styles if needed
 
 export const metadata: Metadata = {
   title: "Video Soru Çözümleri | Ders Platosu",
@@ -12,9 +11,17 @@ export const metadata: Metadata = {
 
 export default async function VideoSoruCozumleriPage() {
   const [books, subjects] = await Promise.all([
-    getBooks(false), // Fetch all books to filter for solutions
+    getBooks(false),
     getSubjects(),
   ]);
+
+  // Sadece kitabı olan branşları göster
+  const categories = subjects.filter((s: any) =>
+    books.some((b: any) => {
+      const bSubs = Array.isArray(b.subjects) ? b.subjects : (b.subjects?.data || []);
+      return bSubs.some((bs: any) => bs.id === s.id);
+    })
+  );
 
   return (
     <PageContainer>
@@ -22,13 +29,28 @@ export default async function VideoSoruCozumleriPage() {
         <div className="page-hero-inner">
           <div className="page-hero-eyebrow">Ders Platosu</div>
           <h1>Video <span>Soru Çözümleri</span></h1>
-          <p>
-            Anlamadığın soru kalmasın. Kitaplarımızdaki tüm soruların detaylı çözümlerine buradan uzman hocalardan ulaşın.
-          </p>
+          <p>Anlamadığın soru kalmasın. Branşını seç, kitabını bul, videoyu izle.</p>
         </div>
       </section>
 
-      <SolutionsView books={books} subjects={subjects} />
+      <section style={{ padding: "60px 0" }}>
+        <div className="container">
+          <div className="category-grid">
+            {categories.map((cat: any) => (
+              <Link
+                key={cat.id}
+                href={`/video-soru-cozumleri/${cat.slug}`}
+                className="category-card"
+                style={{ textDecoration: "none" }}
+              >
+                <h3>{cat.name}</h3>
+                <p>Kitapları Görüntüle</p>
+                <div className="category-arrow">→</div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
     </PageContainer>
   );
 }
