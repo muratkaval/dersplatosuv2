@@ -75,7 +75,7 @@ export default function CourseCard({ camp }: { camp: any }) {
                   );
                 })}
               </div>
-              <span style={{ fontWeight: 600, fontSize: "0.9rem", color: "white" }}>Tümü</span>
+              <span style={{ fontWeight: 600, fontSize: "0.9rem", color: "var(--text)" }}>Tümü</span>
             </>
           ) : (
             <>
@@ -86,14 +86,14 @@ export default function CourseCard({ camp }: { camp: any }) {
                     return pUrl ? (
                       <img 
                         src={pUrl} 
-                        style={{ width: "32px", height: "32px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--bg-hover)" }} 
+                        style={{ width: "32px", height: "32px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--border)" }} 
                         alt={firstInstructor.name}
                       />
                     ) : (
                       <div 
                         style={{ 
                           width: "32px", height: "32px", borderRadius: "50%", 
-                          background: "var(--bg-secondary)", border: "2px solid var(--bg-hover)",
+                          background: "var(--bg-secondary)", border: "2px solid var(--border)",
                           display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem" 
                         }}
                       >
@@ -101,12 +101,12 @@ export default function CourseCard({ camp }: { camp: any }) {
                       </div>
                     );
                   })()}
-                  <span style={{ fontWeight: 600, fontSize: "0.9rem", color: "white" }}>
+                  <span style={{ fontWeight: 600, fontSize: "0.9rem", color: "var(--text)" }}>
                     {firstInstructor.name}
                   </span>
                 </div>
               ) : (
-                <span style={{ fontWeight: 600, fontSize: "0.9rem", color: "white" }}>Eğitmen Yok</span>
+                <span style={{ fontWeight: 600, fontSize: "0.9rem", color: "var(--text)" }}>Eğitmen Yok</span>
               )}
               <span 
                 className="course-tag" 

@@ -194,8 +194,8 @@
 }
 
 .book-card-premium {
-    background: #111827;
-    border: 1px solid #1e293b;
+    background: var(--bg-card, #111827);
+    border: 1px solid var(--border, #1e293b);
     border-radius: 16px;
     overflow: hidden;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
@@ -206,7 +206,7 @@
 
 .book-card-premium:hover {
     transform: translateY(-6px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
     border-color: #4289F7;
 }
 
@@ -215,7 +215,7 @@
     width: 100%;
     aspect-ratio: 3/4;
     overflow: hidden;
-    background: #0f172a;
+    background: var(--bg-secondary, #0f172a);
 }
 
 .book-card-cover {
@@ -239,7 +239,7 @@
 .book-card-body h4 {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--text, #fff);
     margin-bottom: 12px;
     line-height: 1.4;
     display: -webkit-box;

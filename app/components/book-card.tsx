@@ -27,6 +27,11 @@ export default function BookCard({ book }: BookCardProps) {
       </div>
       <div className="book-card-body">
         <h4>{book.title || 'Kitap'}</h4>
+        {book.instructor && (
+          <div style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginBottom: "12px" }}>
+            {book.instructor.name}
+          </div>
+        )}
         <div className="book-card-btns">
           {book.buy_link && (
             <a href={book.buy_link} className="btn-book-buy" target="_blank" rel="noopener noreferrer">

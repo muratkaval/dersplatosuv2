@@ -25,8 +25,8 @@
 }
 
 body {
-  background: var(--bg) !important;
-  color: var(--text) !important;
+  background: var(--bg);
+  color: var(--text);
   font-family: "Inter", sans-serif;
 }
 
@@ -106,12 +106,18 @@ body {
     border-bottom-color: #e2e8f0;
 }
 
+[data-theme="light"] .page-hero-eyebrow {
+    background: rgba(59, 130, 246, 0.08);
+    color: #2563eb;
+    border-color: rgba(59, 130, 246, 0.15);
+}
+
 [data-theme="light"] .page-hero h1 {
     color: #0f172a;
 }
 
 [data-theme="light"] .page-hero p {
-    color: #64748b;
+    color: #475569;
 }
 
 /* ===== UNIFIED PREMIUM PLAY BUTTON ===== */

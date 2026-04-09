@@ -9,9 +9,8 @@
 }
 
 .category-card {
-    background: #111827;
-    background: linear-gradient(135deg, #1e293b 0%, #111827 100%);
-    border: 1px solid #1e293b;
+    background: var(--bg-card, #111827);
+    border: 1px solid var(--border, #1e293b);
     border-radius: 20px;
     padding: 24px;
     display: flex;
@@ -79,7 +78,7 @@
 .category-card h3 {
     font-size: 1.7rem;
     font-weight: 800;
-    color: #fff;
+    color: var(--text, #fff);
     margin-bottom: 8px;
     z-index: 2;
 }
@@ -89,7 +88,7 @@
 }
 
 .category-card p {
-    color: #94a3b8;
+    color: var(--text-muted, #94a3b8);
     font-size: 0.85rem;
     font-weight: 500;
     z-index: 2;
