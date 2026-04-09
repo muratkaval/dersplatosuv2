@@ -48,15 +48,8 @@ export default async function BookSolutionsPage({ params }: Props) {
             </Link>
           </div>
           
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "30px", textAlign: "left", maxWidth: "800px", margin: "0 auto" }}>
-            <img 
-              src={toMediaUrl(book.cover?.url || "") || "https://via.placeholder.com/200x280?text=Kitap"}
-              alt={book.title}
-              style={{ width: "120px", height: "168px", objectFit: "cover", borderRadius: "12px", boxShadow: "0 10px 30px rgba(0,0,0,0.5)", flexShrink: 0 }}
-            />
-            <div>
-              <h1 style={{ margin: 0 }}><span>{book.title}</span></h1>
-            </div>
+          <div style={{ textAlign: "center", maxWidth: "800px", margin: "0 auto" }}>
+            <h1 style={{ margin: 0, fontSize: "2.2rem", lineHeight: "1.2", fontWeight: 800 }}><span>{book.title}</span></h1>
           </div>
         </div>
       </section>
