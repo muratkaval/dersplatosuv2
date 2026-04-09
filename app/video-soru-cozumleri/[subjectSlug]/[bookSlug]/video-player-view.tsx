@@ -34,30 +34,7 @@ export default function VideoPlayerView({ book, subject, subjectSlug, videos }: 
 
   return (
     <div className="player-container">
-      <div className="player-book-banner">
-        <img
-          src={toMediaUrl(book.cover?.url || "") || "https://via.placeholder.com/200x280?text=Kitap"}
-          alt={book.title}
-          className="player-book-cover"
-        />
-        <div className="player-book-info">
-          <span className="sc-hero-badge green" style={{ marginBottom: "10px", display: "inline-block" }}>✓ Ücretsiz</span>
-          <h2>{book.title}</h2>
-          <p style={{ color: "#94a3b8", fontSize: "0.9rem" }}>Bölüme bas → testler açılır → teste bas → video izle.</p>
-        </div>
-      </div>
 
-      {activeVideo && (
-        <div className="video-wrapper">
-          <iframe
-            key={activeVideo.youtube_id}
-            src={`https://www.youtube.com/embed/${activeVideo.youtube_id}?autoplay=1&rel=0`}
-            title="Soru Çözümü"
-            allowFullScreen
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          ></iframe>
-        </div>
-      )}
 
       <div className="accordion-title">BÖLÜMLER VE TESTLER</div>
       <div className="chapter-list">
@@ -72,12 +49,28 @@ export default function VideoPlayerView({ book, subject, subjectSlug, videos }: 
             {openChapters.includes(chName) && (
               <div className="chapter-tests">
                 {tests.map((test) => (
-                  <div
-                    key={test.id}
-                    className={`test-item ${activeVideo?.id === test.id ? "active" : ""}`}
-                    onClick={() => setActiveVideo(test)}
-                  >
-                    {test.baslik || "Test"}
+                  <div key={test.id} style={{ display: "flex", flexDirection: "column" }}>
+                    <div
+                      className={`test-item ${activeVideo?.id === test.id ? "active" : ""}`}
+                      onClick={() => setActiveVideo(activeVideo?.id === test.id ? null : test)}
+                      style={{ 
+                        borderBottomLeftRadius: activeVideo?.id === test.id ? 0 : '', 
+                        borderBottomRightRadius: activeVideo?.id === test.id ? 0 : '' 
+                      }}
+                    >
+                      {test.baslik || "Test"}
+                    </div>
+                    {activeVideo?.id === test.id && (
+                      <div className="video-wrapper" style={{ marginTop: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0, borderTop: "none", marginBottom: "8px" }}>
+                        <iframe
+                          key={test.youtube_id}
+                          src={`https://www.youtube.com/embed/${test.youtube_id}?autoplay=1&rel=0`}
+                          title={test.baslik || "Soru Çözümü"}
+                          allowFullScreen
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        ></iframe>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

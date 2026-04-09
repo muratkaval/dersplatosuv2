@@ -2,11 +2,19 @@ const rawBase = process.env.STRAPI_URL || "http://localhost:1340";
 const strapiOrigin = rawBase.replace(/\/api\/?$/, "");
 export const STRAPI_API_BASE = `${strapiOrigin}/api`;
 
+// Always use the full-access API token for Strapi requests.
+// The user JWT (stored in cookie) is used only to verify the admin
+// session in Next.js — not for actual Strapi API calls.
+function getStrapiToken(): string {
+  return (process.env.STRAPI_TOKEN || "").trim();
+}
+
 export async function strapiAdminFetch(
   path: string,
   options: RequestInit = {},
-  token: string
+  _userToken?: string  // kept for back-compat, but STRAPI_TOKEN is used
 ) {
+  const token = getStrapiToken();
   const res = await fetch(`${STRAPI_API_BASE}${path}`, {
     ...options,
     headers: {
@@ -16,7 +24,9 @@ export async function strapiAdminFetch(
     },
     cache: "no-store",
   });
-  const data = await res.json();
+  const contentType = res.headers.get("content-type") || "";
+  const hasBody = contentType.includes("application/json") && res.status !== 204;
+  const data = hasBody ? await res.json() : {};
   return { ok: res.ok, status: res.status, data };
 }
 

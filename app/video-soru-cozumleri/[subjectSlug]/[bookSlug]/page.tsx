@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageContainer } from "@/app/components/site-layout";
-import { getBookBySlug, getSubjectBySlug, getSolutionVideos } from "@/app/lib/strapi";
+import { getBookBySlug, getSubjectBySlug, getSolutionVideos, toMediaUrl } from "@/app/lib/strapi";
 import VideoPlayerView from "./video-player-view";
 import "../../soru-cozumleri.css";
 
@@ -38,7 +38,7 @@ export default async function BookSolutionsPage({ params }: Props) {
     <PageContainer>
       <section className="page-hero">
         <div className="page-hero-inner">
-          <div className="page-hero-eyebrow" style={{ display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" }}>
+          <div className="page-hero-eyebrow" style={{ display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap", marginBottom: "30px" }}>
             <Link href="/video-soru-cozumleri" style={{ color: "inherit", textDecoration: "none" }}>
               Branşlar
             </Link>
@@ -47,8 +47,17 @@ export default async function BookSolutionsPage({ params }: Props) {
               {subject.name}
             </Link>
           </div>
-          <h1><span>{book.title}</span></h1>
-          <p>Video çözümlerine buradan ulaşabilirsiniz.</p>
+          
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "30px", textAlign: "left", maxWidth: "800px", margin: "0 auto" }}>
+            <img 
+              src={toMediaUrl(book.cover?.url || "") || "https://via.placeholder.com/200x280?text=Kitap"}
+              alt={book.title}
+              style={{ width: "120px", height: "168px", objectFit: "cover", borderRadius: "12px", boxShadow: "0 10px 30px rgba(0,0,0,0.5)", flexShrink: 0 }}
+            />
+            <div>
+              <h1 style={{ margin: 0 }}><span>{book.title}</span></h1>
+            </div>
+          </div>
         </div>
       </section>
 

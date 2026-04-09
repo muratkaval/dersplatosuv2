@@ -37,6 +37,39 @@
   --accent-foreground: #f0f4f8;
 }
 
+/*
+  SCOPED VARIABLE OVERRIDE — Ensures admin panel always wins over
+  /public/style.css which sets --bg-card:#ffffff at :root level.
+  Since .admin-layout is more specific than :root for its descendants,
+  these values always take precedence regardless of CSS loading order.
+*/
+.admin-layout {
+  --bg-base: #05070a;
+  --bg-card: #0d121c;
+  --bg-sidebar: #080a0f;
+  --border: #1a2536;
+  --border-light: #243249;
+  --text: #f0f4f8;
+  --text-muted: #64748b;
+  --text-dim: #94a3b8;
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
+  --success: #10b981;
+  --danger: #ef4444;
+  --danger-hover: #f87171;
+  --warning: #f59e0b;
+  --radius: 16px;
+  --radius-sm: 10px;
+  /* Override site-wide Tailwind/style.css variables */
+  --background: #05070a;
+  --foreground: #f0f4f8;
+  --card: #0d121c;
+  --card-foreground: #f0f4f8;
+  --bg: #05070a;
+  --bg-secondary: #080a0f;
+  --shadow: 0 4px 24px rgba(0,0,0,0.5);
+}
+
 body {
   font-family: 'Inter', system-ui, sans-serif;
   background: var(--bg-base) !important;
@@ -115,12 +148,12 @@ body {
   margin-top: 6px;
 }
 
-.nav-link {
+.admin-sidebar .nav-link {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 9px 12px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-sm) !important;
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: 500;
@@ -128,15 +161,16 @@ body {
   text-decoration: none;
   transition: all 0.2s;
   margin-bottom: 2px;
+  background: transparent !important;
 }
 
-.nav-link:hover {
-  background: #162032;
+.admin-sidebar .nav-link:hover {
+  background: #162032 !important;
   color: var(--text);
 }
 
-.nav-link.active {
-  background: rgba(59, 130, 246, 0.15);
+.admin-sidebar .nav-link.active {
+  background: rgba(59, 130, 246, 0.15) !important;
   color: #60a5fa;
   border: 1px solid rgba(59, 130, 246, 0.2);
 }
@@ -212,6 +246,24 @@ body {
 }
 
 /* ===== BUTTONS ===== */
+/* Scoped under .admin-layout to prevent conflicts with /public/style.css */
+.admin-layout .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.2s;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+/* Keep non-scoped .btn as well for back-compat */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -228,24 +280,28 @@ body {
   text-decoration: none;
 }
 
-.btn-primary { background: var(--primary); color: #fff; }
-.btn-primary:hover { background: var(--primary-hover); }
+.admin-layout .btn-primary,
+.admin-layout a.btn-primary { background: var(--primary) !important; color: #fff !important; border-radius: var(--radius-sm) !important; padding: 9px 18px !important; box-shadow: none !important; }
+.admin-layout .btn-primary:hover,
+.admin-layout a.btn-primary:hover { background: var(--primary-hover) !important; transform: none !important; }
 
-.btn-success { background: var(--success); color: #fff; }
-.btn-success:hover { background: #059669; }
+.admin-layout .btn-success { background: var(--success) !important; color: #fff !important; }
+.admin-layout .btn-success:hover { background: #059669 !important; }
 
-.btn-danger { background: var(--danger); color: #fff; }
-.btn-danger:hover { background: var(--danger-hover); }
+.admin-layout .btn-danger { background: var(--danger) !important; color: #fff !important; }
+.admin-layout .btn-danger:hover { background: var(--danger-hover) !important; }
 
-.btn-ghost {
-  background: transparent;
-  color: var(--text-dim);
-  border: 1px solid var(--border-light);
+.admin-layout .btn-ghost {
+  background: transparent !important;
+  color: var(--text-dim) !important;
+  border: 1px solid var(--border-light) !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 9px 18px !important;
 }
-.btn-ghost:hover { border-color: #3d5a7e; color: var(--text); }
+.admin-layout .btn-ghost:hover { border-color: #3d5a7e !important; color: var(--text) !important; }
 
-.btn-sm { padding: 6px 12px; font-size: 0.8rem; }
-.btn-icon { padding: 7px; border-radius: 8px; }
+.admin-layout .btn-sm { padding: 6px 12px !important; font-size: 0.8rem !important; }
+.admin-layout .btn-icon { padding: 7px !important; border-radius: 8px !important; width: auto !important; height: auto !important; background: none !important; }
 
 /* ===== TABLE CARD ===== */
 .table-card {
