@@ -8,9 +8,9 @@ export default async function KategorilerPage() {
   const token = await requireAdminToken();
 
   const [campsRes, booksRes, subsRes] = await Promise.all([
-    adminGet("/categories?sort[0]=sira:asc&sort[1]=name:asc&pagination[pageSize]=100", token),
-    adminGet("/book-categories?sort[0]=sira:asc&sort[1]=name:asc&pagination[pageSize]=100", token),
-    adminGet("/subjects?sort[0]=sira:asc&sort[1]=name:asc&pagination[pageSize]=100", token),
+    adminGet("/categories?pagination[pageSize]=100", token),
+    adminGet("/book-categories?pagination[pageSize]=100", token),
+    adminGet("/subjects?pagination[pageSize]=100", token),
   ]);
 
   return (

@@ -129,8 +129,28 @@ export default function InstructorForm({ instructor, subjects }: Props) {
             <label>URL Slug</label>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <span style={{ color: "#64748b", fontSize: "0.82rem", whiteSpace: "nowrap" }}>dersplatosu.com/hoca/</span>
-              <input value={slug} onChange={(e) => setSlug(e.target.value)} style={{ flex: 1 }} placeholder="hoca-adi-soyadi" />
+              <input 
+                value={slug} 
+                onChange={(e) => setSlug(e.target.value)} 
+                style={{ flex: 1 }} 
+                placeholder="hoca-adi-soyadi" 
+              />
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm btn-icon"
+                onClick={() => { if (name.trim()) setSlug(slugify(name)); }}
+                title="İsimden otomatik oluştur"
+                style={{ flexShrink: 0 }}
+              >
+                <span className="ms">auto_awesome</span>
+              </button>
             </div>
+            {slug && (
+              <small style={{ color: "#3b82f6", marginTop: "4px", display: "block" }}>
+                🔗 dersplatosu.com/hoca/<strong>{slug}</strong>
+              </small>
+            )}
+            {!slug && <small>Boş bırakılırsa isimden otomatik üretilir</small>}
           </div>
 
           <div className="form-group">
