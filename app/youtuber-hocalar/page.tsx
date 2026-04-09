@@ -17,12 +17,7 @@ export default async function YoutuberHocalarPage() {
 
       <section className="youtubers-section" id="youtubers" style={{ padding: "60px 0" }}>
         <div className="container">
-          <div className="youtubers-grid" style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
-            gap: "24px",
-            justifyItems: "center"
-          }}>
+          <div className="youtubers-grid grid grid-cols-2 md:grid-cols-4 gap-8 justify-items-center">
             {instructors.map((instructor) => (
               <Link
                 key={instructor.id}

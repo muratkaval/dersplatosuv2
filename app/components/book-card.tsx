@@ -6,24 +6,30 @@ interface BookCardProps {
 }
 
 export default function BookCard({ book }: BookCardProps) {
-  const bookCover = toMediaUrl(book.cover?.url || book.cover?.formats?.small?.url);
+  // Deep Search for URL (Handles Strapi v4, v5, and flattened structures)
+  const findUrl = (obj: any): string | null => {
+    if (!obj) return null;
+    if (typeof obj === 'string') return obj;
+    if (obj.url && typeof obj.url === 'string') return obj.url;
+    if (obj.data) return findUrl(obj.data);
+    if (obj.attributes) return findUrl(obj.attributes);
+    if (obj.formats?.small?.url) return obj.formats.small.url;
+    if (obj.formats?.thumbnail?.url) return obj.formats.thumbnail.url;
+    return null;
+  };
+
+  const rawUrl = findUrl(book.cover);
+  const bookCover = toMediaUrl(rawUrl);
   
   return (
     <div className="book-card-premium">
       <div className="book-card-cover-wrap">
         <img 
-          src={bookCover || 'https://via.placeholder.com/200x280?text=Kitap'} 
+          src={bookCover || 'https://via.placeholder.com/400x560?text=Kitap'} 
           alt={book.title} 
           className="book-card-cover"
           loading="lazy"
         />
-        <div className="play-overlay">
-          <div className="play-button-circle">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          </div>
-        </div>
       </div>
       <div className="book-card-body">
         <h4>{book.title || 'Kitap'}</h4>

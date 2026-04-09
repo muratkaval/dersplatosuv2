@@ -1,4 +1,4 @@
-﻿        .egitim-page {
+        .egitim-page {
             padding-top: var(--nav-h);
             min-height: 100vh;
             background: var(--bg);
@@ -658,3 +658,39 @@
             }
         }
     
+
+        /* ¦¦ Books Grid in Camp ¦¦ */
+        .egitim-books-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-top: 20px;
+        }
+
+        .egitim-books-grid .book-card-premium {
+            max-width: 240px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 1100px) {
+            .egitim-books-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .egitim-books-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .egitim-books-grid {
+                grid-template-columns: repeat(2, 1fr); /* Stay 2 columns on small screens as well for books */
+                gap: 10px;
+            }
+            .egitim-books-grid .book-card-premium {
+                max-width: 100%;
+            }
+        }

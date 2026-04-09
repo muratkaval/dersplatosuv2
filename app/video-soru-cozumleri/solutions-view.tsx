@@ -36,15 +36,13 @@ export default function SolutionsView({ books, subjects }: { books: any[], subje
   // Handle Book Selection
   const handleSelectBook = async (book: any) => {
     setSelectedBook(book);
+    setActiveVideo(null); // Kesinlikle kapalı başla
+    setOpenChapters([]);  // Tüm bölümler kapalı başla
     setLoadingVideos(true);
     setView('player');
     try {
       const vids = await getSolutionVideos(book.documentId || book.id.toString());
       setVideos(vids);
-      if (vids.length > 0) {
-        setActiveVideo(vids[0]);
-        setOpenChapters([vids[0].bolum_adi]);
-      }
     } catch (err) {
       console.error("Video yukleme hatasi:", err);
     } finally {

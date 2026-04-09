@@ -9,12 +9,16 @@ function buildHeaders(): HeadersInit {
   return { Authorization: `Bearer ${token}` };
 }
 
-export function toMediaUrl(url?: string | null): string {
+export function toMediaUrl(url?: any): string {
   if (!url) return "";
-  if (url.startsWith("http://") || url.startsWith("https://")) return url;
-  if (url.startsWith("//")) return `https:${url}`;
-  if (!url.startsWith("/")) return `${strapiOrigin}/${url}`;
-  return `${strapiOrigin}${url}`;
+  // If we accidentally got an object, try to extract url from it
+  const actualUrl = typeof url === 'string' ? url : (url.url || url.attributes?.url);
+  if (!actualUrl || typeof actualUrl !== 'string') return "";
+
+  if (actualUrl.startsWith("http://") || actualUrl.startsWith("https://")) return actualUrl;
+  if (actualUrl.startsWith("//")) return `https:${actualUrl}`;
+  if (!actualUrl.startsWith("/")) return `${strapiOrigin}/${actualUrl}`;
+  return `${strapiOrigin}${actualUrl}`;
 }
 
 export function getCampThumbnail(camp: any): string {
@@ -182,8 +186,8 @@ export async function getCampBySlug(slug: string): Promise<any | null> {
   if (!found) return null;
 
   const detailsData = await fetchWithFallback<{ data: any[] }>([
-    `/camps?filters[documentId][$eq]=${found.documentId || ''}&populate=*`,
-    `/camps?filters[id][$eq]=${found.id}&populate=*`
+    `/camps?filters[documentId][$eq]=${found.documentId || ''}&populate[lessons][populate]=*&populate[instructors][populate]=*&populate[cover]=*&populate[subject]=*&populate[books][populate][cover]=*`,
+    `/camps?filters[id][$eq]=${found.id}&populate[lessons][populate]=*&populate[instructors][populate]=*&populate[cover]=*&populate[subject]=*&populate[books][populate][cover]=*`
   ]);
 
   const rawCamp = flattenStrapi(detailsData?.data?.[0] || found);

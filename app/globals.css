@@ -42,9 +42,9 @@ body {
 }
 
 .page-hero-inner {
-    max-width: 900px;
+    max-width: 750px; /* narrowed from 900px for a more compact look */
     margin: 0 auto;
-    padding: calc(var(--nav-h, 64px) + 70px) 24px 70px;
+    padding: calc(var(--nav-h, 64px) + 60px) 24px 60px;
     position: relative;
     z-index: 2;
 }
@@ -60,17 +60,17 @@ body {
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin-bottom: 24px;
+    margin-bottom: 16px; /* reduced from 24px */
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .page-hero h1 {
-    font-size: 3.5rem;
+    font-size: 2.8rem; /* slightly smaller for a tighter feel */
     font-weight: 900;
     color: #0f172a; /* Light Mode Default */
     line-height: 1.1;
     letter-spacing: -0.04em;
-    margin-bottom: 20px;
+    margin-bottom: 16px; /* reduced from 20px */
 }
 
 .page-hero h1 span {

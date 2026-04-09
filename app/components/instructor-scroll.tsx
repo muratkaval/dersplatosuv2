@@ -9,12 +9,12 @@ interface Instructor {
   name: string;
   slug: string;
   photo?: {
-    url: string;
+    url?: string;
     formats?: {
-      thumbnail?: { url: string };
+      thumbnail?: { url?: string };
     };
   } | null;
-  subjects?: Array<{ name: string }>;
+  subjects?: Array<{ name?: string }>;
 }
 
 interface Props {

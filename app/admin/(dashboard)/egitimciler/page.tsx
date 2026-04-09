@@ -8,7 +8,7 @@ export const metadata = { title: "Eğitimciler | Admin" };
 export default async function EgitimcilerPage() {
   const token = await requireAdminToken();
   const d = await adminGet(
-    "/instructors?populate[photo][fields][0]=url&populate[subjects][fields][0]=name&sort=name:asc&pagination[pageSize]=100",
+    "/instructors?populate[photo][fields][0]=url&populate[subjects][fields][0]=name&sort=displayOrder:asc&pagination[pageSize]=100",
     token
   );
   

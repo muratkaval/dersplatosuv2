@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { toMediaUrl } from "@/app/lib/strapi";
+import BookCard from "@/app/components/book-card";
 
 // URL'den YouTube / Playlist ID cikarma yardimcilari (orijinal js'den)
 function extractYouTubeId(url: string) {
@@ -199,28 +200,10 @@ export default function CampView({ camp }: { camp: any }) {
               {normalizedBooks.length === 0 ? (
                 <p style={{ color: 'var(--text-muted)', padding: '20px 0' }}>Bu kampa ait kitaplar yakında eklenecek.</p>
               ) : (
-                <div className="egitim-books-grid" style={{ marginTop: '10px' }}>
-                  {normalizedBooks.map((book: any, i: number) => {
-                    const bUrl = toMediaUrl(book.cover?.url || book.attributes?.cover?.data?.attributes?.url);
-                    return (
-                      <div key={book.id || i} className="book-item">
-                        <div className="book-cover-wrap">
-                          <img src={bUrl || 'https://via.placeholder.com/120x170?text=Kitap'} alt={book.title} loading="lazy" />
-                        </div>
-                        <div className="book-details">
-                          <h4>{book.title || 'Kitap'}</h4>
-                          <a href={book.buy_link || "/kitaplar"} className="btn-buy-book" target="_blank" rel="noopener noreferrer">
-                            📦 Satın Al ↗
-                          </a>
-                          {book.solution_link && (
-                            <a href={book.solution_link} className="btn-demo-book" target="_blank" rel="noopener noreferrer">
-                              🔎 Kitabı İncele
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
+                <div className="egitim-books-grid">
+                  {normalizedBooks.map((book: any) => (
+                    <BookCard key={book.id} book={book.attributes ? { id: book.id, ...book.attributes } : book} />
+                  ))}
                 </div>
               )}
             </div>

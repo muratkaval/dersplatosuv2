@@ -54,7 +54,7 @@ export default async function Home() {
                 <Link href={`/kamplar/${camps[0].slug}`} className="hero-card course-card floating">
                   <div className="course-thumb hero-course-thumb" style={{ background: `url('${getCampThumbnail(camps[0])}') center/cover no-repeat` }}>
                     <div className="play-overlay">
-                      <div className="play-button-circle"> 
+                      <div className="play-button-circle">
                         <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
                           <path d="M8 5v14l11-7z" />
                         </svg>
@@ -69,20 +69,20 @@ export default async function Home() {
                         {camps[0].instructors?.slice(0, 3).map((inst) => {
                           const pUrl = toMediaUrl(inst.photo?.formats?.thumbnail?.url || inst.photo?.url);
                           return pUrl ? (
-                            <img 
-                              key={inst.id} 
-                              src={pUrl} 
-                              className="avatar-stack-img hero-instructor-avatar" 
-                              alt={inst.name} 
+                            <img
+                              key={inst.id}
+                              src={pUrl}
+                              className="avatar-stack-img hero-instructor-avatar"
+                              alt={inst.name}
                             />
                           ) : (
-                            <div 
-                              key={inst.id} 
-                              className="avatar-stack-img hero-instructor-avatar" 
-                              style={{ 
-                                background: 'var(--bg-secondary)', 
-                                display: 'flex', 
-                                alignItems: 'center', 
+                            <div
+                              key={inst.id}
+                              className="avatar-stack-img hero-instructor-avatar"
+                              style={{
+                                background: 'var(--bg-secondary)',
+                                display: 'flex',
+                                alignItems: 'center',
                                 justifyContent: 'center',
                                 fontSize: '1rem',
                                 color: 'white'
