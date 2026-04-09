@@ -72,7 +72,7 @@ export type Book = {
   buy_link?: string;
   solution_link?: string;
   cover?: { url?: string } | null;
-  subjects?: Array<{ name?: string }>;
+  subjects?: Array<{ id: number; name?: string }>;
 };
 
 async function fetchStrapi<T>(pathAndQuery: string): Promise<T | null> {
@@ -236,3 +236,22 @@ export async function getSubjects(): Promise<any[]> {
     slug: item.slug || slugify(item.name)
   }));
 }
+
+export async function getSolutionVideos(bookId: string): Promise<any[]> {
+  const isNumericId = /^\d+$/.test(bookId);
+  const filter = isNumericId
+    ? `filters[book][id][$eq]=${bookId}`
+    : `filters[book][documentId][$eq]=${bookId}`;
+
+  const qs = [
+    filter,
+    'sort[0]=bolum_no:asc',
+    'sort[1]=sira:asc',
+    'pagination[pageSize]=200',
+    'populate=*'
+  ].join('&');
+
+  const data = await fetchStrapi<{ data: any[] }>(`/solution-videos?${qs}`);
+  return flattenStrapi(data?.data || []);
+}
+

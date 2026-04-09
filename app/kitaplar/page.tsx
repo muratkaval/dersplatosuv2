@@ -6,11 +6,16 @@ export default async function KitaplarPage() {
 
   return (
     <PageContainer>
-      <section className="books-section" style={{ paddingTop: "120px" }}>
+      <section className="page-hero">
+        <div className="page-hero-inner">
+          <div className="page-hero-eyebrow">Ders Platosu</div>
+          <h1>Popüler <span>Kitaplarımız</span></h1>
+          <p>En güncel ve yeni nesil soru bankalarıyla sınavlara bir adım önde hazırlanın.</p>
+        </div>
+      </section>
+
+      <section className="books-section" style={{ padding: "60px 0" }}>
         <div className="container">
-          <div className="section-header">
-            <h1 className="section-title">Kitaplarimiz</h1>
-          </div>
           <div className="books-grid">
             {books.map((book) => (
               <article key={book.id} className="book-item">
@@ -21,7 +26,7 @@ export default async function KitaplarPage() {
                   <h4>{book.title}</h4>
                   {book.buy_link ? (
                     <a className="btn-buy-book" href={book.buy_link} target="_blank" rel="noopener noreferrer">
-                      Satin Al
+                      Satın Al
                     </a>
                   ) : null}
                 </div>

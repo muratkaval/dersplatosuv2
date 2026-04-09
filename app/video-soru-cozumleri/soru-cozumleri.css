@@ -1,0 +1,324 @@
+/* 1. SEVİYE: KATEGORİ KARTLARI (Kategoriler Görünümü) */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 24px;
+}
+
+.category-card {
+    background: #111827;
+    background: linear-gradient(135deg, #1e293b 0%, #111827 100%);
+    border: 1px solid #1e293b;
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 140px; /* Daha kompakt yükseklik */
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 20px 20px, 20px 20px;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.category-arrow {
+    position: absolute;
+    top: 50%;
+    right: 24px;
+    width: 48px;
+    height: 48px;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: rgba(59, 130, 246, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    font-size: 1.4rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 5;
+}
+
+.category-card:hover .category-arrow {
+    background: #3b82f6;
+    color: #fff;
+    transform: translateY(-50%) scale(1.1) rotate(-10deg);
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+}
+
+[data-theme="light"] .category-card {
+    background: linear-gradient(to bottom, rgba(59, 130, 246, 0.03), transparent), #fff;
+    border-color: #e5e7eb;
+}
+
+.category-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+}
+
+.category-card h3 {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 8px;
+    z-index: 2;
+}
+
+[data-theme="light"] .category-card h3 {
+    color: #0f172a;
+}
+
+.category-card p {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    font-weight: 500;
+    z-index: 2;
+}
+
+.btn-solution {
+    background: #e11d48; /* Orijinale yakın canlı kırmızı (Rose/Red) */
+    color: white;
+    text-decoration: none;
+    padding: 14px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 4px;
+    margin-top: auto;
+    border: none;
+    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.btn-solution:hover {
+    background: #f43f5e;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(225, 29, 72, 0.4);
+}
+
+.category-card:hover .category-arrow {
+    background: #3b82f6;
+    color: #fff;
+    transform: scale(1.1) rotate(-10deg);
+}
+
+/* 2. SEVİYE: KİTAP GRİDİ */
+.books-all-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 32px;
+}
+
+.sc-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+}
+
+.btn-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    font-size: 0.95rem;
+}
+
+.btn-back:hover {
+    color: #3b82f6;
+}
+
+/* 3. SEVİYE: PLAYER VIEW */
+.player-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px 24px 80px;
+}
+
+.player-book-banner {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    background: #111827;
+    border: 1px solid #1e293b;
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 40px;
+}
+
+[data-theme="light"] .player-book-banner {
+    background: #fff;
+    border-color: #e5e7eb;
+}
+
+.player-book-cover {
+    width: 100px;
+    height: 140px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.player-book-info h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: #fff;
+}
+
+[data-theme="light"] .player-book-info h2 {
+    color: #0f172a;
+}
+
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 */
+    background: #000;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 32px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* ACCORDION (Bölümler ve Testler) */
+.accordion-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #64748b;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.accordion-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #1e293b;
+}
+
+.chapter-item {
+    background: #111827;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+[data-theme="light"] .chapter-item {
+    background: #fff;
+    border-color: #e5e7eb;
+}
+
+.chapter-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.chapter-header:hover {
+    background: rgba(255,255,255,0.02);
+}
+
+.chapter-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #fff;
+}
+
+[data-theme="light"] .chapter-name {
+    color: #0f172a;
+}
+
+.chapter-tests {
+    border-top: 1px solid #1e293b;
+    background: rgba(0,0,0,0.2);
+}
+
+.test-item {
+    padding: 14px 20px 14px 50px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    color: #94a3b8;
+    position: relative;
+}
+
+.test-item::before {
+    content: '▶';
+    position: absolute;
+    left: 20px;
+    font-size: 0.7rem;
+    color: #3b82f6;
+    opacity: 0.5;
+}
+
+.test-item:hover {
+    background: rgba(59, 130, 246, 0.05);
+    color: #3b82f6;
+}
+
+.test-item.active {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    font-weight: 700;
+}
+
+@media (max-width: 800px) {
+    .category-grid { grid-template-columns: 1fr; }
+    .page-hero h1 { font-size: 2.2rem; }
+    .player-book-banner { flex-direction: column; text-align: center; }
+}
