@@ -3,6 +3,7 @@ import CourseCard from "./components/course-card";
 import BookCard from "@/app/components/book-card";
 import Link from "next/link";
 import { getBooks, getCamps, getInstructors, toMediaUrl, getCampThumbnail } from "@/app/lib/strapi";
+import InstructorScroll from "./components/instructor-scroll";
 
 export default async function Home() {
   const [camps, instructors, featuredBooks] = await Promise.all([
@@ -21,32 +22,7 @@ export default async function Home() {
               <h2 className="section-title">Youtuber Hocalarımız</h2>
               <p className="section-desc">Alanında uzman, deneyimli öğretmenlerle çalış</p>
             </div>
-            <div className="story-scroll-wrapper">
-              <div className="story-scroll" id="storyScroll">
-                {instructors.map((instructor) => (
-                  <Link
-                    key={instructor.id}
-                    href={`/hoca/${instructor.slug}`}
-                    className="story-item"
-                    style={{ textDecoration: "none" }}
-                  >
-                    <div className="story-ring">
-                      {instructor.photo?.url ? (
-                        <img
-                          src={toMediaUrl(instructor.photo?.formats?.thumbnail?.url || instructor.photo?.url) || ""}
-                          alt={instructor.name}
-                          className="story-img"
-                        />
-                      ) : (
-                        <div className="story-fallback flex items-center justify-center text-3xl h-full w-full bg-slate-800 rounded-full border-4 border-[#050b1f]">👨‍🏫</div>
-                      )}
-                    </div>
-                    <span className="story-name">{instructor.name}</span>
-                    <span className="story-subject">{instructor.subjects?.[0]?.name || "Eğitmen"}</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
+            <InstructorScroll instructors={instructors} />
           </div>
         </section>
 
