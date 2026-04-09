@@ -1,9 +1,11 @@
 import { redirect } from "next/navigation";
 import { getAdminToken, logoutAction } from "./lib/auth";
 import Link from "next/link";
+import AdminNav from "./admin-nav";
+import type { Metadata } from "next";
 import "./admin.css";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Admin | Ders Platosu",
   robots: { index: false, follow: false },
 };
@@ -34,19 +36,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <span>Admin Paneli</span>
         </div>
 
-        <nav className="sidebar-nav">
-          {navItems.map((item, i) => {
-            if ("section" in item) {
-              return <div key={i} className="nav-section">{item.section}</div>;
-            }
-            return (
-              <Link key={item.href} href={item.href} className="nav-link">
-                <span className="ms">{item.icon}</span>
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
+        <AdminNav />
 
         <div className="sidebar-footer">
           <form action={logoutAction}>
