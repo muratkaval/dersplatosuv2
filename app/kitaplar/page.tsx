@@ -1,5 +1,6 @@
 import { PageContainer } from "../components/site-layout";
-import { getBooks, toMediaUrl } from "../lib/strapi";
+import BookCard from "../components/book-card";
+import { getBooks } from "../lib/strapi";
 
 export default async function KitaplarPage() {
   const books = await getBooks(false);
@@ -16,21 +17,9 @@ export default async function KitaplarPage() {
 
       <section className="books-section" style={{ padding: "60px 0" }}>
         <div className="container">
-          <div className="books-grid">
+          <div className="books-grid-unified">
             {books.map((book) => (
-              <article key={book.id} className="book-item">
-                <div className="book-cover-wrap">
-                  <img src={toMediaUrl(book.cover?.url || "")} alt={book.title} />
-                </div>
-                <div className="book-details">
-                  <h4>{book.title}</h4>
-                  {book.buy_link ? (
-                    <a className="btn-buy-book" href={book.buy_link} target="_blank" rel="noopener noreferrer">
-                      Satın Al
-                    </a>
-                  ) : null}
-                </div>
-              </article>
+              <BookCard key={book.id} book={book} />
             ))}
           </div>
         </div>

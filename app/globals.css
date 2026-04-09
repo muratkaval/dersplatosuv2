@@ -113,3 +113,50 @@ body {
 [data-theme="light"] .page-hero p {
     color: #64748b;
 }
+
+/* ===== UNIFIED PREMIUM PLAY BUTTON ===== */
+.play-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(0,0,0,0.15);
+    opacity: 0.9 !important;
+    transition: all 0.3s ease;
+    z-index: 20 !important;
+    pointer-events: none;
+}
+
+.course-card:hover .play-overlay,
+.book-card-premium:hover .play-overlay {
+    opacity: 1 !important;
+    background: rgba(0,0,0,0.25);
+}
+
+.play-button-circle {
+    width: 60px !important;
+    height: 60px !important;
+    background: #4289F7 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: white !important;
+    box-shadow: 0 8px 30px rgba(66, 137, 247, 0.5) !important;
+    transform: scale(0.9);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.course-card:hover .play-button-circle,
+.book-card-premium:hover .play-button-circle {
+    transform: scale(1.1);
+}
+
+/* Force parent containers to be relative for centering */
+.course-thumb,
+.book-card-cover-wrap,
+.book-cover-wrap {
+    position: relative !important;
+    overflow: hidden !important;
+}

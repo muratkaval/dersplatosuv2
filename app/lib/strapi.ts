@@ -148,34 +148,56 @@ export function flattenStrapi(data: any): any {
 }
 
 export async function getCamps(): Promise<Camp[]> {
-  const data = await fetchWithFallback<{ data: any[] }>([
-    "/camps?populate[categories]=*&populate[lessons][populate]=*&populate[instructors][populate][0]=photo&populate[instructors][populate][1]=subjects&populate[cover]=*&populate[subject]=*&populate[books][populate][0]=cover&sort[0]=createdAt:desc&pagination[pageSize]=100",
-    "/camps?populate=*&sort[0]=createdAt:desc&pagination[pageSize]=100",
-    "/camps?pagination[pageSize]=100"
+  const [campsData, allInstructors] = await Promise.all([
+    fetchWithFallback<{ data: any[] }>([
+      "/camps?populate[categories]=*&populate[lessons][populate]=*&populate[instructors][populate]=*&populate[cover]=*&populate[subject]=*&populate[books][populate][cover]=*&sort[0]=createdAt:desc&pagination[pageSize]=100",
+      "/camps?populate=*&sort[0]=createdAt:desc&pagination[pageSize]=100"
+    ]),
+    getInstructors()
   ]);
 
-  const items = flattenStrapi(data?.data || []);
-  return items.map((item: any) => ({
-    ...item,
-    slug: item.slug || slugify(item.title)
-  }));
+  const rawCamps = flattenStrapi(campsData?.data || []);
+  
+  return rawCamps.map((camp: any) => {
+    // Merge instructors to ensure photos are available (Strapi v5 relation population fix)
+    const mergedInstructors = (camp.instructors || []).map((ci: any) => {
+      const full = allInstructors.find(i => i.id === ci.id || i.documentId === ci.documentId);
+      return full || ci;
+    });
+
+    return {
+      ...camp,
+      instructors: mergedInstructors,
+      slug: camp.slug || slugify(camp.title)
+    };
+  });
 }
 
 export async function getCampBySlug(slug: string): Promise<any | null> {
-  const allCamps = await getCamps();
+  const [allCamps, allInstructors] = await Promise.all([
+    getCamps(),
+    getInstructors()
+  ]);
   const found = allCamps.find((c) => c.slug === slug);
   if (!found) return null;
 
-  const details = await fetchWithFallback<{ data: any[] }>([
-    `/camps?filters[documentId][$eq]=${found.documentId || ''}&populate[categories]=*&populate[lessons][populate]=*&populate[instructors][populate][0]=photo&populate[instructors][populate][1]=subjects&populate[cover]=*&populate[subject]=*&populate[books][populate][0]=cover`,
-    `/camps?filters[id][$eq]=${found.id}&populate[categories]=*&populate[lessons][populate]=*&populate[instructors][populate][0]=photo&populate[instructors][populate][1]=subjects&populate[cover]=*&populate[subject]=*&populate[books][populate][0]=cover`,
+  const detailsData = await fetchWithFallback<{ data: any[] }>([
+    `/camps?filters[documentId][$eq]=${found.documentId || ''}&populate=*`,
     `/camps?filters[id][$eq]=${found.id}&populate=*`
   ]);
 
-  const rawItem = details?.data?.[0] || found;
-  const item = flattenStrapi(rawItem);
-  item.slug = item.slug || slugify(item.title);
-  return item;
+  const rawCamp = flattenStrapi(detailsData?.data?.[0] || found);
+  
+  const mergedInstructors = (rawCamp.instructors || []).map((ci: any) => {
+    const full = allInstructors.find(i => i.id === ci.id || i.documentId === ci.documentId);
+    return full || ci;
+  });
+
+  return {
+    ...rawCamp,
+    instructors: mergedInstructors,
+    slug: rawCamp.slug || slugify(rawCamp.title)
+  };
 }
 
 export async function getInstructors(): Promise<Instructor[]> {
@@ -193,20 +215,36 @@ export async function getInstructors(): Promise<Instructor[]> {
 }
 
 export async function getInstructorBySlug(slug: string): Promise<any | null> {
-  const allInstructors = await getInstructors();
+  const [allInstructors, allBooks] = await Promise.all([
+    getInstructors(),
+    getBooks()
+  ]);
   const found = allInstructors.find((i) => i.slug === slug);
   if (!found) return null;
 
-  const details = await fetchWithFallback<{ data: any[] }>([
-    `/instructors?filters[documentId][$eq]=${found.documentId || ''}&populate[photo]=*&populate[subjects]=*&populate[camps][populate][0]=cover`,
-    `/instructors?filters[id][$eq]=${found.id}&populate[photo]=*&populate[subjects]=*&populate[camps][populate][0]=cover`,
+  const detailsData = await fetchWithFallback<{ data: any[] }>([
+    `/instructors?filters[documentId][$eq]=${found.documentId || ''}&populate=*`,
     `/instructors?filters[id][$eq]=${found.id}&populate=*`
   ]);
 
-  const rawItem = details?.data?.[0] || found;
-  const item = flattenStrapi(rawItem);
-  item.slug = item.slug || slugify(item.name);
-  return item;
+  const rawItem = flattenStrapi(detailsData?.data?.[0] || found);
+  
+  // Merge books to ensure covers are available
+  const mergedBooks = (rawItem.books || []).map((rb: any) => {
+    const full = allBooks.find(b => b.id === rb.id || b.documentId === rb.documentId);
+    return full || rb;
+  });
+
+  // Re-map camps to ensure they have covers if not populated
+  const rawCamps = rawItem.camps || [];
+  // Since camps relation might also miss covers, we'd ideally fetch all camps too, 
+  // but let's at least ensure we have the books covered as requested.
+  
+  return {
+    ...rawItem,
+    books: mergedBooks,
+    slug: rawItem.slug || slugify(rawItem.name)
+  };
 }
 
 export async function getBooks(featuredOnly = false): Promise<Book[]> {

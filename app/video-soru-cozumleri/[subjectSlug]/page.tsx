@@ -62,7 +62,13 @@ export default async function SubjectSolutionsPage({ params }: Props) {
                     src={toMediaUrl(book.cover?.url || "") || "https://via.placeholder.com/200x280?text=Kitap"}
                     alt={book.title}
                   />
-                  <div className="solution-badge">VİDEO ÇÖZÜMLÜ</div>
+                  <div className="play-overlay">
+                    <div className="play-button-circle">
+                      <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
                 <div className="book-details">
                   <h4>{book.title}</h4>

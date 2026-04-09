@@ -138,28 +138,39 @@ export default async function HocaDetayPage({ params }: { params: Promise<{ slug
         {allBooks.length > 0 && (
             <div className="hoca-section">
                 <div className="hoca-section-title">📚 Kitaplar</div>
-                <div className="hoca-books-grid">
+                <div className="books-grid-unified">
                     {allBooks.map((book: any, idx: number) => {
                         const bookCover = toMediaUrl(book.cover?.url || book.cover?.formats?.small?.url);
                         
                         return (
-                            <div key={book.id || idx} className="hoca-book-card">
-                                <img 
-                                    className="hoca-book-cover" 
-                                    src={bookCover || 'https://via.placeholder.com/200x280?text=Kitap'} 
-                                    alt={book.title} 
-                                    loading="lazy" 
-                                />
-                                <div className="hoca-book-body">
+                            <div key={book.id || idx} className="book-card-premium">
+                                <div className="book-card-cover-wrap">
+                                    <img 
+                                        className="book-card-cover" 
+                                        src={bookCover || 'https://via.placeholder.com/200x280?text=Kitap'} 
+                                        alt={book.title} 
+                                        loading="lazy" 
+                                    />
+                                    <div className="play-overlay">
+                                        <div className="play-button-circle">
+                                            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                                                <path d="M8 5v14l11-7z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="book-card-body">
                                     <h4>{book.title || 'Kitap'}</h4>
-                                    <div className="hoca-book-btns">
-                                        <a href={book.buy_link || "/kitaplar"} className="btn-buy" target="_blank" rel="noopener noreferrer">
-                                            📦 Satın Al ↗
-                                        </a>
-                                        {book.solution_link && (
-                                            <a href={book.solution_link} className="btn-demo" target="_blank" rel="noopener noreferrer">
-                                                🔎 Kitabı İncele
+                                    <div className="book-card-btns">
+                                        {book.buy_link && (
+                                            <a href={book.buy_link} className="btn-book-buy" target="_blank" rel="noopener noreferrer">
+                                                📦 Satın Al ↗
                                             </a>
+                                        )}
+                                        {book.slug && (
+                                            <Link href={`/kitaplar/${book.slug}`} className="btn-book-inspect">
+                                                🔎 Kitabı İncele
+                                            </Link>
                                         )}
                                     </div>
                                 </div>

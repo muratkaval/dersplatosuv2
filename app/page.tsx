@@ -1,6 +1,7 @@
-import Link from "next/link";
 import { PageContainer } from "./components/site-layout";
 import CourseCard from "./components/course-card";
+import BookCard from "@/app/components/book-card";
+import Link from "next/link";
 import { getBooks, getCamps, getInstructors, toMediaUrl, getCampThumbnail } from "@/app/lib/strapi";
 
 export default async function Home() {
@@ -76,7 +77,13 @@ export default async function Home() {
               {camps[0] ? (
                 <Link href={`/kamplar/${camps[0].slug}`} className="hero-card course-card floating">
                   <div className="course-thumb hero-course-thumb" style={{ background: `url('${getCampThumbnail(camps[0])}') center/cover no-repeat` }}>
-                    <div className="course-play-btn"></div>
+                    <div className="play-overlay">
+                      <div className="play-button-circle"> 
+                        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </div>
                   </div>
                   <div className="course-body">
                     <span className="course-tag hero-course-tag">{camps[0].subject?.name || "Kamp"}</span>
@@ -147,21 +154,9 @@ export default async function Home() {
             <h2 className="section-title">Öne Çıkan Kitaplar</h2>
             <Link href="/kitaplar" className="section-link">Tümünü Gör ›</Link>
           </div>
-          <div className="books-grid">
+          <div className="books-grid-unified">
             {featuredBooks.map((book) => (
-              <div key={book.id} className="book-item">
-                <div className="book-cover-wrap">
-                  <img src={toMediaUrl(book.cover?.url) || 'https://via.placeholder.com/120x170?text=Kitap'} alt={book.title} />
-                </div>
-                <div className="book-details">
-                  <h4>{book.title}</h4>
-                  {book.buy_link && (
-                    <a className="btn-buy-book" href={book.buy_link} target="_blank" rel="noopener noreferrer">
-                       📚 Seçenekleri Gör »
-                    </a>
-                  )}
-                </div>
-              </div>
+              <BookCard key={book.id} book={book} />
             ))}
           </div>
         </div>

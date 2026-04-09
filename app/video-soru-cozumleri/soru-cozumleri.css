@@ -96,7 +96,7 @@
 }
 
 .btn-solution {
-    background: #e11d48; /* Orijinale yakın canlı kırmızı (Rose/Red) */
+    background: #4289F7; 
     color: white;
     text-decoration: none;
     padding: 14px;
@@ -112,15 +112,15 @@
     margin-bottom: 4px;
     margin-top: auto;
     border: none;
-    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
+    box-shadow: 0 4px 12px rgba(66, 137, 247, 0.25);
     text-transform: uppercase;
     letter-spacing: 0.02em;
 }
 
 .btn-solution:hover {
-    background: #f43f5e;
+    background: #3378e6;
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(225, 29, 72, 0.4);
+    box-shadow: 0 8px 20px rgba(66, 137, 247, 0.4);
 }
 
 .category-card:hover .category-arrow {
@@ -321,4 +321,54 @@
     .category-grid { grid-template-columns: 1fr; }
     .page-hero h1 { font-size: 2.2rem; }
     .player-book-banner { flex-direction: column; text-align: center; }
+}
+
+.book-cover-wrap, 
+.course-thumb {
+    position: relative;
+    overflow: hidden;
+}
+
+.play-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 5;
+}
+
+.course-card:hover .play-overlay,
+.book-item:hover .play-overlay {
+    opacity: 1;
+}
+
+.play-button-circle {
+    width: 50px;
+    height: 50px;
+    background: #4289F7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transform: scale(0.8);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 20px rgba(66, 137, 247, 0.4);
+}
+
+.course-card:hover .play-button-circle,
+.book-item:hover .play-button-circle {
+    transform: scale(1);
+}
+
+.play-button-circle .ms {
+    font-size: 28px;
+    margin-left: 2px; /* Triangle centering adjustment */
 }
