@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <!-- dp-seo-injector -->
+    <script>
+        (function () {
+            try {
+                var s = JSON.parse(localStorage.getItem('dp_seo_settings') || '{}');
+                if (!s || !Object.keys(s).length) return;
+                var h = document.head;
+
+                function up(n, c, isProp) {
+                    if (!c) return;
+                    var sel = isProp ? 'meta[property="' + n + '"]' : 'meta[name="' + n + '"]';
+                    var el = document.querySelector(sel);
+                    if (el) { el.content = c; }
+                    else {
+                        var m = document.createElement('meta');
+                        isProp ? m.setAttribute('property', n) : m.name = n;
+                        m.content = c;
+                        h.appendChild(m);
+                    }
+                }
+
+                function addScript(code) { var t = document.createElement('script'); t.textContent = code; h.appendChild(t); }
+                function addSrcScript(src) { var t = document.createElement('script'); t.async = true; t.src = src; h.appendChild(t); }
+                function upFavicon(url) {
+                    if (!url) return;
+                    ['icon', 'shortcut icon', 'apple-touch-icon'].forEach(function (rel) {
+                        var el = document.querySelector('link[rel="' + rel + '"]');
+                        if (!el) {
+                            el = document.createElement('link');
+                            el.setAttribute('rel', rel);
+                            h.appendChild(el);
+                        }
+                        el.setAttribute('href', url);
+                    });
+                }
+
+                if (s.title) document.title = s.title;
+                up('description', s.desc, false);
+                up('keywords', s.keywords, false);
+                up('author', s.author, false);
+                up('og:site_name', s.siteName, true);
+                up('og:title', s.ogTitle, true);
+                up('og:description', s.ogDesc, true);
+                up('og:image', s.ogImage, true);
+                upFavicon(s.faviconUrl || s.iconUrl);
+
+                if (s.googleVerify) up('google-site-verification', s.googleVerify, false);
+                if (s.bingVerify) up('msvalidate.01', s.bingVerify, false);
+                if (s.yandexVerify) up('yandex-verification', s.yandexVerify, false);
+
+                if (s.ga4Id) { addSrcScript('https://www.googletagmanager.com/gtag/js?id=' + s.ga4Id); addScript('window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","' + s.ga4Id + '");'); }
+                if (s.gtmId) { addScript('(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src="https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);})(window,document,"script","dataLayer","' + s.gtmId + '");'); }
+                if (s.fbPixelId) { addScript('!function(f,b,e,v,n,t,s2){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s2=b.getElementsByTagName(e)[0];s2.parentNode.insertBefore(t,s2)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","' + s.fbPixelId + '");fbq("track","PageView");'); }
+            } catch (e) { }
+        })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kitap Soru Çözümleri – Ders Platosu</title>
+    <meta name="description" content="TYT, AYT, YDS ve tüm sınıflar için kitap soru çözüm videoları. Ders Platosu." />
+    <meta name="keywords" content="ders platosu, kitap soru çözümleri, tyt soru çözümü, ayt soru çözümü, videolu soru çözümü" />
+    <meta name="author" content="Ders Platosu" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://dersplatosu.com/video-soru-cozumleri" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://dersplatosu.com/video-soru-cozumleri" />
+    <meta property="og:title" content="Kitap Soru Çözümleri – Ders Platosu" />
+    <meta property="og:description" content="TYT, AYT, YDS ve tum siniflar icin kitap soru cozum videolari." />
+    <meta property="og:image" content="https://i.hizliresim.com/ag3gf4d.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:site_name" content="Ders Platosu" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://dersplatosu.com/video-soru-cozumleri" />
+    <meta name="twitter:title" content="Kitap Soru Çözümleri – Ders Platosu" />
+    <meta name="twitter:description" content="TYT, AYT, YDS ve tum siniflar icin kitap soru cozum videolari." />
+    <meta name="twitter:image" content="https://i.hizliresim.com/ag3gf4d.png" />
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        /* ── Page ── */
+        .kk-page {
+            min-height: 100vh;
+            background: var(--bg);
+        }
+
+        /* ── Unified Page Hero ── */
+        .page-hero {
+            background: var(--bg-secondary, #f0f4fa);
+            border-bottom: 1px solid var(--border, #e5e9f0);
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+        }
+
+        .page-hero-inner {
+            max-width: 620px;
+            margin: 0 auto;
+            padding: calc(var(--nav-h, 64px) + 36px) 24px 40px;
+            text-align: center;
+        }
+
+        .page-hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            background: rgba(59, 130, 246, .07);
+            border: 1px solid rgba(59, 130, 246, .18);
+            border-radius: 50px;
+            color: #3b82f6;
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .page-hero h1 {
+            font-size: 2.15rem;
+            font-weight: 800;
+            color: var(--text, #0f172a);
+            line-height: 1.18;
+            letter-spacing: -.025em;
+            margin-bottom: 14px;
+        }
+
+        .page-hero h1 span {
+            color: #3b82f6;
+        }
+
+        .page-hero p {
+            color: var(--text-muted, #64748b);
+            font-size: .95rem;
+            line-height: 1.7;
+        }
+
+        /* Dark mode */
+        [data-theme="dark"] .page-hero {
+            background: #0b1221;
+            border-bottom-color: #1e293b;
+        }
+
+        [data-theme="dark"] .page-hero h1 {
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .page-hero p {
+            color: #64748b;
+        }
+
+        [data-theme="dark"] .page-hero-eyebrow {
+            background: rgba(59, 130, 246, .1);
+            border-color: rgba(59, 130, 246, .22);
+            color: #60a5fa;
+        }
+
+        @media (max-width: 600px) {
+            .page-hero h1 {
+                font-size: 1.65rem;
+            }
+
+            .page-hero-inner {
+                padding-top: calc(var(--nav-h, 64px) + 28px);
+                padding-bottom: 28px;
+            }
+        }
+
+        /* ── Body ── */
+        .kk-body {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 48px 24px 80px;
+        }
+
+        .kk-section-label {
+            font-size: .72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .kk-section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ── Category Grid ── */
+        .kk-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        @media (max-width: 720px) {
+            .kk-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .kk-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── Category Card ── */
+        .kk-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 28px 28px;
+            background: var(--bg-card);
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            text-decoration: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform .2s cubic-bezier(.4, 0, .2, 1),
+                box-shadow .2s cubic-bezier(.4, 0, .2, 1),
+                border-color .2s;
+            min-height: 100px;
+        }
+
+        /* left accent bar */
+        .kk-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: var(--cc);
+            border-radius: 16px 0 0 16px;
+            transform: scaleY(0);
+            transition: transform .22s cubic-bezier(.4, 0, .2, 1);
+            transform-origin: center;
+        }
+
+        .kk-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .kk-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 36px rgba(0, 0, 0, .1);
+            border-color: color-mix(in srgb, var(--cc) 35%, transparent);
+        }
+
+        /* Color CSS vars */
+        .kk-card.c0 {
+            --cc: #3b82f6;
+        }
+
+        .kk-card.c1 {
+            --cc: #8b5cf6;
+        }
+
+        .kk-card.c2 {
+            --cc: #06b6d4;
+        }
+
+        .kk-card.c3 {
+            --cc: #10b981;
+        }
+
+        .kk-card.c4 {
+            --cc: #f59e0b;
+        }
+
+        .kk-card.c5 {
+            --cc: #ef4444;
+        }
+
+        .kk-card.c6 {
+            --cc: #ec4899;
+        }
+
+        .kk-card.c7 {
+            --cc: #6366f1;
+        }
+
+        .kk-card.c8 {
+            --cc: #14b8a6;
+        }
+
+        .kk-card-left {
+            flex: 1;
+        }
+
+        .kk-card-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1.2;
+            margin-bottom: 5px;
+            letter-spacing: -.01em;
+        }
+
+        .kk-card-count {
+            font-size: .8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .kk-card-arrow {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: color-mix(in srgb, var(--cc) 10%, transparent);
+            border: 1.5px solid color-mix(in srgb, var(--cc) 25%, transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cc);
+            font-size: .9rem;
+            flex-shrink: 0;
+            font-weight: 700;
+            transition: background .2s, border-color .2s, transform .2s;
+        }
+
+        .kk-card:hover .kk-card-arrow {
+            background: var(--cc);
+            border-color: var(--cc);
+            color: #fff;
+            transform: translateX(4px);
+        }
+
+        /* Skeleton */
+        .kk-skel {
+            height: 150px;
+            border-radius: 18px;
+            background: var(--border);
+            animation: skelPulse 1.4s ease-in-out infinite;
+        }
+
+        .kk-skel:nth-child(2) {
+            animation-delay: .1s;
+        }
+
+        .kk-skel:nth-child(3) {
+            animation-delay: .2s;
+        }
+
+        .kk-skel:nth-child(4) {
+            animation-delay: .3s;
+        }
+
+        .kk-skel:nth-child(5) {
+            animation-delay: .4s;
+        }
+
+        .kk-skel:nth-child(6) {
+            animation-delay: .5s;
+        }
+
+        @keyframes skelPulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .4
+            }
+        }
+
+        /* Empty */
+        .kk-empty {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 60px 24px;
+            border: 1px dashed var(--border);
+            border-radius: 18px;
+            color: var(--text-muted);
+        }
+
+        .kk-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 14px;
+        }
+
+        .kk-empty h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="https://i.hizliresim.com/ag3gf4d.png" class="logo-img" alt="Ders Platosu">
+                <span class="logo-text">Ders Platosu</span>
+            </a>
+            <ul class="nav-links">
+                <!-- Navigasyon linkleri main.js ile dinamik olarak yüklenecek -->
+            </ul>
+            <div class="nav-actions">
+                <button class="btn-icon" id="themeToggle" title="Tema değiştir">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="5" />
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                        <line x1="1" y1="12" x2="3" y2="12" />
+                        <line x1="21" y1="12" x2="23" y2="12" />
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                    </svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" style="display:none">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                    </svg>
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <!-- Mobil menü linkleri main.js ile dinamik olarak yüklenecek -->
+        </div>
+    </nav>
+
+    <div class="kk-page">
+
+        <!-- PAGE HERO -->
+        <section class="page-hero">
+            <div class="page-hero-inner">
+                <div class="page-hero-eyebrow">Ders Platosu</div>
+                <h1>Video Soru Çözümleri</h1>
+                <p>TYT, AYT, 9, 10, 11 ve 12. Sınıf Ktapları</p>
+            </div>
+        </section>
+
+        <!-- BODY -->
+        <div class="kk-body">
+            <div class="kk-grid" id="kkGrid">
+                <!-- skeleton -->
+                <div class="kk-skel"></div>
+                <div class="kk-skel"></div>
+                <div class="kk-skel"></div>
+                <div class="kk-skel"></div>
+                <div class="kk-skel"></div>
+                <div class="kk-skel"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Footer alanı main.js ile dinamik olarak yüklenecek -->
+            </div>
+            <div class="footer-bottom">
+                <p>© Tüm hakları saklıdır. <a href="https://kvl.com.tr/" target="_blank" rel="noopener">KVL Digital</a> Tarafından Geliştirilmiştir.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js?v=999"></script>
+    <script>
+        /* Category emoji map */
+        var EMOJI_MAP = {
+            'tyt': '📐', 'ayt': '🎯', 'yds': '🌍', 'yökdil': '🌍',
+            '9': '9️⃣', '10': '🔟', '11': '1️⃣1️⃣', '12': '1️⃣2️⃣',
+            'lgs': '🏆', '8': '8️⃣', 'default': '📖'
+        };
+
+        function getEmoji(name) {
+            var n = (name || '').toLowerCase();
+            for (var k in EMOJI_MAP) {
+                if (n.includes(k)) return EMOJI_MAP[k];
+            }
+            return EMOJI_MAP['default'];
+        }
+
+        var COLORS = ['c0', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8'];
+
+        async function loadCategories() {
+            var grid = document.getElementById('kkGrid');
+            try {
+                var res = await fetch(STRAPI_URL + '/book-categories?sort=name:asc&pagination[pageSize]=50', { headers: strapiHeaders });
+                var data = await res.json();
+                var cats = data.data || [];
+
+                grid.innerHTML = '';
+
+                if (!cats || cats.length === 0) {
+                    grid.innerHTML =
+                        '<div class="kk-empty">' +
+                        '<div class="kk-empty-icon">📂</div>' +
+                        '<h3>Henüz kategori eklenmemiş</h3>' +
+                        '<p>Strapi\'den kategori ekleyin.</p>' +
+                        '</div>';
+                    return;
+                }
+
+                cats.forEach(function (cat, i) {
+                    var a = cat.attributes || cat;
+                    var id = cat.id || cat.documentId;
+                    var name = a.name || 'Kategori';
+                    var emoji = getEmoji(name);
+                    var colorClass = COLORS[i % COLORS.length];
+                    var url = '/kitap-listesi?kategori=' + id + '&name=' + encodeURIComponent(name);
+
+                    var card = document.createElement('a');
+                    card.href = url;
+                    card.className = 'kk-card ' + colorClass;
+                    card.innerHTML =
+                        '<div class="kk-card-left">' +
+                        '<div class="kk-card-name">' + name + '</div>' +
+                        '<div class="kk-card-count">Kitapları görüntüle</div>' +
+                        '</div>' +
+                        '<div class="kk-card-arrow">→</div>';
+                    grid.appendChild(card);
+                });
+
+            } catch (err) {
+                // Sessiz fallback: production'da detay log basma.
+                grid.innerHTML =
+                    '<div class="kk-empty">' +
+                    '<div class="kk-empty-icon">⚠️</div>' +
+                    '<h3>Bağlantı hatası</h3>' +
+                    '<p>Strapi sunucusuna ulaşılamıyor.</p>' +
+                    '</div>';
+            }
+        }
+
+        loadCategories();
+    </script>
+</body>
+
+</html>

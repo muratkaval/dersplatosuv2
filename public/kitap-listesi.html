@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <!-- dp-seo-injector -->
+    <script>
+        (function () {
+            try {
+                var s = JSON.parse(localStorage.getItem('dp_seo_settings') || '{}');
+                if (!s || !Object.keys(s).length) return;
+                var h = document.head;
+
+                // Mevcut meta etiketini bulup günceller, yoksa yenisini oluşturur
+                function up(n, c, isProp) {
+                    if (!c) return;
+                    var sel = isProp ? 'meta[property="' + n + '"]' : 'meta[name="' + n + '"]';
+                    var el = document.querySelector(sel);
+                    if (el) { el.content = c; }
+                    else {
+                        var m = document.createElement('meta');
+                        isProp ? m.setAttribute('property', n) : m.name = n;
+                        m.content = c;
+                        h.appendChild(m);
+                    }
+                }
+
+                function addScript(code) { var t = document.createElement('script'); t.textContent = code; h.appendChild(t); }
+                function addSrcScript(src) { var t = document.createElement('script'); t.async = true; t.src = src; h.appendChild(t); }
+                function upFavicon(url) {
+                    if (!url) return;
+                    ['icon', 'shortcut icon', 'apple-touch-icon'].forEach(function (rel) {
+                        var el = document.querySelector('link[rel="' + rel + '"]');
+                        if (!el) {
+                            el = document.createElement('link');
+                            el.setAttribute('rel', rel);
+                            h.appendChild(el);
+                        }
+                        el.setAttribute('href', url);
+                    });
+                }
+
+                // Temel SEO & Open Graph
+                if (s.title) document.title = s.title;
+                up('description', s.desc, false);
+                up('keywords', s.keywords, false);
+                up('author', s.author, false);
+                up('og:site_name', s.siteName, true);
+                up('og:title', s.ogTitle, true);
+                up('og:description', s.ogDesc, true);
+                up('og:image', s.ogImage, true);
+                upFavicon(s.faviconUrl || s.iconUrl);
+
+                // Doğrulama & Analitik
+                if (s.googleVerify) up('google-site-verification', s.googleVerify, false);
+                if (s.bingVerify) up('msvalidate.01', s.bingVerify, false);
+                if (s.yandexVerify) up('yandex-verification', s.yandexVerify, false);
+
+                if (s.ga4Id) { addSrcScript('https://www.googletagmanager.com/gtag/js?id=' + s.ga4Id); addScript('window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","' + s.ga4Id + '");'); }
+                if (s.gtmId) { addScript('(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src="https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);})(window,document,"script","dataLayer","' + s.gtmId + '");'); }
+                if (s.fbPixelId) { addScript('!function(f,b,e,v,n,t,s2){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s2=b.getElementsByTagName(e)[0];s2.parentNode.insertBefore(t,s2)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","' + s.fbPixelId + '");fbq("track","PageView");'); }
+
+                // Özel Kodlar
+            } catch (e) { }
+        })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="pageTitle">Kitaplar – Ders Platosu</title>
+    <meta name="description"
+        content="Ders Platosu ile YKS, TYT ve AYT'ye en iyi şekilde hazırlanın. Uzman eğitmenlerden konu anlatım kampları, yeni nesil soru çözümleri ve kitaplar burada!" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://dersplatosu.com/kitap-listesi" />
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://dersplatosu.com/kitap-listesi" />
+    <meta property="og:title" content="Kitaplar – Ders Platosu" />
+    <meta property="og:description" content="Ders Platosu ile YKS, TYT ve AYT'ye en iyi şekilde hazırlanın. Uzman eğitmenlerden konu anlatım kampları, yeni nesil soru çözümleri ve kitaplar burada!" />
+    <meta property="og:image" content="https://i.hizliresim.com/ag3gf4d.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:site_name" content="Ders Platosu" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Kitaplar – Ders Platosu" />
+    <meta name="twitter:description" content="Ders Platosu ile YKS, TYT ve AYT'ye en iyi şekilde hazırlanın. Uzman eğitmenlerden konu anlatım kampları, yeni nesil soru çözümleri ve kitaplar burada!" />
+    <meta name="twitter:image" content="https://i.hizliresim.com/ag3gf4d.png" />
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        .kl-page {
+            padding-top: var(--nav-h);
+            min-height: 100vh;
+            background: var(--bg);
+        }
+
+        /* ── Hero ── */
+        .kl-hero {
+            background: linear-gradient(135deg, #060d1f 0%, #0f2454 55%, #060d1f 100%);
+            padding: 44px 0 36px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kl-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 75% 40%, rgba(59, 130, 246, .2) 0%, transparent 55%);
+        }
+
+        .kl-hero-inner {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .kl-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: .78rem;
+            color: #64748b;
+        }
+
+        .kl-breadcrumb a {
+            color: #64748b;
+            text-decoration: none;
+            transition: color .2s;
+        }
+
+        .kl-breadcrumb a:hover {
+            color: #93c5fd;
+        }
+
+        .kl-breadcrumb span {
+            color: #93c5fd;
+            font-weight: 600;
+        }
+
+        .kl-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            border-radius: 50px;
+            background: rgba(59, 130, 246, .15);
+            border: 1px solid rgba(59, 130, 246, .28);
+            color: #93c5fd;
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .04em;
+            margin-bottom: 12px;
+        }
+
+        .kl-hero h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -.02em;
+            margin-bottom: 8px;
+        }
+
+        .kl-hero p {
+            color: #7da4cf;
+            font-size: .88rem;
+        }
+
+        /* ── Body ── */
+        .kl-body {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+        }
+
+        .kl-section-label {
+            font-size: .72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .kl-section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ── Book Grid ── */
+        .kl-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .kl-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .kl-body {
+                padding: 30px 12px 60px;
+            }
+
+            .kl-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+        }
+
+        /* ── Book Card ── */
+        .kl-book-card {
+            text-decoration: none;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            transition: transform .22s, box-shadow .22s, border-color .22s;
+            cursor: pointer;
+            display: block;
+        }
+
+        .kl-book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, .18);
+            border-color: rgba(59, 130, 246, .35);
+        }
+
+        /* Cover wrap with hover overlay */
+        .kl-cover-wrap {
+            position: relative;
+            aspect-ratio: 2/3;
+            background: #fff;
+            overflow: hidden;
+        }
+
+        .kl-cover-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            transition: transform .3s, filter .3s;
+        }
+
+        .kl-book-card:hover .kl-cover-wrap img {
+            transform: scale(1.04);
+            filter: brightness(.7);
+        }
+
+        /* Play overlay */
+        .kl-play-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity .25s;
+            background: rgba(0, 0, 0, .35);
+            backdrop-filter: blur(2px);
+        }
+
+        .kl-book-card:hover .kl-play-overlay {
+            opacity: 1;
+        }
+
+        .kl-play-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(37, 99, 235, .6);
+            transition: transform .2s;
+            font-size: 1.2rem;
+            padding-left: 4px;
+        }
+
+        .kl-book-card:hover .kl-play-btn {
+            transform: scale(1.1);
+        }
+
+        .kl-play-label {
+            font-size: .72rem;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            line-height: 1.4;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, .5);
+            max-width: 100px;
+        }
+
+        /* Book info */
+        .kl-book-info {
+            padding: 14px 14px 16px;
+        }
+
+        .kl-book-title {
+            font-size: .82rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .kl-book-sub {
+            font-size: .73rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Skeleton */
+        .kl-skel-card {
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+        }
+
+        .kl-skel-cover {
+            aspect-ratio: 2/3;
+            background: var(--border);
+            animation: skelPulse 1.4s ease-in-out infinite;
+        }
+
+        .kl-skel-line {
+            height: 12px;
+            margin: 14px 14px 8px;
+            border-radius: 4px;
+            background: var(--border);
+            animation: skelPulse 1.4s ease-in-out infinite;
+        }
+
+        .kl-skel-line.short {
+            width: 60%;
+            margin-left: 14px;
+            height: 10px;
+        }
+
+        @keyframes skelPulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .4
+            }
+        }
+
+        /* Empty */
+        .kl-empty {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 60px 24px;
+            border: 1px dashed var(--border);
+            border-radius: 18px;
+            color: var(--text-muted);
+        }
+
+        .kl-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 14px;
+        }
+
+        .kl-empty h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="https://i.hizliresim.com/ag3gf4d.png" class="logo-img" alt="Ders Platosu">
+                <span class="logo-text">Ders Platosu</span>
+            </a>
+            <ul class="nav-links">
+                <!-- Menü dinamik olarak main.js ile doldurulacak -->
+            </ul>
+            <div class="nav-actions">
+                <button class="btn-icon" id="themeToggle" title="Tema değiştir">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="5" />
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                    </svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" style="display:none">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                    </svg>
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <!-- Mobil menü dinamik olarak main.js ile doldurulacak -->
+        </div>
+    </nav>
+
+    <div class="kl-page">
+
+        <!-- HERO -->
+        <section class="kl-hero">
+            <div class="kl-hero-inner">
+                <div class="kl-breadcrumb">
+                    <a href="/video-soru-cozumleri">Soru Çözümleri</a>
+                    <span>›</span>
+                    <span id="klBreadcrumbName">—</span>
+                </div>
+                <div class="kl-hero-badge">📚 Kitap Soru Çözümleri</div>
+                <h1 id="klHeroTitle">Kitaplar Yükleniyor…</h1>
+                <p>Video soru çözümlerini izlemek için bir kitap seç.</p>
+            </div>
+        </section>
+
+        <!-- BODY -->
+        <div class="kl-body">
+            <div class="kl-section-label" id="klLabel">Kitaplar</div>
+            <div class="kl-grid" id="klGrid">
+                <!-- Kitap kartları dinamik olarak yüklenecek -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Footer alanı main.js ile dinamik olarak yüklenecek -->
+            </div>
+            <div class="footer-bottom">
+                <p>© Tüm hakları saklıdır. <a href="https://kvl.com.tr/" target="_blank" rel="noopener">KVL Digital</a> Tarafından Geliştirilmiştir.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js?v=999"></script>
+    <script>
+        (function () {
+            var params = new URLSearchParams(window.location.search);
+            var kategoriId = params.get('kategori') || '';
+            var kategoriName = decodeURIComponent(params.get('name') || 'Kitaplar');
+
+            // Kategori yoksa bu sayfa ince/yardimci icerik olur; noindex ver.
+            var robotsEl = document.querySelector('meta[name="robots"]');
+            var canonicalEl = document.querySelector('link[rel="canonical"]');
+            if (robotsEl) {
+                robotsEl.setAttribute('content', kategoriId ? 'index, follow' : 'noindex, follow');
+            }
+            if (canonicalEl) {
+                canonicalEl.setAttribute('href', kategoriId
+                    ? window.location.href.split('#')[0]
+                    : 'https://dersplatosu.com/kitap-listesi');
+            }
+
+            /* Page meta */
+            document.getElementById('klHeroTitle').textContent = kategoriName + ' Kitapları';
+            document.getElementById('klBreadcrumbName').textContent = kategoriName;
+            document.getElementById('klLabel').textContent = kategoriName + ' – Kitaplar';
+            document.title = kategoriName + ' Soru Çözümleri – Ders Platosu';
+
+            async function loadBooks() {
+                var grid = document.getElementById('klGrid');
+                try {
+                    var query = [
+                        'filters[solution_categories][id][$eq]=' + kategoriId,
+                        'populate[cover][fields][0]=url',
+                        'populate[solution_categories][fields][0]=name',
+                        'sort=title:asc',
+                        'pagination[pageSize]=100'
+                    ].join('&');
+
+                    var res = await fetch(STRAPI_URL + '/books?' + query, { headers: strapiHeaders });
+                    var data = await res.json();
+                    var books = data.data || [];
+
+                    grid.innerHTML = '';
+
+                    if (!books || books.length === 0) {
+                        grid.innerHTML =
+                            '<div class="kl-empty">' +
+                            '<div class="kl-empty-icon">📚</div>' +
+                            '<h3>Bu kategoride kitap yok</h3>' +
+                            '<p>Strapi\'den kitaplara kategori atayın.</p>' +
+                            '</div>';
+                        return;
+                    }
+
+                    books.forEach(function (book) {
+                        var a = book.attributes || book;
+                        var id = book.id || book.documentId;
+                        var title = a.title || 'Kitap';
+                        var coverUrl = a.cover?.url
+                            ? '' + a.cover.url
+                            : '';
+                        var scUrl = '/soru-cozumleri?book=' + id;
+
+                        var card = document.createElement('a');
+                        card.href = scUrl;
+                        card.className = 'kl-book-card';
+                        card.innerHTML =
+                            '<div class="kl-cover-wrap">' +
+                            (coverUrl
+                                ? '<img src="' + coverUrl + '" alt="' + title + '" loading="lazy">'
+                                : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;">📖</div>') +
+                            '<div class="kl-play-overlay">' +
+                            '<div class="kl-play-btn">▶</div>' +
+                            '<div class="kl-play-label">Soru Çözümlerini İzle</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '<div class="kl-book-info">' +
+                            '<div class="kl-book-title">' + title + '</div>' +
+                            '<div class="kl-book-sub">Soru çözüm videoları</div>' +
+                            '</div>';
+                        grid.appendChild(card);
+                    });
+
+                } catch (err) {
+                    // Sessiz fallback: production'da detay log basma.
+                    grid.innerHTML =
+                        '<div class="kl-empty">' +
+                        '<div class="kl-empty-icon">⚠️</div>' +
+                        '<h3>Bağlantı hatası</h3>' +
+                        '<p>Strapi sunucusuna ulaşılamıyor.</p>' +
+                        '</div>';
+                }
+            }
+
+            loadBooks();
+        })();
+    </script>
+</body>
+
+</html>

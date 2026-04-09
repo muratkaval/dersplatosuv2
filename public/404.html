@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Sayfa Bulunamadı – Ders Platosu</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+        .notfound-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .notfound-inner {
+            max-width: 520px;
+        }
+
+        .notfound-code {
+            font-size: clamp(6rem, 20vw, 10rem);
+            font-weight: 800;
+            line-height: 1;
+            background: linear-gradient(135deg, #2563eb, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .notfound-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .notfound-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        .notfound-desc {
+            font-size: 1rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 36px;
+        }
+
+        .notfound-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            background: #2563eb;
+            color: #fff;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: .95rem;
+            text-decoration: none;
+            transition: background .2s, transform .2s;
+        }
+
+        .btn-home:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border: 2px solid var(--border);
+            color: var(--text-muted);
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: .95rem;
+            text-decoration: none;
+            transition: border-color .2s, color .2s, transform .2s;
+        }
+
+        .btn-outline:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .notfound-links {
+            margin-top: 48px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+        }
+
+        .notfound-links p {
+            font-size: .85rem;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+
+        .notfound-links-grid {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .notfound-links-grid a {
+            padding: 7px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: .84rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: border-color .2s, color .2s;
+        }
+
+        .notfound-links-grid a:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="notfound-wrap">
+        <div class="notfound-inner">
+            <div class="notfound-code">404</div>
+            <div class="notfound-icon">🔭</div>
+            <h1 class="notfound-title">Sayfa Bulunamadı</h1>
+            <p class="notfound-desc">
+                Aradığın sayfa taşınmış, silinmiş ya da hiç var olmamış olabilir.<br>
+                Ana sayfaya dönüp devam edebilirsin.
+            </p>
+            <div class="notfound-actions">
+                <a href="/" class="btn-home">🏠 Ana Sayfaya Dön</a>
+                <a href="/youtuber-hocalar" class="btn-outline">👨‍🏫 Hocalar</a>
+            </div>
+
+            <div class="notfound-links">
+                <p>Belki bunları arıyordun?</p>
+                <div class="notfound-links-grid">
+                    <a href="/egitim">🎬 Kamplar</a>
+                    <a href="/kitaplar">📚 Kitaplar</a>
+                    <a href="/soru-cozumleri">✏️ Soru Çözümleri</a>
+                    <a href="/video-soru-cozumleri">▶️ Video Çözümler</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/main.js" defer></script>
+</body>
+
+</html>

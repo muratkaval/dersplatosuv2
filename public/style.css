@@ -1,0 +1,3198 @@
+﻿.hero-instructor-stack {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+}
+.avatar-stack {
+    display: flex;
+    align-items: center;
+    gap: -8px;
+    position: relative;
+}
+.avatar-stack-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    object-fit: cover;
+    margin-left: -10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    background: #eee;
+}
+.avatar-stack-img:first-child {
+    margin-left: 0;
+}
+.avatar-stack-more {
+    background: #222;
+    color: #fff;
+    font-size: 0.95em;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -10px;
+    border: 2px solid #fff;
+    font-weight: 600;
+}
+/* ===== KÖK VE TASARIM DEĞİŞKENLERİ ===== */
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #60a5fa;
+    --accent: #06b6d4;
+    --bg: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-card: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --nav-h: 68px;
+}
+
+[data-theme="dark"] {
+    --bg: #0b0f1a;
+    --bg-secondary: #111827;
+    --bg-card: #1a2235;
+    --border: #1e293b;
+    --text: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-light: #64748b;
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* ===== SIFIRLAMA ===== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--nav-h);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    transition: background var(--transition), color var(--transition);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
+}
+
+ul {
+    list-style: none;
+}
+
+/* ===== YARDIMCI SINIFLAR ===== */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ===== DÜĞMELER ===== */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
+}
+
+.btn-primary.btn-lg {
+    padding: 14px 32px;
+    font-size: 1rem;
+}
+
+.btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-muted);
+    padding: 10px 18px;
+    border-radius: 50px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: color var(--transition), background var(--transition);
+}
+
+.btn-ghost:hover {
+    color: var(--primary);
+    background: rgba(37, 99, 235, 0.06);
+}
+
+.btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: border-color var(--transition), color var(--transition), transform var(--transition);
+}
+
+.egitim-hero .btn-outline {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-outline:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.btn-outline.btn-lg {
+    padding: 14px 32px;
+    font-size: 1rem;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition), color var(--transition);
+}
+
+.btn-icon:hover {
+    background: var(--bg-secondary);
+    color: var(--text);
+}
+
+.btn-cart {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.btn-cart:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+.btn-cart.full-width {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* ===== NAVBAR (ÜST ÇUBUK) ===== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--nav-h);
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition), box-shadow var(--transition);
+}
+
+[data-theme="dark"] .navbar {
+    background: rgba(11, 15, 26, 0.9);
+}
+
+.navbar.scrolled {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--text);
+    flex-shrink: 0;
+}
+
+.logo-icon {
+    width: 34px;
+    height: 34px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 900;
+    font-size: 1.1rem;
+}
+
+.logo-img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.nav-links {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+}
+
+.nav-link {
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    transition: color var(--transition), background var(--transition);
+    position: relative;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--primary);
+    background: rgba(37, 99, 235, 0.06);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.mobile-menu-btn span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all var(--transition);
+}
+
+.mobile-menu {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 24px;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+}
+
+.mobile-menu.open {
+    display: flex;
+}
+
+.mobile-menu a {
+    padding: 10px 0;
+    color: var(--text);
+    font-weight: 500;
+    border-bottom: 1px solid var(--border);
+}
+
+.hero-block {
+    position: relative;
+    background: radial-gradient(ellipse at 60% 0%, rgba(37, 99, 235, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 0% 80%, rgba(6, 182, 212, 0.06) 0%, transparent 50%);
+}
+
+.hero-block .hero-bg {
+    display: none;
+}
+
+/* ===== ANA BÖLÜM (HERO) ===== */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: var(--nav-h);
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+}
+
+.hero.hero-top {
+    align-items: flex-start;
+    padding-top: 8px;
+    min-height: auto;
+    padding-bottom: 8px;
+}
+
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.35;
+    animation: orbFloat 8s ease-in-out infinite;
+}
+
+.orb1 {
+    width: 500px;
+    height: 500px;
+    background: rgba(37, 99, 235, 0.25);
+    top: -100px;
+    right: -100px;
+}
+
+.orb2 {
+    width: 300px;
+    height: 300px;
+    background: rgba(6, 182, 212, 0.2);
+    bottom: 100px;
+    left: -50px;
+    animation-delay: -3s;
+}
+
+.orb3 {
+    width: 200px;
+    height: 200px;
+    background: rgba(99, 102, 241, 0.2);
+    top: 40%;
+    left: 40%;
+    animation-delay: -6s;
+}
+
+@keyframes orbFloat {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    33% {
+        transform: translate(20px, -30px) scale(1.05);
+    }
+
+    66% {
+        transform: translate(-15px, 20px) scale(0.95);
+    }
+}
+
+.hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    padding: 24px 24px 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(6, 182, 212, 0.12));
+    color: var(--primary);
+    border: 1px solid rgba(37, 99, 235, 0.25);
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    animation: fadeInDown 0.8s ease;
+}
+
+.hero-title {
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    animation: fadeInUp 0.8s ease 0.1s both;
+}
+
+.hero-desc {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 480px;
+    margin-bottom: 20px;
+    animation: fadeInUp 0.8s ease 0.2s both;
+}
+
+.hero-ctas {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    animation: fadeInUp 0.8s ease 0.3s both;
+}
+
+.pulse-btn {
+    animation: pulse 2.5s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
+    }
+
+    50% {
+        box-shadow: 0 4px 30px rgba(37, 99, 235, 0.7), 0 0 0 8px rgba(37, 99, 235, 0.1);
+    }
+}
+
+.hero-stats {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    animation: fadeInUp 0.8s ease 0.4s both;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-num {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1;
+}
+
+.stat-suffix {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.stat-num-wrap {
+    display: flex;
+    align-items: baseline;
+}
+
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--border);
+}
+
+/* Hero Visual */
+.hero-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeInRight 0.9s ease 0.3s both;
+}
+
+/* Hero card = exact camp card, only sizing + float tweaks */
+.hero-card {
+    width: 100%;
+    max-width: 380px;
+    box-shadow: var(--shadow-lg);
+    cursor: pointer;
+}
+
+.hero-card .course-thumb {
+    height: auto;
+    aspect-ratio: 16 / 9;
+}
+
+.hero-card .course-instructor {
+    flex-direction: row-reverse;
+    text-align: right;
+}
+
+.floating {
+    animation: floatCard 4s ease-in-out infinite;
+}
+
+.hero-card:hover {
+    animation: none;
+}
+
+@keyframes floatCard {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+}
+
+.floating-badge {
+    position: absolute;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 8px 18px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.badge-top {
+    top: -12px;
+    right: -12px;
+    color: var(--primary);
+    animation: floatCard 4s ease-in-out infinite 2s;
+}
+
+.badge-bottom {
+    bottom: -16px;
+    left: -12px;
+    color: #16a34a;
+    animation: floatCard 4s ease-in-out infinite 1s;
+}
+
+/* ===== BÖLÜM TEMELİ ===== */
+.section-header {
+    text-align: center;
+    margin-bottom: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    text-align: left;
+}
+
+.section-title {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 800;
+}
+
+.section-desc {
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
+.section-link {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.section-link:hover {
+    text-decoration: underline;
+}
+
+/* ===== EĞİTMENLER ===== */
+.instructors-section {
+    padding: calc(var(--nav-h) + 6px) 0 4px;
+    background: transparent;
+}
+
+.instructors-section .section-header {
+    display: none;
+}
+
+.instructor-circles-wrapper {
+    overflow-x: auto;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+}
+
+.instructor-circles {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    min-width: max-content;
+    padding: 0 24px;
+}
+
+.instructor-circle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: transform var(--transition);
+}
+
+.instructor-circle:hover {
+    transform: translateY(-4px);
+}
+
+.circle-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    border: 4px solid transparent;
+    transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+    position: relative;
+}
+
+.instructor-circle.active .circle-avatar {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+    transform: scale(1.08);
+}
+
+.avatar-emoji {
+    font-size: 2rem;
+}
+
+.circle-name {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+    max-width: 90px;
+    line-height: 1.3;
+}
+
+.circle-subject {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+/* Instructor Profile Panel */
+.instructor-profile {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    background: var(--bg-card);
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    padding: 36px;
+    box-shadow: var(--shadow);
+    animation: slideInProfile 0.4s ease;
+}
+
+@keyframes slideInProfile {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.profile-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+}
+
+.profile-avatar-large {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    border: 4px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    transition: all 0.4s ease;
+}
+
+.profile-socials {
+    display: flex;
+    gap: 10px;
+}
+
+.social-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    transition: transform var(--transition);
+}
+
+.social-btn:hover {
+    transform: scale(1.15);
+}
+
+.social-btn.youtube {
+    background: #ff0000;
+    color: #fff;
+}
+
+.social-btn.instagram {
+    background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    color: #fff;
+}
+
+.social-btn.tiktok {
+    background: #000;
+    color: #fff;
+}
+
+.profile-subject-tag {
+    padding: 4px 14px;
+    border-radius: 50px;
+    background: rgba(37, 99, 235, 0.12);
+    color: var(--primary);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.profile-right {
+    flex: 1;
+}
+
+.profile-right h3 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+.profile-teacher-name {
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.profile-desc {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+    line-height: 1.7;
+}
+
+.profile-books {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* ===== KURS BÖLÜMÜ ===== */
+.courses-section {
+    padding: 8px 0 80px 0;
+}
+
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.course-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.course-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    border-color: var(--primary-light);
+}
+
+.course-thumb {
+    height: 180px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.course-thumb-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    z-index: 1;
+}
+
+.course-thumb-icon {
+    font-size: 2.5rem;
+}
+
+.course-thumb-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.85);
+    letter-spacing: 1.5px;
+}
+
+.course-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.course-body {
+    padding: 16px 20px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.course-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    width: fit-content;
+}
+
+.course-tag.tarih {
+    background: rgba(30, 58, 138, 0.12);
+    color: #1e3a8a;
+}
+
+.course-tag.kimya {
+    background: rgba(4, 120, 87, 0.12);
+    color: #047857;
+}
+
+.course-tag.fizik {
+    background: rgba(88, 28, 135, 0.12);
+    color: #581c87;
+}
+
+.course-tag.matematik {
+    background: rgba(194, 65, 12, 0.12);
+    color: #c2410c;
+}
+
+.course-tag.biyoloji {
+    background: rgba(12, 74, 110, 0.12);
+    color: #0c4a6e;
+}
+
+.course-tag.turkce {
+    background: rgba(120, 53, 15, 0.12);
+    color: #78350f;
+}
+
+.course-tag.geometri {
+    background: rgba(15, 118, 110, 0.12);
+    color: #0f766e;
+}
+
+.course-tag.edebiyat {
+    background: rgba(99, 102, 241, 0.12);
+    color: #6366f1;
+}
+
+.course-tag.cografya {
+    background: rgba(5, 150, 105, 0.12);
+    color: #059669;
+}
+
+.course-tag.felsefe {
+    background: rgba(139, 92, 246, 0.12);
+    color: #7c3aed;
+}
+
+.course-tag.dinkulturi {
+    background: rgba(180, 83, 9, 0.12);
+    color: #b45309;
+}
+
+[data-theme="dark"] .course-tag.tarih {
+    color: #93c5fd;
+    background: rgba(30, 58, 138, 0.25);
+}
+
+[data-theme="dark"] .course-tag.kimya {
+    color: #6ee7b7;
+    background: rgba(4, 120, 87, 0.25);
+}
+
+[data-theme="dark"] .course-tag.fizik {
+    color: #d8b4fe;
+    background: rgba(88, 28, 135, 0.25);
+}
+
+[data-theme="dark"] .course-tag.matematik {
+    color: #fdba74;
+    background: rgba(194, 65, 12, 0.25);
+}
+
+[data-theme="dark"] .course-tag.biyoloji {
+    color: #7dd3fc;
+    background: rgba(12, 74, 110, 0.25);
+}
+
+[data-theme="dark"] .course-tag.turkce {
+    color: #fcd34d;
+    background: rgba(120, 53, 15, 0.25);
+}
+
+[data-theme="dark"] .course-tag.geometri {
+    color: #5eead4;
+    background: rgba(15, 118, 110, 0.25);
+}
+
+[data-theme="dark"] .course-tag.edebiyat {
+    color: #a5b4fc;
+    background: rgba(99, 102, 241, 0.25);
+}
+
+[data-theme="dark"] .course-tag.cografya {
+    color: #6ee7b7;
+    background: rgba(5, 150, 105, 0.25);
+}
+
+[data-theme="dark"] .course-tag.felsefe {
+    color: #c4b5fd;
+    background: rgba(139, 92, 246, 0.25);
+}
+
+[data-theme="dark"] .course-tag.dinkulturi {
+    color: #fbbf24;
+    background: rgba(180, 83, 9, 0.25);
+}
+
+/* Eski kart stilleri (artık kullanılmıyor, yeni stiller aşağıda) */
+/*
+.course-body h3 - yeni tanım aşağıda
+.course-body p - yeni tanım aşağıda
+*/
+
+.courses-more {
+    text-align: center;
+    margin-top: 36px;
+}
+
+/* ===== KART ALT SATIR: YAZAR + ALAN ===== */
+.course-footer-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    flex-wrap: nowrap;
+}
+.course-footer-row .course-instructor {
+    flex: 1;
+    min-width: 0;
+    flex-wrap: wrap;
+}
+.course-footer-row .course-tag {
+    margin-bottom: 0;
+    flex-shrink: 0;
+    align-self: flex-end;
+}
+.course-lessons-count {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+.course-instructor {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+    min-width: 0;
+}
+.course-instructor-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.course-instructor-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid var(--border);
+}
+
+.course-instructor-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    font-size: 0.85rem;
+    line-height: 1;
+}
+
+.course-instructor-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text);
+    white-space: normal;
+    word-break: break-word;
+}
+
+.course-instructor-avatars {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 0;
+    min-height: 34px;
+}
+
+.course-instructor-avatars .course-instructor-item {
+    margin-left: -9px;
+    position: relative;
+}
+
+.course-instructor-avatars .course-instructor-item:first-child {
+    margin-left: 0;
+}
+
+.course-instructor-avatars .course-instructor-avatar,
+.course-instructor-avatars .course-instructor-placeholder {
+    width: 34px;
+    height: 34px;
+    border: 2px solid var(--bg-card);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.16);
+}
+
+.course-instructor-more {
+    margin-left: 8px;
+    height: 28px;
+    min-width: 28px;
+    padding: 0 7px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    line-height: 1;
+}
+
+.course-body h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.course-body p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 0;
+}
+
+.courses-skeleton-grid {
+    align-items: stretch;
+}
+
+.course-skeleton-card {
+    min-height: 320px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: linear-gradient(90deg,
+            rgba(148, 163, 184, 0.08) 0%,
+            rgba(148, 163, 184, 0.16) 45%,
+            rgba(148, 163, 184, 0.08) 100%);
+    background-size: 220% 100%;
+    animation: coursesShimmer 1.4s ease-in-out infinite;
+}
+
+.courses-fetch-error {
+    border: 1px dashed var(--border);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border-radius: 14px;
+    padding: 18px;
+    font-size: 0.92rem;
+}
+
+@keyframes coursesShimmer {
+    0% {
+        background-position: 100% 0;
+    }
+
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+/* Play button overlay */
+.course-play-btn {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.course-play-btn::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 0 8px 14px;
+    border-color: transparent transparent transparent #1a1a1a;
+    margin-left: 3px;
+}
+
+.course-card:hover .course-play-btn {
+    transform: scale(1.12);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* ===== NEDEN BÖLÜMÜ ===== */
+.why-section {
+    padding: 80px 0;
+    background: var(--bg-secondary);
+}
+
+.why-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+.why-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 28px 24px;
+    text-align: center;
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.why-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(37, 99, 235, 0.3);
+}
+
+.why-icon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.why-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.why-card p {
+    font-size: 0.87rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* ===== SON EKLENENLER ===== */
+.latest-section {
+    padding: 80px 0;
+}
+
+.lesson-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.lesson-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--bg-card);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    padding: 14px 18px;
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    cursor: pointer;
+}
+
+.lesson-row:hover {
+    transform: translateX(4px);
+    box-shadow: var(--shadow);
+    border-color: var(--primary-light);
+}
+
+.lesson-num {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-light);
+    width: 20px;
+    flex-shrink: 0;
+}
+
+.lesson-thumb {
+    width: 56px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.thumb-tarih {
+    background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+}
+
+.thumb-kimya {
+    background: linear-gradient(135deg, #047857, #059669);
+}
+
+.thumb-fizik {
+    background: linear-gradient(135deg, #4c1d95, #7c3aed);
+}
+
+.lesson-details {
+    flex: 1;
+}
+
+.lesson-details h4 {
+    font-size: 0.87rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text);
+}
+
+.lesson-badges {
+    display: flex;
+    gap: 6px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.badge.konu {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary);
+}
+
+.badge.soru {
+    background: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+}
+
+.lesson-dur {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.lesson-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.lesson-share {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background var(--transition), color var(--transition);
+}
+
+.lesson-share:hover {
+    background: var(--bg-secondary);
+    color: var(--text);
+}
+
+.btn-ders-notu {
+    background: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+    border: none;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background var(--transition);
+}
+
+.btn-ders-notu:hover {
+    background: rgba(220, 38, 38, 0.2);
+}
+
+/* ===== KİTAPLAR BÖLÜMÜ ===== */
+.books-section {
+    padding: 80px 0;
+    background: var(--bg-secondary);
+}
+
+/* ===== EĞİTİM KİTAPLARI GRID ===== */
+.egitim-books-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+    .egitim-books-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+.book-item {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.book-item:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+}
+
+.book-img {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    position: relative;
+}
+
+.book-cover-wrap {
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius) var(--radius) 0 0;
+    background: var(--bg-secondary);
+}
+
+.book-cover-wrap img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    transition: transform 0.4s ease;
+}
+
+.book-item:hover .book-cover-wrap img {
+    transform: scale(1.03);
+}
+
+.book-badge-wrap {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+.book-badge {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.book-details {
+    padding: 18px;
+}
+
+.book-details h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+    line-height: 1.4;
+}
+
+.book-author {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 8px;
+}
+
+.book-price {
+    font-size: 1.2rem;
+    color: var(--primary);
+    font-weight: 800;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* ===== EYLEM ÇAĞRISI (CTA) BÖLÜMÜ ===== */
+.cta-section {
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
+}
+
+.cta-orbs {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.cta-orb {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.25;
+    animation: orbFloat 10s ease-in-out infinite;
+}
+
+.cta-orb1 {
+    width: 400px;
+    height: 400px;
+    background: var(--accent);
+    top: -100px;
+    right: -100px;
+}
+
+.cta-orb2 {
+    width: 300px;
+    height: 300px;
+    background: var(--primary-light);
+    bottom: -100px;
+    left: -50px;
+    animation-delay: -5s;
+}
+
+.cta-inner {
+    position: relative;
+    text-align: center;
+}
+
+.cta-inner h2 {
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 14px;
+}
+
+.cta-inner p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    margin-bottom: 32px;
+}
+
+/* ===== ALT BİLGİ (FOOTER) ===== */
+.footer {
+    padding: 60px 0 30px;
+    background: #0b0f1a;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+}
+
+.footer-brand .nav-logo {
+    color: #fff;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-brand p {
+    font-size: 0.87rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.footer-brand-logos {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 10px;
+}
+
+.footer-brand-logos img {
+    height: 34px;
+    width: auto;
+    opacity: 0.9;
+}
+
+.footer-col h4 {
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+}
+
+.footer-col a {
+    display: block;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+    transition: color var(--transition);
+}
+
+.footer-col a:hover {
+    color: #fff;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 24px;
+    text-align: center;
+    font-size: 0.82rem;
+}
+
+/* ===== ANİMASYONLAR ===== */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* AOS-like animations via IntersectionObserver */
+[data-aos] {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[data-aos].aos-animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+[data-aos="zoom-in"] {
+    transform: scale(0.9);
+}
+
+[data-aos="zoom-in"].aos-animate {
+    transform: scale(1);
+}
+
+[data-aos="fade-right"] {
+    transform: translateX(-30px);
+}
+
+[data-aos="fade-right"].aos-animate {
+    transform: translateX(0);
+}
+
+/* ===== KİTAP KARTI (profil) ===== */
+.book-card {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    transition: transform var(--transition), box-shadow var(--transition);
+    min-width: 200px;
+}
+
+.book-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+}
+
+.book-cover {
+    width: 60px;
+    height: 80px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.book-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.book-info p {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.4;
+}
+
+.price {
+    font-size: 1rem;
+    color: var(--primary);
+    font-weight: 800;
+}
+
+/* ===== HERO KAPSAYICI DÜZELTME ===== */
+section.hero {
+    display: grid;
+    max-width: none;
+    padding: 0;
+}
+
+.hero-bg~* {
+    position: relative;
+}
+
+/* ===== DUYARLI (RESPONSIVE) ===== */
+@media (max-width: 1024px) {
+    .courses-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .why-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .books-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .nav-links,
+    .nav-actions .btn-ghost {
+        display: none;
+    }
+
+    .mobile-menu-btn {
+        display: flex;
+    }
+
+    .hero-inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 32px;
+        padding-top: 16px;
+    }
+
+    .hero-block {
+        padding-top: calc(var(--nav-h) + env(safe-area-inset-top));
+    }
+
+    .instructors-section {
+        padding-top: 8px;
+    }
+
+    .story-scroll-wrapper {
+        margin-top: 4px;
+    }
+
+    .hero-visual {
+        display: flex;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .hero-ctas {
+        justify-content: center;
+    }
+
+    .hero-stats {
+        justify-content: center;
+    }
+
+    .courses-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .why-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .books-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .instructor-profile {
+        flex-direction: column;
+    }
+
+    .profile-books {
+        flex-direction: column;
+    }
+
+    .instructors-section {
+        padding: 5px 0 0 0;
+    }
+
+    .courses-section {
+        padding: 10px 0 40px 0;
+    }
+
+    .why-section,
+    .books-section {
+        padding: 40px 0;
+    }
+
+    .section-header {
+        margin-bottom: 24px;
+    }
+
+    .story-scroll-wrapper {
+        padding-bottom: 0;
+        margin-bottom: 0;
+    }
+}
+
+/* ===== KURS KARTI VİDEO OYNATICI ===== */
+.course-thumb {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.course-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 52px;
+    height: 52px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+    z-index: 3;
+}
+
+.course-play-btn::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 0 10px 18px;
+    border-color: transparent transparent transparent #1d4ed8;
+    margin-left: 3px;
+}
+
+.course-thumb:hover .course-play-btn {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.course-thumb-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    z-index: 5;
+    display: none;
+}
+
+.course-thumb.playing .course-thumb-video {
+    display: block;
+}
+
+.course-thumb.playing .course-thumb-content,
+.course-thumb.playing .course-badge,
+.course-thumb.playing .course-play-btn {
+    display: none;
+}
+
+/* Video modal overlay */
+.video-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.2s ease;
+}
+
+.video-modal-inner {
+    position: relative;
+    width: 100%;
+    max-width: 860px;
+}
+
+.video-modal-player {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    background: #000;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+.video-modal-player iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.video-modal-close {
+    position: absolute;
+    top: -44px;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.video-modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.video-modal-title {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-top: 16px;
+    text-align: center;
+    opacity: 0.9;
+}
+
+/* "Kitabı Hemen Al" button */
+.btn-buy-book {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    color: #fff !important;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.25s, box-shadow 0.25s;
+    box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-buy-book:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(22, 163, 74, 0.5);
+}
+
+.btn-demo-book {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #fff !important;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.25s, box-shadow 0.25s;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-demo-book:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(37, 99, 235, 0.5);
+}
+
+/* "Kitap Soru Çözümleri" button */
+.btn-youtube-book {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: #fff !important;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.25s, box-shadow 0.25s;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-youtube-book:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(239, 68, 68, 0.5);
+}
+
+/* ===== YOUTUBE KÜÇÜK RESİM ARKA PLANLARI ===== */
+/* Dark overlay over thumbnail so text/play remains readable */
+.course-thumb[data-youtube]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.42);
+    z-index: 1;
+    transition: background 0.3s ease;
+}
+
+.course-thumb[data-youtube]:hover::before {
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.course-thumb[data-youtube] .course-thumb-content,
+.course-thumb[data-youtube] .course-badge {
+    position: relative;
+    z-index: 2;
+}
+
+.course-thumb[data-youtube] .course-thumb-label {
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.course-thumb[data-youtube] .course-thumb-icon {
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+}
+
+.course-thumb[data-youtube] .course-play-btn {
+    z-index: 3;
+}
+
+
+
+
+/* ===== KÜÇÜK RESİM TAM FIT DÜZELTME ===== */
+.course-thumb[data-youtube] {
+    aspect-ratio: 16 / 9;
+    height: auto !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-color: #111 !important;
+}
+
+.course-thumb[data-youtube] .course-thumb-content {
+    display: none;
+}
+
+/* Remove Kamp badge and dark overlay from video thumbnail cards */
+.course-thumb[data-youtube] .course-badge {
+    display: none !important;
+}
+
+.course-thumb[data-youtube]::before {
+    display: none !important;
+}
+
+/* New course tag colors */
+.course-tag.cografya {
+    background: rgba(37, 99, 235, 0.1);
+    color: #2563eb;
+}
+
+.course-tag.geometri {
+    background: rgba(13, 148, 136, 0.1);
+    color: #0d9488;
+}
+
+.course-tag.filozofi {
+    background: rgba(67, 56, 202, 0.1);
+    color: #4338ca;
+}
+
+.course-tag.din {
+    background: rgba(5, 150, 105, 0.1);
+    color: #059669;
+}
+
+/* ===== HERO KAMP SLAYDERI ===== */
+.video-thumbnail-bg {
+    position: absolute;
+    inset: 0;
+    background: center/cover no-repeat;
+    border-radius: 12px 12px 0 0;
+    transition: opacity 0.6s ease;
+}
+
+.hero-card.fading {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.hero-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Progress bar under hero card */
+.camp-progress-bar {
+    height: 3px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+    margin-top: -1px;
+}
+
+.camp-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), #06b6d4);
+    border-radius: 2px;
+    width: 0%;
+    transition: width linear;
+}
+
+/* Camp dot indicators */
+.camp-dots {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+.camp-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.camp-dot.active {
+    background: #fff;
+    transform: scale(1.4);
+}
+
+.camp-dots {
+    display: none !important;
+}
+
+/* Hero card thumbnail fill fix */
+.video-preview {
+    position: relative;
+    overflow: hidden;
+}
+
+.video-thumbnail-bg {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    border-radius: 0 !important;
+}
+
+/* ===== ÖĞRETMEN KARTLARI GRID ===== */
+.teachers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 36px;
+}
+
+@media(max-width:1024px) {
+    .teachers-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width:640px) {
+    .teachers-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.teacher-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.teacher-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+}
+
+.teacher-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.teacher-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.teacher-info h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 3px;
+}
+
+.teacher-subject {
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary);
+    padding: 2px 10px;
+    border-radius: 50px;
+}
+
+.teacher-desc {
+    font-size: 0.83rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Camp thumbnail button */
+.teacher-camps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.teacher-camp-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.teacher-camp-btn:hover {
+    border-color: var(--primary);
+    background: rgba(37, 99, 235, 0.05);
+}
+
+.teacher-camp-btn img {
+    width: 80px;
+    height: 50px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.teacher-camp-btn span {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--primary);
+    padding: 0 12px;
+}
+
+/* Book chips */
+.teacher-books {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 2px;
+}
+
+.teacher-book {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    background: var(--bg-secondary);
+    padding: 5px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ===== EĞİTMEN PROFİLİ - Kamp & Kitaplar ===== */
+.profile-camp {
+    margin-top: 12px;
+}
+
+.profile-camp-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    max-width: 380px;
+}
+
+.profile-camp-btn:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.15);
+}
+
+.profile-camp-btn img {
+    width: 100px;
+    height: 60px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.profile-camp-btn span {
+    font-size: 0.87rem;
+    font-weight: 700;
+    color: var(--primary);
+    padding: 0 16px;
+}
+
+.profile-books-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 12px;
+}
+
+.profile-book-chip {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    border-radius: 8px;
+}
+
+/* ===== HİKAYE KAYDIRMA - Instagram Stili Eğitmen Satırı ===== */
+.story-scroll-wrapper {
+    position: relative;
+    margin: 0 -24px;
+    padding: 8px 0 6px;
+    margin-bottom: 0;
+}
+
+.story-scroll {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 32px 12px;
+    scrollbar-width: none;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.story-scroll:active {
+    cursor: grabbing;
+}
+
+.story-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.story-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: transform var(--transition);
+    width: 152px;
+}
+
+.story-item:hover {
+    transform: translateY(-4px);
+}
+
+.story-ring {
+    width: 136px;
+    height: 136px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 4px 16px rgba(220, 39, 67, 0.25);
+    transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.story-item:hover .story-ring {
+    box-shadow: 0 6px 24px rgba(220, 39, 67, 0.4);
+    transform: scale(1.05);
+}
+
+.story-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--bg);
+    display: block;
+}
+
+.story-fallback {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    border: 3px solid var(--bg);
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.story-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.3;
+    max-width: 148px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.story-subject {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-align: center;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary);
+    padding: 3px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .story-ring {
+    box-shadow: 0 4px 16px rgba(220, 39, 67, 0.35);
+}
+
+[data-theme="dark"] .story-subject {
+    background: rgba(37, 99, 235, 0.15);
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+    .story-scroll {
+        padding: 8px 16px 12px;
+        gap: 14px;
+    }
+
+    .story-item {
+        width: 86px;
+    }
+
+    .story-ring {
+        width: 78px;
+        height: 78px;
+    }
+}
+
+/* ===== HİKAYE AKTİF DURUMU ===== */
+.story-item.story-active .story-ring {
+    box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--primary);
+    transform: scale(1.08);
+}
+
+.story-item.story-active .story-name {
+    color: var(--primary);
+}
+
+/* ===== EĞİTMEN GENİŞLETME PANELİ ===== */
+.instructor-expand-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.35s ease,
+        margin 0.35s ease;
+    opacity: 0;
+    margin: 0;
+}
+
+.instructor-expand-panel.open {
+    max-height: 3000px;
+    opacity: 1;
+    margin: 12px 0 20px;
+}
+
+.exp-inner {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.10);
+    padding: 28px 32px 28px 28px;
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+    animation: expSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes expSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Close button */
+.exp-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    color: var(--text-muted);
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition), color var(--transition);
+}
+
+.exp-close:hover {
+    background: var(--border);
+    color: var(--text);
+}
+
+/* Left column */
+.exp-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.exp-photo {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary);
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.25);
+}
+
+.exp-subject-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    white-space: nowrap;
+}
+
+/* Right column */
+.exp-right {
+    flex: 1;
+    min-width: 0;
+}
+
+.exp-name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 14px;
+}
+
+/* Social buttons */
+.exp-socials {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.exp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.exp-btn:hover {
+    transform: translateY(-2px);
+}
+
+.exp-btn-yt {
+    background: #ff0000;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(255, 0, 0, 0.30);
+}
+
+.exp-btn-yt:hover {
+    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.45);
+}
+
+.exp-btn-ig {
+    background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(220, 39, 67, 0.30);
+}
+
+.exp-btn-ig:hover {
+    box-shadow: 0 6px 20px rgba(220, 39, 67, 0.45);
+}
+
+/* Books in Panel */
+.exp-books-scroll {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.exp-book-item {
+    background: var(--bg-secondary);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.exp-book-item .book-cover-wrap {
+    padding: 12px 12px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.exp-book-item .book-cover-wrap img {
+    height: auto;
+    width: 100%;
+    max-width: 160px;
+    aspect-ratio: 18/25;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.exp-book-item .book-details {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.exp-book-item .book-details h4 {
+    font-size: 0.82rem;
+    margin-bottom: 4px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.exp-book-item .btn-buy-book {
+    padding: 8px 10px;
+    font-size: 0.78rem;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    line-height: 1.3;
+    border-radius: 8px;
+}
+
+.exp-book-item .btn-youtube-book {
+    padding: 7px 10px;
+    font-size: 0.73rem;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    line-height: 1.3;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+/* Camps */
+.exp-camps-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+}
+
+.exp-camps-scroll {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding-bottom: 8px;
+}
+
+.exp-camp-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-decoration: none;
+    transition: transform var(--transition);
+}
+
+.exp-camp-card:hover {
+    transform: translateY(-3px);
+}
+
+.exp-camp-thumb {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+}
+
+.exp-camp-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.exp-camp-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: #1a1a1a;
+    opacity: 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.exp-camp-card:hover .exp-camp-play {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.exp-camp-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+}
+
+/* Dark mode */
+[data-theme="dark"] .exp-inner {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+    .exp-inner {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 24px 20px;
+        gap: 16px;
+    }
+
+    .exp-left {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .exp-name {
+        text-align: center;
+        font-size: 1.1rem;
+    }
+
+    .exp-socials {
+        justify-content: center;
+    }
+
+    .exp-books,
+    .exp-books-scroll,
+    .exp-camps-scroll {
+        justify-content: flex-start;
+    }
+
+    .exp-books-scroll {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .exp-camps-scroll {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== VİDEO MODALİ ===== */
+.video-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition), visibility var(--transition);
+}
+
+.video-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.video-modal-overlay {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+}
+
+.video-modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 1100px;
+    background: var(--bg-card);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+    transform: scale(0.95) translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.video-modal.active .video-modal-content {
+    transform: scale(1) translateY(0);
+}
+
+.video-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.video-modal-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+}
+
+.video-modal-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: background var(--transition), color var(--transition);
+}
+
+.video-modal-close:hover {
+    background: var(--bg-secondary);
+    color: var(--text);
+}
+
+.video-modal-body {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    /* 16:9 */
+    background: #000;
+}
+
+.video-modal-body iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* ===== YOUTUBER HOCALARIMIZ SAYFASI GRID ===== */
+.youtubers-section {
+    padding: 60px 0 80px;
+}
+
+.youtubers-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px 30px;
+    justify-items: center;
+}
+
+.youtubers-grid .story-item {
+    width: 100%;
+    max-width: 200px;
+}
+
+.youtubers-grid .story-ring {
+    width: 140px;
+    height: 140px;
+}
+
+.youtubers-grid .story-name {
+    font-size: 0.92rem;
+    max-width: 180px;
+}
+
+.youtubers-grid .story-subject {
+    font-size: 0.78rem;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+    .youtubers-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px 20px;
+    }
+}
+
+/* Mobil - 2 sütun */
+@media (max-width: 640px) {
+    .youtubers-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px 16px;
+    }
+
+    .youtubers-grid .story-ring {
+        width: 110px;
+        height: 110px;
+    }
+
+    .youtubers-grid .story-name {
+        font-size: 0.82rem;
+    }
+}
+
+/* Panel grid içinde tüm sütunları kaplasın */
+.youtubers-grid .instructor-expand-panel {
+    grid-column: 1 / -1;
+}
+
+/* Panel açıkken içerideki exp-inner mobilde dikey olsun */
+@media (max-width: 640px) {
+    .youtubers-grid .exp-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 20px 16px;
+        gap: 16px;
+    }
+
+    .youtubers-grid .exp-right {
+        align-items: center;
+    }
+
+    .youtubers-grid .exp-socials {
+        justify-content: center;
+    }
+}
+
+/* Hero section for youtubers page */
+.youtubers-hero {
+    position: relative;
+    padding: 120px 0 40px;
+    overflow: hidden;
+}
+
+.youtubers-hero-content {
+    text-align: center;
+}
+
+.youtubers-hero-content .hero-title {
+    font-size: 2.4rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.youtubers-hero-content .hero-desc {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+    .youtubers-hero {
+        padding: 100px 0 24px;
+    }
+
+    .youtubers-hero-content .hero-title {
+        font-size: 1.6rem;
+    }
+
+    .youtubers-hero-content .hero-desc {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 640px) {
+
+    .btn-buy-book,
+    .btn-youtube-book {
+        font-size: 0.72rem;
+        padding: 8px 10px;
+        gap: 4px;
+        margin-top: 8px;
+    }
+}

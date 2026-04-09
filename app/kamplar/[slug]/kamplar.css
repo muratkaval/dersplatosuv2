@@ -1,0 +1,660 @@
+﻿        .egitim-page {
+            padding-top: var(--nav-h);
+            min-height: 100vh;
+            background: var(--bg);
+        }
+
+        /* ¦¦ Hero ¦¦ */
+        .egitim-hero {
+            background: linear-gradient(135deg, #0b1629 0%, #1e3a8a 60%, #0b1629 100%);
+            padding: 52px 0 44px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .egitim-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 70% 50%, rgba(37, 99, 235, 0.25) 0%, transparent 65%);
+            z-index: 1;
+        }
+
+        .egitim-hero::after {
+            content: '';
+            position: absolute;
+            inset: -6% -4%;
+            background-image: var(--hero-cover, none);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.16;
+            filter: blur(6px) saturate(1.05);
+            transform: scale(1.02);
+            z-index: 0;
+        }
+
+        .egitim-hero-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 40px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .egitim-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .ebadge {
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.12);
+            color: #e0e7ff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .ebadge.green {
+            background: rgba(22, 163, 74, 0.2);
+            color: #86efac;
+            border-color: rgba(22, 163, 74, 0.3);
+        }
+
+        .egitim-hero h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.25;
+            margin-bottom: 14px;
+        }
+
+        .egitim-hero p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 22px;
+        }
+
+        .egitim-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .emeta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #94a3b8;
+            font-size: 0.82rem;
+        }
+
+        .egitim-btns {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* ¦¦ Video Card (right side of hero) ¦¦ */
+        .egitim-video-card {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .egitim-player-wrap {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            background: #000;
+            cursor: pointer;
+        }
+
+        .egitim-player-wrap iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: none;
+        }
+
+        .egitim-thumb {
+            position: absolute;
+            inset: 0;
+            background-position: center; background-size: cover; background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .egitim-play-btn {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .egitim-play-btn::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 12px 0 12px 22px;
+            border-color: transparent transparent transparent #1d4ed8;
+            margin-left: 4px;
+        }
+
+        .egitim-player-wrap:hover .egitim-play-btn {
+            transform: scale(1.08);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .egitim-video-label {
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #e2e8f0;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ¦¦ Tabs ¦¦ */
+        .egitim-body {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 32px;
+            align-items: flex-start;
+        }
+
+        .egitim-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 28px;
+        }
+
+        .etab {
+            padding: 12px 22px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .etab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* ¦¦ Lesson List ¦¦ */
+        .lesson-list-dyn {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .lesson-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 18px;
+            padding: 16px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: background 0.2s, border-color 0.2s;
+            position: relative;
+        }
+
+        .lesson-item:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border);
+        }
+
+        .lesson-item.active {
+            background: rgba(37, 99, 235, 0.07);
+            border-color: rgba(37, 99, 235, 0.25);
+        }
+
+        .lesson-row {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            width: 100%;
+        }
+
+        .lesson-item.active .lesson-row {
+            display: none;
+        }
+
+        .lesson-player-container {
+            width: 100%;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+            aspect-ratio: 16/9;
+            position: relative;
+        }
+
+        .lesson-item.active .lesson-player-container {
+            display: block;
+        }
+
+        .lesson-player-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .lesson-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.65);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            z-index: 10;
+            transition: background 0.2s;
+        }
+
+        .lesson-close-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .lesson-num {
+            width: 32px;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .lesson-thumb-sm {
+            width: 110px;
+            height: 68px;
+            border-radius: 10px;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: #1e293b;
+        }
+
+        .lesson-info-dyn {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .lesson-info-dyn h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.4;
+            margin-bottom: 5px;
+            white-space: normal;
+        }
+
+        .lesson-info-dyn span {
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .lesson-notes-btn {
+            flex-shrink: 0;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(37, 99, 235, 0.12);
+            color: #3b82f6;
+            border: 1px solid rgba(37, 99, 235, 0.25);
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background 0.2s, color 0.2s;
+            margin-left: auto;
+        }
+
+        .lesson-notes-under {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            background: rgba(37, 99, 235, 0.12);
+            color: #bfdbfe;
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .lesson-notes-under:hover {
+            background: rgba(37, 99, 235, 0.22);
+            color: #dbeafe;
+        }
+
+        .lesson-notes-btn:hover {
+            background: rgba(37, 99, 235, 0.22);
+            color: #2563eb;
+        }
+
+        .lessons-loading {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .lesson-skeleton {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 10px 14px;
+        }
+
+        .skel {
+            background: var(--border);
+            border-radius: 6px;
+            animation: skelPulse 1.4s ease-in-out infinite;
+        }
+
+        .skel-num {
+            width: 26px;
+            height: 16px;
+        }
+
+        .skel-thumb {
+            width: 80px;
+            height: 50px;
+            border-radius: 8px;
+        }
+
+        .skel-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .skel-line {
+            height: 12px;
+        }
+
+        .skel-line.short {
+            width: 60%;
+        }
+
+        @keyframes skelPulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.4
+            }
+        }
+
+        /* ¦¦ Sidebar ¦¦ */
+
+        .sidebar-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-size: 0.83rem;
+            color: var(--text-muted);
+        }
+
+        .detail-val {
+            font-size: 0.83rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .detail-val.green {
+            color: #16a34a;
+        }
+
+        /* ¦¦ Responsive ¦¦ */
+        @media(max-width:900px) {
+            .egitim-hero-inner {
+                grid-template-columns: 1fr;
+            }
+
+            .egitim-body {
+                grid-template-columns: 1fr;
+            }
+
+            .egitim-video-card {
+                max-width: 100%;
+            }
+        }
+
+        @media(max-width:600px) {
+            .egitim-hero {
+                padding: 24px 0 20px;
+            }
+
+            .egitim-hero-inner {
+                padding: 0 16px;
+                gap: 24px;
+            }
+
+            .egitim-hero h1 {
+                font-size: 1.15rem;
+                margin-bottom: 14px;
+            }
+
+            .egitim-hero p {
+                display: none;
+            }
+
+            .egitim-badges {
+                margin-bottom: 12px;
+                gap: 6px;
+            }
+
+            .ebadge {
+                padding: 3px 10px;
+                font-size: 0.68rem;
+            }
+
+            .egitim-btns {
+                gap: 10px;
+                width: 100%;
+            }
+
+            .egitim-btns .btn-primary,
+            .egitim-btns .btn-outline {
+                padding: 11px 16px;
+                font-size: 0.82rem;
+                flex: 0 0 100%;
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .egitim-video-card {
+                border-radius: 10px;
+            }
+
+            .egitim-video-label {
+                padding: 10px 14px;
+                font-size: 0.72rem;
+            }
+
+            .egitim-body {
+                padding: 16px 6px;
+                gap: 16px;
+            }
+
+            .lesson-list-dyn {
+                gap: 0;
+            }
+
+            .lesson-item {
+                padding: 8px 0;
+                gap: 4px;
+                border-radius: 0;
+                border: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .lesson-item:hover {
+                background: transparent;
+                border-color: var(--border);
+            }
+
+            .lesson-item.active {
+                border-color: var(--border);
+            }
+
+            .lesson-row {
+                gap: 6px;
+            }
+
+            .lesson-num {
+                width: 16px;
+                font-size: 0.78rem;
+            }
+
+            .lesson-thumb-sm {
+                width: 140px;
+                height: 84px;
+                border-radius: 8px;
+            }
+
+            .lesson-info-dyn h4 {
+                font-size: 0.8rem;
+                margin-bottom: 0;
+            }
+
+            .lesson-notes-btn {
+                display: none;
+            }
+
+            .egitim-tabs {
+                margin-bottom: 16px;
+            }
+
+            .etab {
+                flex: 1;
+                text-align: center;
+                padding: 12px 0;
+                font-size: 0.85rem;
+            }
+
+            .sidebar-card {
+                padding: 14px 12px;
+                border-radius: 10px;
+                margin-bottom: 12px;
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .sidebar-card h3 {
+                font-size: 0.88rem;
+                margin-bottom: 12px;
+                gap: 6px;
+            }
+
+            .sidebar-card img[style*="border-radius:50%"] {
+                width: 48px !important;
+                height: 48px !important;
+            }
+
+            .sidebar-card div[style*="font-size:1.8rem"] {
+                width: 48px !important;
+                height: 48px !important;
+                font-size: 1.4rem !important;
+            }
+
+            .sidebar-card div[style*="font-size:0.95rem"] {
+                font-size: 0.85rem !important;
+            }
+
+            .sidebar-card .exp-btn {
+                font-size: 0.7rem !important;
+                padding: 5px 10px !important;
+            }
+
+            .detail-row {
+                padding: 8px 0;
+            }
+
+            .detail-label,
+            .detail-val {
+                font-size: 0.78rem;
+            }
+        }
+    

@@ -1,0 +1,239 @@
+        /* ── Hoca Hero ── */
+        .hoca-hero {
+            background: linear-gradient(135deg, #0b1629 0%, #1e3a8a 60%, #0b1629 100%);
+            padding: calc(var(--nav-h, 64px) + 48px) 0 48px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hoca-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 50%, rgba(37,99,235,.22) 0%, transparent 65%);
+        }
+        .hoca-hero-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        .hoca-photos-group {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+        .hoca-photo-wrap {
+            flex-shrink: 0;
+            position: relative;
+        }
+        .hoca-logo-circle {
+            flex-shrink: 0;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: #fff;
+            border: 4px solid rgba(255,255,255,.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,.4);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hoca-logo-circle img {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            border-radius: 0;
+            border: none;
+            box-shadow: none;
+        }
+        @media (max-width: 640px) {
+            .hoca-logo-circle { width: 72px; height: 72px; }
+            .hoca-logo-circle img { width: 48px; height: 48px; }
+        }
+        .hoca-photo-wrap img {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255,255,255,.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,.4);
+        }
+        .hoca-photo-fallback {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.1);
+            border: 4px solid rgba(255,255,255,.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+        }
+        .hoca-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .hoca-subject-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 50px;
+            background: rgba(59,130,246,.18);
+            border: 1px solid rgba(59,130,246,.3);
+            color: #93c5fd;
+            font-size: .75rem;
+            font-weight: 700;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .hoca-hero h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+            margin-bottom: 18px;
+            letter-spacing: -.02em;
+        }
+        .hoca-socials {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .hoca-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: .85rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: opacity .2s, transform .15s;
+        }
+        .hoca-btn:hover { opacity: .88; transform: translateY(-1px); }
+        .hoca-btn-yt { background: #ff0000; color: #fff; }
+        .hoca-btn-ig { background: radial-gradient(circle at 30% 110%, #f09433, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888); color: #fff; }
+        @media (max-width: 640px) {
+            .hoca-hero-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .hoca-photo-wrap img, .hoca-photo-fallback { width: 96px; height: 96px; font-size: 2.4rem; }
+            .hoca-logo-circle { width: 96px; height: 96px; }
+            .hoca-logo-circle img { width: 60px; height: 60px; }
+            .hoca-hero h1 { font-size: 1.5rem; }
+        }
+
+        /* ── Hoca Gövde ── */
+        .hoca-body {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 48px 24px 64px;
+        }
+        .hoca-section-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hoca-section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: var(--border);
+            border-radius: 2px;
+        }
+        .hoca-section { margin-bottom: 56px; }
+
+        /* Camp cards reuse from main site */
+        .hoca-camps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 20px;
+        }
+        @media (max-width: 600px) {
+            .hoca-camps-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+        }
+
+        /* Book cards reuse */
+        .hoca-books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        @media (max-width: 600px) {
+            .hoca-books-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+        }
+        .hoca-book-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: transform .2s, box-shadow .2s;
+        }
+        .hoca-book-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+        .hoca-book-cover {
+            width: 100%;
+            aspect-ratio: 3/4;
+            object-fit: cover;
+            display: block;
+            background: var(--bg-secondary);
+        }
+        .hoca-book-body {
+            padding: 14px 14px 16px;
+        }
+        .hoca-book-body h4 {
+            font-size: .9rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .hoca-book-btns { display: flex; flex-direction: column; gap: 7px; }
+        .hoca-book-btns a {
+            display: block;
+            text-align: center;
+            padding: 8px 12px;
+            border-radius: 7px;
+            font-size: .8rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: opacity .2s;
+        }
+        .hoca-book-btns a:hover { opacity: .85; }
+        .btn-buy { background: #16a34a; color: #fff; }
+        .btn-demo { background: rgba(37,99,235,.12); color: #3b82f6; border: 1px solid rgba(37,99,235,.25); }
+
+        /* Loading skeleton */
+        .hoca-skeleton {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 20px;
+        }
+        .hoca-skel-card {
+            border-radius: 14px;
+            overflow: hidden;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+        }
+        .hoca-skel-thumb { width: 100%; aspect-ratio: 16/9; background: var(--border); animation: skelPulse 1.4s ease-in-out infinite; }
+        .hoca-skel-body { padding: 14px; }
+        .hoca-skel-line { height: 12px; border-radius: 6px; background: var(--border); animation: skelPulse 1.4s ease-in-out infinite; margin-bottom: 8px; }
+        .hoca-skel-line.short { width: 60%; }
+        @keyframes skelPulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+        /* Not-found */
+        .hoca-not-found {
+            text-align: center;
+            padding: 80px 24px;
+            color: var(--text-muted);
+        }
+        .hoca-not-found h2 { font-size: 1.5rem; margin-bottom: 12px; color: var(--text); }
+        .hoca-not-found a { color: var(--primary); text-decoration: none; }

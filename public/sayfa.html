@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <!-- dp-seo-injector -->
+    <script>
+    (function () {
+        try {
+            var s = JSON.parse(localStorage.getItem('dp_seo_settings') || '{}');
+            if (!s || !Object.keys(s).length) return;
+            var h = document.head;
+            
+            // Mevcut meta etiketini bulup günceller, yoksa yenisini oluşturur
+            function up(n, c, isProp) {
+                if(!c) return;
+                var sel = isProp ? 'meta[property="' + n + '"]' : 'meta[name="' + n + '"]';
+                var el = document.querySelector(sel);
+                if (el) { el.content = c; } 
+                else {
+                    var m = document.createElement('meta');
+                    isProp ? m.setAttribute('property', n) : m.name = n;
+                    m.content = c;
+                    h.appendChild(m);
+                }
+            }
+            
+            function addScript(code) { var t = document.createElement('script'); t.textContent = code; h.appendChild(t); }
+            function addSrcScript(src) { var t = document.createElement('script'); t.async = true; t.src = src; h.appendChild(t); }
+            function upFavicon(url) {
+                if (!url) return;
+                ['icon', 'shortcut icon', 'apple-touch-icon'].forEach(function (rel) {
+                    var el = document.querySelector('link[rel="' + rel + '"]');
+                    if (!el) {
+                        el = document.createElement('link');
+                        el.setAttribute('rel', rel);
+                        h.appendChild(el);
+                    }
+                    el.setAttribute('href', url);
+                });
+            }
+            
+            // Temel SEO & Open Graph
+            if (s.title) document.title = s.title;
+            up('description', s.desc, false);
+            up('keywords', s.keywords, false);
+            up('author', s.author, false);
+            up('og:site_name', s.siteName, true);
+            up('og:title', s.ogTitle, true);
+            up('og:description', s.ogDesc, true);
+            up('og:image', s.ogImage, true);
+            upFavicon(s.faviconUrl || s.iconUrl);
+
+            // Dinamik sayfalarda canonical URL'yi mevcut adresle eşitle
+            var c = document.querySelector('link[rel="canonical"]');
+            if (!c) {
+                c = document.createElement('link');
+                c.setAttribute('rel', 'canonical');
+                h.appendChild(c);
+            }
+            c.setAttribute('href', window.location.href.split('#')[0]);
+
+            // Doğrulama & Analitik
+            if (s.googleVerify) up('google-site-verification', s.googleVerify, false);
+            if (s.bingVerify) up('msvalidate.01', s.bingVerify, false);
+            if (s.yandexVerify) up('yandex-verification', s.yandexVerify, false);
+            
+            if (s.ga4Id) { addSrcScript('https://www.googletagmanager.com/gtag/js?id=' + s.ga4Id); addScript('window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","' + s.ga4Id + '");'); }
+            if (s.gtmId) { addScript('(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src="https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);})(window,document,"script","dataLayer","' + s.gtmId + '");'); }
+            if (s.fbPixelId) { addScript('!function(f,b,e,v,n,t,s2){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s2=b.getElementsByTagName(e)[0];s2.parentNode.insertBefore(t,s2)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","' + s.fbPixelId + '");fbq("track","PageView");'); }
+            
+            // Özel Kodlar
+        } catch (e) { }
+    })();
+</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <title>Ders Platosu</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://dersplatosu.com/" />
+    <meta property="og:title" content="Ders Platosu - TYT AYT Ücretsiz Eğitim Platformu" />
+    <meta property="og:description" content="Türkiye'nin en kapsamlı TYT AYT ücretsiz online eğitim platformu. Sınava hazırlık kampları ve soru çözümleri." />
+    <meta property="og:image" content="https://i.hizliresim.com/ag3gf4d.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:site_name" content="Ders Platosu" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Ders Platosu - TYT AYT Ücretsiz Eğitim Platformu" />
+    <meta name="twitter:description" content="Türkiye'nin en kapsamlı TYT AYT ücretsiz online eğitim platformu. Sınava hazırlık kampları ve soru çözümleri." />
+    <meta name="twitter:image" content="https://i.hizliresim.com/ag3gf4d.png" />
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <!-- Marked.js: markdown → HTML dönüşümü için -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        .page-hero {
+            padding: calc(var(--nav-h) + 40px) 0 32px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-hero h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .page-hero p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .page-body {
+            padding: 48px 0 80px;
+        }
+
+        .page-content {
+            max-width: 820px;
+        }
+
+        .page-content h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 32px 0 12px;
+            color: var(--text);
+        }
+
+        .page-content h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 24px 0 8px;
+            color: var(--text);
+        }
+
+        .page-content p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .page-content ul,
+        .page-content ol {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 16px;
+            padding-left: 24px;
+        }
+
+        .page-content a {
+            color: var(--primary);
+        }
+
+        .page-content strong {
+            color: var(--text);
+        }
+
+        .page-content hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 24px 0;
+        }
+
+        .page-loading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+            padding: 48px 0;
+        }
+
+        .page-error {
+            padding: 48px 0;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .page-error h2 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="https://i.hizliresim.com/ag3gf4d.png" class="logo-img" alt="Ders Platosu">
+                <span class="logo-text">Ders Platosu</span>
+            </a>
+            <ul class="nav-links">
+                <!-- Navigasyon linkleri main.js ile dinamik olarak yüklenecek -->
+            </ul>
+            <div class="nav-actions">
+                <button class="btn-icon" id="themeToggle" title="Tema değiştir">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="5" />
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                    </svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" style="display:none">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                    </svg>
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <!-- Mobil menü linkleri main.js ile dinamik olarak yüklenecek -->
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="page-hero" id="pageHero">
+        <div class="container">
+            <h1 id="pageTitle">Yükleniyor...</h1>
+        </div>
+    </div>
+
+    <!-- İÇERİK -->
+    <div class="page-body">
+        <div class="container">
+            <div class="page-content" id="pageContent">
+                <div class="page-loading">⏳ Sayfa yükleniyor...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Footer alanı main.js ile dinamik olarak yüklenecek -->
+            </div>
+            <div class="footer-bottom">
+                <p>© Tüm hakları saklıdır. <a href="https://kvl.com.tr/" target="_blank" rel="noopener">KVL Digital</a> Tarafından Geliştirilmiştir.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js?v=999"></script>
+    <script>
+        function escapeHtml(value) {
+            return String(value == null ? '' : value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // URL'den slug oku: hem /sayfa/slug hem de ?slug= formatını destekle
+        const params = new URLSearchParams(window.location.search);
+        let slug = params.get('slug');
+        if (!slug) {
+            const pathMatch = window.location.pathname.match(/\/sayfa\/([^\/]+)$/);
+            if (pathMatch) slug = decodeURIComponent(pathMatch[1]);
+        }
+        // Eski ?slug= formatındaysa URL'yi temiz path'e çevir
+        if (slug && window.location.search.includes('slug=')) {
+            history.replaceState(null, '', '/sayfa/' + slug);
+        }
+
+        async function loadPage() {
+            const titleEl = document.getElementById('pageTitle');
+            const contentEl = document.getElementById('pageContent');
+
+            if (!slug) {
+                titleEl.textContent = 'Sayfa Bulunamadı';
+                contentEl.innerHTML = '<div class="page-error"><h2>Geçersiz bağlantı.</h2><p>Lütfen ana sayfaya dönün.</p></div>';
+                return;
+            }
+
+            try {
+                const res = await fetch(
+                    `${STRAPI_URL}/pages?filters[slug][$eq]=${slug}&populate=*`,
+                    { headers: strapiHeaders }
+                );
+                const data = await res.json();
+                const page = data.data?.[0];
+
+                if (!page) {
+                    titleEl.textContent = 'Sayfa Bulunamadı';
+                    document.title = 'Sayfa Bulunamadı - Ders Platosu';
+                    contentEl.innerHTML = `
+                        <div class="page-error">
+                            <h2>😕 Bu sayfa bulunamadı.</h2>
+                            <p>Aradığınız sayfa mevcut değil veya kaldırılmış olabilir.</p>
+                            <a href="/" class="btn-primary" style="margin-top:20px;display:inline-block">Ana Sayfaya Dön</a>
+                        </div>`;
+                    return;
+                }
+
+                const attr = page.attributes || page;
+                const title = attr.title || 'Sayfa';
+                const content = attr.content || '';
+
+                // Başlık güncelle
+                titleEl.textContent = title;
+                document.title = `${title} - Ders Platosu`;
+
+                // Markdown render sonrasında sanitize ederek XSS riskini düşür.
+                const renderedHtml = (typeof marked !== 'undefined')
+                    ? marked.parse(content)
+                    : `<p>${escapeHtml(content).replace(/\n/g, '<br>')}</p>`;
+                contentEl.innerHTML = (typeof DOMPurify !== 'undefined')
+                    ? DOMPurify.sanitize(renderedHtml)
+                    : `<p>${escapeHtml(content).replace(/\n/g, '<br>')}</p>`;
+
+            } catch (err) {
+                // Sessiz fallback: production'da detay log basma.
+                titleEl.textContent = 'Hata';
+                contentEl.innerHTML = '<div class="page-error"><h2>Sayfa yüklenemedi.</h2><p>Lütfen daha sonra tekrar deneyin.</p></div>';
+            }
+        }
+
+        loadPage();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,3746 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Ders Platosu – Admin</title>
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <link rel="canonical" href="https://dersplatosu.com/admin" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
+    rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh
+    }
+
+    /* LOGIN */
+    #loginScreen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f172a, #1e3a5f)
+    }
+
+    .lcard {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 380px;
+      text-align: center
+    }
+
+    .lcard h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 8px 0 4px
+    }
+
+    .lcard p {
+      color: #64748b;
+      font-size: .84rem;
+      margin-bottom: 24px
+    }
+
+    .lcard em {
+      font-size: 2rem
+    }
+
+    .lerr {
+      color: #f87171;
+      font-size: .82rem;
+      margin-top: 8px;
+      display: none
+    }
+
+    /* FORM */
+    .fg {
+      margin-bottom: 14px;
+      text-align: left
+    }
+
+    .fg label {
+      display: block;
+      font-size: .75rem;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: .04em
+    }
+
+    .fg input,
+    .fg select,
+    .fg textarea {
+      width: 100%;
+      padding: 9px 12px;
+      background: #0f172a;
+      border: 1.5px solid #334155;
+      border-radius: 9px;
+      color: #f1f5f9;
+      font-size: .88rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s
+    }
+
+    .fg input:focus,
+    .fg select:focus,
+    .fg textarea:focus {
+      border-color: #3b82f6
+    }
+
+    .fg textarea {
+      resize: vertical;
+      min-height: 72px
+    }
+
+    .fg small {
+      color: #64748b;
+      font-size: .72rem;
+      margin-top: 3px;
+      display: block
+    }
+
+    .g2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 18px;
+      border-radius: 9px;
+      font-size: .86rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all .2s;
+      font-family: inherit
+    }
+
+    .btn-primary {
+      background: #3b82f6;
+      color: #fff
+    }
+
+    .btn-primary:hover {
+      background: #2563eb
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: #fff
+    }
+
+    .btn-danger:hover {
+      background: #dc2626
+    }
+
+    .btn-success {
+      background: #10b981;
+      color: #fff
+    }
+
+    .btn-success:hover {
+      background: #059669
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #94a3b8;
+      border: 1.5px solid #334155
+    }
+
+    .btn-ghost:hover {
+      border-color: #64748b;
+      color: #e2e8f0
+    }
+
+    .btn-sm {
+      padding: 5px 11px;
+      font-size: .78rem
+    }
+
+    .btn-full {
+      width: 100%;
+      justify-content: center
+    }
+
+    /* APP */
+    #app {
+      display: none;
+      height: 100vh;
+      overflow: hidden
+    }
+
+    .layout {
+      display: flex;
+      height: 100%
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 230px;
+      background: #1e293b;
+      border-right: 1px solid #334155;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow-y: auto
+    }
+
+    .sb-brand {
+      padding: 18px 14px 14px;
+      border-bottom: 1px solid #334155
+    }
+
+    .sb-brand strong {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #fff;
+      display: block
+    }
+
+    .sb-brand span {
+      font-size: .7rem;
+      color: #64748b
+    }
+
+    .sb-nav {
+      padding: 10px 6px;
+      flex: 1
+    }
+
+    .sb-sec {
+      font-size: .63rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #475569;
+      padding: 8px 8px 5px;
+      margin-top: 6px
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 10px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: .86rem;
+      font-weight: 500;
+      color: #94a3b8;
+      transition: all .2s;
+      margin-bottom: 2px
+    }
+
+    .nav-item:hover {
+      background: #334155;
+      color: #e2e8f0
+    }
+
+    .nav-item.active {
+      background: #1d4ed8;
+      color: #fff
+    }
+
+    .sb-foot {
+      padding: 10px 6px;
+      border-top: 1px solid #334155
+    }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      background: #0f172a
+    }
+
+    .ph {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid #1e293b;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0f172a;
+      position: sticky;
+      top: 0;
+      z-index: 10
+    }
+
+    .ph h2 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #fff
+    }
+
+    .ph p {
+      font-size: .8rem;
+      color: #64748b;
+      margin-top: 1px
+    }
+
+    .pb {
+      padding: 20px 24px 60px
+    }
+
+    /* TABLE */
+    .tcard {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 13px;
+      overflow: hidden
+    }
+
+    .ttbar {
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155
+    }
+
+    .ttbar h3 {
+      font-size: .95rem;
+      font-weight: 700;
+      color: #fff
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    th {
+      padding: 9px 14px;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: #64748b;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+      background: #162032
+    }
+
+    td {
+      padding: 11px 14px;
+      font-size: .84rem;
+      color: #cbd5e1;
+      border-bottom: 1px solid #1e293b;
+      vertical-align: middle
+    }
+
+    tr:last-child td {
+      border-bottom: none
+    }
+
+    tr:hover td {
+      background: rgba(59, 130, 246, .04)
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 9px;
+      border-radius: 50px;
+      font-size: .7rem;
+      font-weight: 600
+    }
+
+    .bg {
+      background: rgba(16, 185, 129, .15);
+      color: #34d399
+    }
+
+    .bb {
+      background: rgba(59, 130, 246, .15);
+      color: #60a5fa
+    }
+
+    .bo {
+      background: rgba(245, 158, 11, .15);
+      color: #fbbf24
+    }
+
+    .td-act {
+      display: flex;
+      gap: 5px
+    }
+
+    .cthumb {
+      width: 32px;
+      height: 44px;
+      object-fit: cover;
+      border-radius: 5px;
+      background: #334155
+    }
+
+    /* MODAL */
+    .moverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .7);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px
+    }
+
+    .moverlay.open {
+      display: flex
+    }
+
+    .modal {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 18px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 92vh;
+      overflow-y: auto;
+      padding: 26px
+    }
+
+    .mh {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px
+    }
+
+    .mh h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff
+    }
+
+    .mcl {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #334155;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s
+    }
+
+    .mcl:hover {
+      background: #475569;
+      color: #fff
+    }
+
+    .mact {
+      display: flex;
+      gap: 9px;
+      margin-top: 20px;
+      justify-content: flex-end
+    }
+
+    /* SOLUTIONS */
+    .book-sel {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 13px;
+      padding: 18px;
+      margin-bottom: 16px
+    }
+
+    .ch-item {
+      background: #1e293b;
+      border: 1.5px solid #334155;
+      border-radius: 11px;
+      margin-bottom: 9px;
+      overflow: hidden
+    }
+
+    .ch-row {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 13px 15px;
+      cursor: pointer;
+      transition: background .15s
+    }
+
+    .ch-row:hover {
+      background: #162032
+    }
+
+    .ch-row.open {
+      background: #1a2d4a;
+      border-bottom: 1px solid #334155
+    }
+
+    .ch-num {
+      font-size: .78rem;
+      font-weight: 800;
+      color: #60a5fa;
+      min-width: 22px
+    }
+
+    .ch-name {
+      flex: 1;
+      font-size: .9rem;
+      font-weight: 600;
+      color: #e2e8f0
+    }
+
+    .ch-meta {
+      font-size: .73rem;
+      color: #475569;
+      margin-right: 6px
+    }
+
+    .ch-acts {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0
+    }
+
+    .arrow {
+      transition: transform .25s;
+      color: #475569;
+      font-size: .82rem
+    }
+
+    .ch-row.open .arrow {
+      transform: rotate(90deg)
+    }
+
+    .tests-box {
+      display: none;
+      padding: 0 15px 12px;
+      border-top: 1px solid #334155
+    }
+
+    .tests-box.open {
+      display: block
+    }
+
+    .test-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px;
+      background: #0f172a;
+      border-radius: 8px;
+      margin-top: 7px
+    }
+
+    .test-info {
+      flex: 1
+    }
+
+    .test-title {
+      font-size: .82rem;
+      color: #cbd5e1;
+      font-weight: 500
+    }
+
+    .test-sub {
+      font-size: .72rem;
+      color: #64748b;
+      margin-top: 1px
+    }
+
+    /* MISC */
+    .empty {
+      text-align: center;
+      padding: 48px 20px;
+      color: #475569
+    }
+
+    .empty big {
+      font-size: 2.5rem;
+      display: block;
+      margin-bottom: 12px
+    }
+
+    .loading {
+      text-align: center;
+      padding: 36px;
+      color: #475569;
+      font-size: .86rem
+    }
+
+    .spin {
+      display: inline-block;
+      width: 22px;
+      height: 22px;
+      border: 3px solid #334155;
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin-bottom: 8px
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .notify {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      padding: 11px 18px;
+      border-radius: 11px;
+      font-size: .84rem;
+      font-weight: 600;
+      z-index: 9999;
+      transform: translateY(-80px);
+      opacity: 0;
+      transition: all .3s
+    }
+
+    .notify.show {
+      transform: translateY(0);
+      opacity: 1
+    }
+
+    .ns {
+      background: #059669;
+      color: #fff
+    }
+
+    .ne {
+      background: #dc2626;
+      color: #fff
+    }
+
+    .cb-list {
+      max-height: 150px;
+      overflow-y: auto;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 8px;
+    }
+
+    .cb-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .cb-list::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+    }
+
+    .cb-list::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 4px;
+    }
+
+    .cb-label {
+      display: flex;
+      align-items: center;
+      padding: 6px 8px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.2s;
+      margin-bottom: 2px;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    .cb-label:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .cb-label input[type="checkbox"] {
+      margin: 0 10px 0 0;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      accent-color: #3b82f6;
+    }
+
+    .ms {
+      font-family: 'Material Symbols Outlined';
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1;
+      vertical-align: middle;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .ms-lg {
+      font-size: 28px;
+    }
+
+    .ms-xl {
+      font-size: 40px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="loginScreen">
+    <div class="lcard">
+      <span class="ms ms-xl" style="color:#6366f1">school</span>
+      <h1>Ders Platosu</h1>
+      <p>Admin Paneli</p>
+      <div class="fg"><label>E-posta veya Kullanıcı Adı</label><input type="text" id="lIdentifier" placeholder="admin veya admin@site.com" autocomplete="username" /></div>
+      <div class="fg"><label>Şifre</label><input type="password" id="lPass" placeholder="••••••••" /></div>
+      <button class="btn btn-primary btn-full" onclick="doLogin()">Giriş Yap</button>
+      <p class="lerr" id="lErr">Kullanıcı adı/e-posta veya şifre hatalı.</p>
+    </div>
+  </div>
+
+  <div id="app">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sb-brand"><strong><span class="ms" style="vertical-align:middle;margin-right:6px">school</span>Ders
+            Platosu</strong><span>Admin Paneli</span></div>
+        <nav class="sb-nav">
+          <div class="sb-sec">İçerik</div>
+          <div class="nav-item active" onclick="goTo('camps')"><span class="ms">camping</span> Kamplar</div>
+          <div class="nav-item" onclick="goTo('books')"><span class="ms">menu_book</span> Kitaplar</div>
+          <div class="nav-item" onclick="goTo('solutions')"><span class="ms">play_circle</span> Soru Çözümleri</div>
+          <div class="nav-item" onclick="goTo('instructors')"><span class="ms">supervisor_account</span> Eğitimciler
+          </div>
+          <div class="sb-sec">Kategoriler</div>
+          <div class="nav-item" onclick="goTo('campcats')"><span class="ms">local_offer</span> Kamp Kategorileri</div>
+          <div class="nav-item" onclick="goTo('bookcats')"><span class="ms">folder_open</span> Kitap Kategorileri</div>
+          <div class="nav-item" onclick="goTo('subjects')"><span class="ms">book</span> Dersler</div>
+          <div class="sb-sec">Site</div>
+          <div class="nav-item" onclick="goTo('settings')"><span class="ms">settings</span> Ayarlar</div>
+        </nav>
+        <div class="sb-foot">
+          <button class="btn btn-ghost btn-sm btn-full" onclick="doLogout()"><span class="ms">logout</span>
+            Çıkış</button>
+        </div>
+      </aside>
+      <main class="main" id="main">
+        <div class="loading">
+          <div class="spin"></div><br>Yükleniyor…
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="moverlay" id="mo" onclick="closeMO(event)">
+    <div class="modal" id="mbox">
+      <div class="mh">
+        <h3 id="mtitle">Form</h3><button class="mcl" onclick="closeM()">✕</button>
+      </div>
+      <div id="mbody"></div>
+      <div class="mact" id="mact"></div>
+    </div>
+  </div>
+  <div class="notify" id="notify"></div>
+
+  <script>
+    /* ══ CONFIG ══ */
+    const API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+      ? 'http://localhost:1337/api'
+      : '/api';
+    const SITEMAP_API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+      ? 'http://localhost:3739'
+      : '/sitemap-api';
+    const SITEMAP_CLIENT_KEY = window.__SITEMAP_API_KEY__ || '';
+    let ADMIN_API_TOKEN = sessionStorage.getItem('dp_api_token') || '';
+    /* ══ AUTH ══ */
+
+    async function doLogin() {
+      const identifier = document.getElementById('lIdentifier').value.trim();
+      const p = document.getElementById('lPass').value;
+      const e = document.getElementById('lErr');
+      e.style.display = 'none';
+
+      if (!identifier || !p) {
+        e.textContent = 'Kullanıcı adı/e-posta ve şifre zorunlu.';
+        e.style.display = 'block';
+        return;
+      }
+
+      try {
+        const r = await fetch(API + '/auth/local', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier: identifier, password: p })
+        });
+        const d = await r.json();
+
+        if (!r.ok || !d.jwt) {
+          e.textContent = d?.error?.message || 'Kullanıcı adı/e-posta veya şifre hatalı.';
+          e.style.display = 'block';
+          return;
+        }
+
+        sessionStorage.setItem('dp_auth', '1');
+        sessionStorage.setItem('dp_api_token', d.jwt);
+        sessionStorage.setItem('dp_auth_identifier', identifier);
+        ADMIN_API_TOKEN = d.jwt;
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        goTo('camps');
+      } catch (err) {
+        e.textContent = 'Giriş sırasında bağlantı hatası oluştu.';
+        e.style.display = 'block';
+      }
+    }
+    function doLogout() {
+      sessionStorage.removeItem('dp_auth');
+      sessionStorage.removeItem('dp_api_token');
+      sessionStorage.removeItem('dp_auth_identifier');
+      ADMIN_API_TOKEN = '';
+      document.getElementById('app').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+    }
+    if (sessionStorage.getItem('dp_auth') && sessionStorage.getItem('dp_api_token')) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+    }
+    document.getElementById('lPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+    document.getElementById('lIdentifier').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+    /* ══ API ══ */
+    function ensureApiToken() {
+      ADMIN_API_TOKEN = sessionStorage.getItem('dp_api_token') || ADMIN_API_TOKEN || '';
+      if (!ADMIN_API_TOKEN) {
+        notify('Oturum gecersiz. E-posta ve sifre ile tekrar giris yapin.', 'e');
+        throw new Error('Missing API token');
+      }
+      return ADMIN_API_TOKEN;
+    }
+    function buildAuthHeaders() {
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + ensureApiToken()
+      };
+    }
+    async function get(path) { const r = await fetch(API + path, { headers: buildAuthHeaders() }); return r.json(); }
+    async function post(path, body) {
+      const payload = Object.assign({}, body, { publishedAt: new Date().toISOString() });
+      const r = await fetch(API + path, { method: 'POST', headers: buildAuthHeaders(), body: JSON.stringify({ data: payload }) });
+      return r.json();
+    }
+    async function put(path, body) { const r = await fetch(API + path, { method: 'PUT', headers: buildAuthHeaders(), body: JSON.stringify({ data: body }) }); return r.json(); }
+    async function del(path) { return fetch(API + path, { method: 'DELETE', headers: buildAuthHeaders() }); }
+
+    /* ══ HELPERS ══ */
+    const $ = id => document.getElementById(id);
+    const gv = id => ($(id)?.value || '').trim();
+    const esc = s => String(s || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    function safeHttpUrl(url, fallback = '#') {
+      const raw = String(url || '').trim();
+      if (!raw) return fallback;
+      try {
+        const u = new URL(raw, window.location.origin);
+        return (u.protocol === 'http:' || u.protocol === 'https:') ? u.href : fallback;
+      } catch (e) {
+        return fallback;
+      }
+    }
+    function safeAssetUrl(url, fallback = '') {
+      const raw = String(url || '').trim();
+      if (!raw) return fallback;
+      if (raw.startsWith('/')) return raw;
+      return safeHttpUrl(raw, fallback);
+    }
+    function a(item) { return item; } // Strapi v5: no attributes wrapper
+    function setMain(h) { $('main').innerHTML = h; }
+    function loading() { setMain('<div class="loading"><div class="spin"></div><br>Yükleniyor…</div>'); }
+    function ph(icon, title, desc, btn = '') {
+      return `<div class="ph"><div><h2>${icon} ${title}</h2><p>${desc}</p></div><div>${btn}</div></div><div class="pb">`;
+    }
+    function notify(msg, t = 's') {
+      const n = $('notify'); n.textContent = msg; n.className = 'notify ' + (t === 's' ? 'ns' : 'ne') + ' show';
+      setTimeout(() => n.classList.remove('show'), 3000);
+    }
+    function openM(title, body, acts) {
+      $('mtitle').textContent = title; $('mbody').innerHTML = body; $('mact').innerHTML = acts;
+      $('mo').classList.add('open');
+    }
+    function closeM() { $('mo').classList.remove('open'); }
+    function closeMO(e) { if (e.target === $('mo')) closeM(); }
+    function goTo(p) {
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => { if (el.getAttribute('onclick')?.includes("'" + p + "'")) el.classList.add('active'); });
+      ({
+        camps: renderCamps, books: renderBooks, pages: renderPages, solutions: renderSolutions,
+        instructors: renderInstructors, campcats: () => renderList('categories', 'campcats', 'Kamp Kategorileri'),
+        bookcats: () => renderList('book-categories', 'bookcats', 'Kitap Kategorileri'),
+        subjects: () => renderList('subjects', 'subjects', 'Dersler'),
+        siteedit: renderSiteEdit,
+        'nav-footer': renderNavFootEdit,
+        settings: renderSettings, 'settings-seo': renderSettingsSEO, 'settings-img-alts': renderImgAlts
+      })[p]?.();
+    }
+
+    /* ══ DELETE ══ */
+    async function delItem(col, docId, refresh) {
+      if (!confirm('Silmek istediğinize emin misiniz?')) return;
+      await del('/' + col + '/' + docId);
+      notify('Silindi ✓'); refresh();
+    }
+
+    /* ════════════════════
+       KAMPLAR
+    ════════════════════ */
+    var campLessons = []; // lesson rows in editor
+    var campItems = [];
+    var campDragIdx = null;
+
+    function sortBySavedIdOrder(items, orderedIds, getId, fallbackCompare) {
+      const idOrder = new Map((Array.isArray(orderedIds) ? orderedIds : []).map((id, idx) => [String(id), idx]));
+      return (items || []).slice().sort((a, b) => {
+        const aId = String(getId(a) || '');
+        const bId = String(getId(b) || '');
+        const ai = idOrder.has(aId) ? idOrder.get(aId) : -1;
+        const bi = idOrder.has(bId) ? idOrder.get(bId) : -1;
+        if (ai !== -1 && bi !== -1) return ai - bi;
+        if (ai !== -1) return -1;
+        if (bi !== -1) return 1;
+        return fallbackCompare ? fallbackCompare(a, b) : 0;
+      });
+    }
+
+    async function renderCamps() {
+      loading();
+      let d = await get('/camps?populate[instructors][fields][0]=name&populate[categories][fields][0]=name&pagination[pageSize]=100');
+      if (d?.error) {
+        d = await get('/camps?populate[instructors][fields][0]=name&populate[categories][fields][0]=name&sort=createdAt:desc&pagination[pageSize]=100');
+      }
+      const shared = await fetchSharedNavFootConfig();
+      const campOrderIds = shared?.ordering?.campIds || [];
+      campItems = sortBySavedIdOrder(
+        d.data || [],
+        campOrderIds,
+        (item) => item.documentId || item.id,
+        (x, y) => {
+          const xd = new Date(x.createdAt || 0).getTime();
+          const yd = new Date(y.createdAt || 0).getTime();
+          if (yd !== xd) return yd - xd;
+          return String(x.title || '').localeCompare(String(y.title || ''), 'tr');
+        }
+      );
+      const rows = campRowsHtml();
+      setMain(ph('<span class="ms">camping</span>', 'Kamplar', 'Sürükleyerek sıralayın ve ardından Kaydet butonuna basın', `<button class="btn btn-success" onclick="saveCampOrder()" style="margin-right:8px"><span class="ms">save</span> Sıralamayı Kaydet</button><button class="btn btn-primary" onclick="editCamp(null)"><span class="ms">add</span> Yeni Kamp</button>`) + `
+    <div class="tcard">
+      <div class="ttbar"><h3>${campItems.length} Kamp</h3><small style="color:#64748b;font-size:.75rem"><span class="ms" style="font-size:14px;vertical-align:middle">drag_indicator</span> satırı sürükle → sıra değişir</small></div>
+      ${campItems.length ? `<table><thead><tr><th style="width:28px"></th><th>Başlık / Slug</th><th>Eğitimci</th><th>Kategori</th><th style="text-align:center">Sıra</th><th>İşlem</th></tr></thead><tbody id="campTbody">${rows}</tbody></table>`
+          : '<div class="empty"><span class="ms ms-xl" style="display:block;margin-bottom:12px">camping</span>Henüz kamp yok</div>'}
+    </div></div>`);
+    }
+
+    function campRowsHtml() {
+      return campItems.map((item, i) => {
+        // Strapi v5: relations are direct arrays, use documentId for CRUD
+        const cats = (item.categories || []).map(c => c.name).join(', ') || '—';
+        const ins = (item.instructors || []).map(c => c.name).join(', ') || '—';
+        const docId = item.documentId || item.id;
+        return `<tr id="camp-row-${i}" draggable="true"
+      ondragstart="campDragStart(${i})"
+      ondragover="campDragOver(event,${i})"
+      ondragleave="campDragLeave(${i})"
+      ondrop="campDrop(event,${i})"
+      style="cursor:grab;transition:all .15s">
+      <td style="width:24px;color:#475569;font-size:1.1rem;padding-right:0;user-select:none">&#9776;</td>
+      <td><strong style="color:#e2e8f0">${esc(item.title || '—')}</strong><br><small style="color:#475569">${esc(item.slug || '')}</small></td>
+      <td style="color:#94a3b8">${esc(ins)}</td>
+      <td><span class="badge bb">${esc(cats)}</span></td>
+      <td style="color:#475569;font-size:.8rem;text-align:center">${i + 1}</td>
+      <td class="td-act">
+        <button class="btn btn-ghost btn-sm" onclick="editCamp('${docId}')"><span class="ms">edit</span></button>
+        <button class="btn btn-danger btn-sm" onclick="delItem('camps','${docId}',renderCamps)"><span class="ms">delete</span></button>
+      </td>
+    </tr>`;
+      }).join('');
+    }
+
+    function campDragStart(i) {
+      campDragIdx = i;
+      const row = document.getElementById('camp-row-' + i);
+      if (row) { row.style.opacity = '0.4'; row.style.outline = '2px solid #3b82f6'; }
+    }
+    function campDragOver(e, i) {
+      e.preventDefault();
+      if (campDragIdx === i) return;
+      const row = document.getElementById('camp-row-' + i);
+      if (row) row.style.background = 'rgba(59,130,246,.15)';
+    }
+    function campDragLeave(i) {
+      const row = document.getElementById('camp-row-' + i);
+      if (row) row.style.background = '';
+    }
+    async function campDrop(e, i) {
+      e.preventDefault();
+      campItems.forEach((_, idx) => {
+        const r = document.getElementById('camp-row-' + idx);
+        if (r) { r.style.opacity = ''; r.style.outline = ''; r.style.background = ''; }
+      });
+      if (campDragIdx === null || campDragIdx === i) { campDragIdx = null; return; }
+      const moved = campItems.splice(campDragIdx, 1)[0];
+      campItems.splice(i, 0, moved);
+      campDragIdx = null;
+      const tbody = document.getElementById('campTbody');
+      if (tbody) tbody.innerHTML = campRowsHtml();
+      notify('Sıralama değiştirildi. Kaydetmek için "Sıralamayı Kaydet" butonuna basın.', 's');
+    }
+
+    async function saveCampOrder() {
+      notify('Kamp sıralaması kaydediliyor...', 's');
+      try {
+        const btn = document.querySelector('button[onclick="saveCampOrder()"]');
+        if (btn) btn.disabled = true;
+        await saveSharedOrderingConfig({
+          campIds: campItems.map(item => String(item.documentId || item.id)).filter(Boolean)
+        });
+
+        notify('Kamp sıralaması kaydedildi ✓');
+        await renderCamps();
+      } catch (e) {
+        notify('Kamp sıralaması kaydedilemedi: ' + e.message, 'e');
+      } finally {
+        const btn = document.querySelector('button[onclick="saveCampOrder()"]');
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function editCamp(docId) {
+      const [catsD, insD, subsD, booksD] = await Promise.all([
+        get('/categories?sort=name:asc&pagination[pageSize]=100'),
+        get('/instructors?sort=name:asc&pagination[pageSize]=50'),
+        get('/subjects?sort=name:asc&pagination[pageSize]=50'),
+        get('/books?sort=title:asc&pagination[pageSize]=100&fields[0]=title'),
+      ]);
+      let camp = {};
+      if (docId) {
+        try {
+          const d = await get('/camps/' + docId + '?populate=*');
+          if (d?.error) {
+            console.error('Kamp API hatasi:', d.error);
+          } else {
+            camp = d.data || {};
+          }
+          if (!camp.title) console.warn('Kamp verisi bos geldi:', d);
+        } catch (e) { console.error('Kamp yuklenemedi:', e); }
+      }
+      const curCats = (camp.categories || []).map(c => c.documentId || c.id);
+      const curIns = (camp.instructors || []).map(c => c.documentId || c.id);
+      const curBooks = (camp.books || []).map(c => c.documentId || c.id);
+      const curSub = camp.subject?.documentId || camp.subject?.id || '';
+      const campCoverRaw = camp.cover?.data?.attributes || camp.cover;
+      const campCoverUrl = campCoverRaw?.url ? ('' + campCoverRaw.url) : '';
+      campLessons = (camp.lessons || []).map(l => ({ ...l }));
+
+      const catOpts = (catsD.data || []).map(c => `<label class="cb-label"><input type="checkbox" class="cb-cat" value="${esc(c.documentId || c.id)}"${curCats.includes(c.documentId || c.id) ? ' checked' : ''}> ${esc(c.name)}</label>`).join('');
+      const insOpts = (insD.data || []).map(c => `<label class="cb-label"><input type="checkbox" class="cb-ins" value="${esc(c.documentId || c.id)}"${curIns.includes(c.documentId || c.id) ? ' checked' : ''}> ${esc(c.name)}</label>`).join('');
+      const subOpts = (subsD.data || []).map(c => `<option value="${esc(c.documentId || c.id)}"${(c.documentId || c.id) === curSub ? ' selected' : ''}>${esc(c.name)}</option>`).join('');
+      const bookOpts = (booksD.data || []).map(c => `<label class="cb-label"><input type="checkbox" class="cb-book" value="${esc(c.documentId || c.id)}"${curBooks.includes(c.documentId || c.id) ? ' checked' : ''}> ${esc(c.title || c.name)}</label>`).join('');
+
+      setMain(`
+    <div class="ph">
+      <div>
+        <button class="btn btn-ghost btn-sm" onclick="renderCamps()" style="margin-bottom:8px">← Kamplar</button>
+        <h2><span class="ms">camping</span> ${docId ? (camp.title || 'Kampı Düzenle') : 'Yeni Kamp'}</h2>
+        <p>${docId ? 'Kamp bilgilerini düzenle' : 'Yeni kamp oluştur'}</p>
+      </div>
+      <button class="btn btn-primary" onclick="saveCamp('${docId || ''}')"><span class="ms">save</span> ${docId ? 'Güncelle' : 'Kaydet'}</button>
+    </div>
+    <div class="pb">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+        <div>
+          <div class="tcard" style="padding:20px;margin-bottom:16px">
+            <div style="font-weight:700;color:#fff;margin-bottom:16px"><span class="ms">edit_note</span> Temel Bilgiler</div>
+            <div class="fg"><label>Başlık</label><input id="fT" value="${esc(camp.title || '')}" oninput="autoFillCampAlt(this.value)"/></div>
+            <div class="fg">
+              <label>URL Slug <small style="color:#64748b;font-weight:400">(SEO – otomatik, düzenlenebilir)</small></label>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="color:#64748b;font-size:.85rem;white-space:nowrap">dersplatosu.com/egitim/</span>
+                <input id="fSlug" value="${esc(camp.slug || '')}" placeholder="ornek-kamp-adi" style="flex:1" oninput="this.dataset.edited='1'" />
+              </div>
+              <small>Boş bırakılırsa başlıktan otomatik üretilir</small>
+            </div>
+            <input type="hidden" id="fImgAlt" value="">
+            <div class="fg"><label>Intro Video URL</label><input id="fIV" value="${esc(camp.introVideo || '')}" placeholder="https://youtu.be/..."/></div>
+            <div class="fg"><label>Playlist URL</label><input id="fPL" value="${esc(camp.playlist || '')}" placeholder="https://youtube.com/playlist?list=..."/></div>
+            <div class="fg"><label>Ders (Subject)</label><select id="fSub"><option value="">Seç...</option>${subOpts}</select></div>
+          </div>
+          <!-- Kapak gorseli: Strapi 'camps' icerigi 'cover' alani tanimadigi icin devre disi.
+               Site kapak gorseli olarak YouTube thumbnail kullaniliyor. -->
+          <div class="tcard" style="padding:20px">
+            <div style="font-weight:700;color:#fff;margin-bottom:14px"><span class="ms">link</span> İlişkiler</div>
+            <div class="fg"><label>Kategoriler</label><div class="cb-list">${catOpts}</div></div>
+            <div class="fg"><label>Eğitimciler</label><div class="cb-list">${insOpts}</div></div>
+            <div class="fg"><label>Kitaplar</label><div class="cb-list">${bookOpts}</div></div>
+          </div>
+        </div>
+        <div class="tcard" style="padding:20px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px">
+            <div id="campLessonsTitle" style="font-weight:700;color:#fff"><span class="ms">video_library</span> Dersler (${campLessons.length})</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-ghost btn-sm" onclick="toggleCampCsvPanel()"><span class="ms">upload_file</span> İçeri Aktar</button>
+              <button class="btn btn-success btn-sm" onclick="addLesson()">+ Ders Ekle</button>
+            </div>
+          </div>
+          <div id="campCsvPanel" style="display:none;background:#0f172a;border:1px dashed #334155;border-radius:10px;padding:14px;margin-bottom:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+              <div style="color:#94a3b8;font-size:.8rem;font-weight:700;text-transform:uppercase">CSV ile Ders İçe Aktar</div>
+              <button class="btn btn-ghost btn-sm" onclick="toggleCampCsvPanel()">✕ Kapat</button>
+            </div>
+            <div style="color:#64748b;font-size:.78rem;margin-bottom:8px">Zorunlu: gun, baslik, youtube · Opsiyonel: not</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+              <input type="file" id="campCsvFile" accept=".csv,text/csv" style="display:none" onchange="handleCampCsvFile(this.files)">
+              <button class="btn btn-ghost btn-sm" onclick="document.getElementById('campCsvFile').click()"><span class="ms">attach_file</span> CSV Seç</button>
+              <span id="campCsvFileName" style="color:#22c55e;font-size:.78rem"></span>
+            </div>
+            <textarea id="campCsvInput" rows="5" placeholder="gun,baslik,youtube,not\n1,0.Gün Kamp Tanıtımı,https://youtu.be/...,https://..." style="width:100%;background:#0b1221;border:1px solid #334155;border-radius:8px;padding:10px;color:#e2e8f0;font-size:.82rem"></textarea>
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+              <button class="btn btn-success btn-sm" onclick="importCampCsv()"><span class="ms">rocket_launch</span> İçe Aktar</button>
+            </div>
+          </div>
+          <div id="lessonsContainer"></div>
+        </div>
+      </div>
+      <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:10px;padding-bottom:40px">
+        <button class="btn btn-ghost" onclick="renderCamps()">← İptal</button>
+        <button class="btn btn-primary" onclick="saveCamp('${docId || ''}')"><span class="ms">save</span> ${docId ? 'Güncelle' : 'Kaydet'}</button>
+      </div>
+    </div>`);
+      renderLessons();
+    }
+
+    function renderLessons() {
+      const c = document.getElementById('lessonsContainer');
+      if (!c) return;
+      if (!campLessons.length) { c.innerHTML = '<div style="color:#475569;font-size:.82rem;padding:8px 0">Henüz ders yok.</div>'; return; }
+      c.innerHTML = campLessons.map((l, i) => `
+              <div style="background:#0f172a;border:1px solid #334155;border-radius:9px;padding:12px;margin-bottom:8px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                  <strong style="color:#60a5fa;font-size:.82rem">Ders ${i + 1}</strong>
+                  <button class="btn btn-danger btn-sm" onclick="removeLesson(${i})"><span class="ms">delete</span></button>
+                </div>
+                <div class="g2">
+                  <div class="fg" style="margin-bottom:8px"><label>Başlık</label><input value="${esc(l.title)}" oninput="campLessons[${i}].title=this.value"/></div>
+                  <div class="fg" style="margin-bottom:8px"><label>Gün No</label><input type="number" value="${l.day || ''}" oninput="campLessons[${i}].day=parseInt(this.value)||0"/></div>
+                </div>
+                <div class="fg" style="margin-bottom:8px"><label>YouTube URL</label><input value="${esc(l.youtube)}" oninput="campLessons[${i}].youtube=this.value" placeholder="https://youtu.be/..."/></div>
+                <div class="fg" style="margin-bottom:0"><label>Not Linki</label><input value="${esc(l.notes_link)}" oninput="campLessons[${i}].notes_link=this.value" placeholder="https://..."/></div>
+              </div>`).join('');
+      updateCampLessonsTitle();
+    }
+
+    function addLesson() {
+      campLessons.push({ title: '', day: campLessons.length + 1, youtube: '', notes_link: '' });
+      renderLessons();
+    }
+
+    function removeLesson(i) {
+      campLessons.splice(i, 1);
+      renderLessons();
+    }
+
+    function updateCampLessonsTitle() {
+      const el = document.getElementById('campLessonsTitle');
+      if (el) el.innerHTML = '<span class="ms">video_library</span> Dersler (' + campLessons.length + ')';
+    }
+
+    function toggleCampCsvPanel() {
+      const p = document.getElementById('campCsvPanel');
+      if (!p) return;
+      p.style.display = p.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function handleCampCsvFile(files) {
+      if (!files || !files[0]) return;
+      const file = files[0];
+      const nameEl = document.getElementById('campCsvFileName');
+      if (nameEl) nameEl.textContent = '✅ ' + file.name;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const txt = e.target.result || '';
+        const input = document.getElementById('campCsvInput');
+        if (input) input.value = txt;
+      };
+      reader.readAsText(file, 'UTF-8');
+    }
+
+    function importCampCsv() {
+      const input = document.getElementById('campCsvInput');
+      const text = (input && input.value) ? input.value.trim() : '';
+      if (!text) { notify('CSV boş', 'e'); return; }
+      const rows = parseCampCsv(text);
+      if (!rows.length) { notify('Geçerli satır yok', 'e'); return; }
+      campLessons = campLessons.concat(rows);
+      renderLessons();
+      notify('✅ ' + rows.length + ' ders içe aktarıldı');
+      toggleCampCsvPanel();
+      const nameEl = document.getElementById('campCsvFileName');
+      if (nameEl) nameEl.textContent = '';
+      if (input) input.value = '';
+    }
+
+    function parseCampCsv(text) {
+      if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+      const lines = text.split(/\r?\n/).filter(l => l.trim());
+      if (lines.length < 1) return [];
+      const header = lines[0].toLowerCase();
+      let idx = { day: 0, title: 1, youtube: 2, notes: 3 };
+      let start = 0;
+      if (/(gun|day|baslik|title|youtube|not)/i.test(header)) {
+        const hdrs = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/[\'"]+/g, ''));
+        idx = {
+          day: hdrs.indexOf('gun') !== -1 ? hdrs.indexOf('gun') : hdrs.indexOf('day'),
+          title: hdrs.indexOf('baslik') !== -1 ? hdrs.indexOf('baslik') : hdrs.indexOf('title'),
+          youtube: hdrs.indexOf('youtube') !== -1 ? hdrs.indexOf('youtube') : hdrs.indexOf('youtube_url'),
+          notes: hdrs.indexOf('not') !== -1 ? hdrs.indexOf('not') : hdrs.indexOf('not_link')
+        };
+        start = 1;
+      }
+      const out = [];
+      for (let i = start; i < lines.length; i++) {
+        const cols = lines[i].split(',').map(c => c.trim().replace(/^[\'"]+|[\'"]+$/g, ''));
+        const dayRaw = cols[idx.day] || '';
+        const title = cols[idx.title] || '';
+        const youtube = cols[idx.youtube] || '';
+        const notes = idx.notes >= 0 ? (cols[idx.notes] || '') : '';
+        const day = parseInt(dayRaw, 10);
+        if (!day || !title || !youtube) continue;
+        out.push({ title: title, day: day, youtube: youtube, notes_link: notes });
+      }
+      return out;
+    }
+
+    async function saveCamp(docId) {
+      const cats = Array.from(document.querySelectorAll('.cb-cat:checked')).map(cb => cb.value);
+      const ins = Array.from(document.querySelectorAll('.cb-ins:checked')).map(cb => cb.value);
+      const books = Array.from(document.querySelectorAll('.cb-book:checked')).map(cb => cb.value);
+      const sub = gv('fSub');
+      const data = {
+        title: gv('fT'),
+        slug: gv('fSlug') || slugifyTR(gv('fT') || ''),
+        introVideo: gv('fIV'),
+        playlist: gv('fPL'),
+        categories: cats,
+        instructors: ins,
+        books: books,
+        lessons: campLessons.map(l => ({ title: l.title, day: l.day || 0, youtube: l.youtube, notes_link: l.notes_link })),
+      };
+      // Alt metni localStorage'a kaydet
+      try {
+        const alts = JSON.parse(localStorage.getItem('dp_img_alts') || '{}');
+        const altVal = gv('fImgAlt') || (gv('fT') ? gv('fT') + ' Kampı – Ders Platosu' : '');
+        const campKey = 'camp_' + (docId || 'new');
+        if (altVal) alts[campKey] = altVal;
+        localStorage.setItem('dp_img_alts', JSON.stringify(alts));
+      } catch(e) {}
+      // Not: Strapi 'camps' icerigi 'cover' alani tanimiyor, gorsel kaydetme devre disi.
+      if (sub) data.subject = sub;
+      try {
+        const res = docId ? await put('/camps/' + docId, data) : await post('/camps', data);
+        if (res?.error) { notify('Hata: ' + (res.error.message || 'Bilinmeyen hata'), 'e'); return; }
+        notify(docId ? 'Kamp güncellendi ✓' : 'Kamp eklendi ✓');
+        if (docId) {
+          // Güncelleme: aynı sayfada kal, formu yeniden yükle
+          editCamp(docId);
+        } else {
+          // Yeni kayıt: kamplar listesine dön
+          renderCamps();
+        }
+      } catch(e) {
+        notify('Bağlantı hatası: ' + e.message, 'e');
+      }
+    }
+
+    /* ════════════════════
+       KİTAPLAR
+    ════════════════════ */
+    async function renderBooks() {
+      loading();
+      const d = await get('/books?populate[cover][fields][0]=url&populate[solution_categories][fields][0]=name&sort=createdAt:desc&pagination[pageSize]=100');
+      const items = d.data || [];
+      const rows = items.map(item => {
+        const a2 = a(item);
+        const docId = item.documentId || item.id;  // v5: always documentId
+        const cover = a2.cover?.url || a2.cover?.data?.attributes?.url || '';
+        const img = cover ? `<img src="${safeAssetUrl(cover, '')}" class="cthumb"/>` : '<div class="cthumb" style="display:flex;align-items:center;justify-content:center;color:#475569;font-size:.65rem">Yok</div>';
+        const rawCats = Array.isArray(a2.solution_categories) ? a2.solution_categories : (a2.solution_categories?.data || []);
+        const cats = rawCats.map(c => a(c).name).join(', ') || '—';
+        return `<tr>
+      <td>${img}</td>
+      <td><strong style="color:#e2e8f0">${esc(a2.title || '—')}</strong></td>
+      <td><span class="badge bb">${esc(cats)}</span></td>
+      <td>${a2.featured ? '<span class="ms" style="color:#fbbf24">star</span> Öne Çıkan' : ''}</td>
+      <td class="td-act">
+        <button class="btn btn-ghost btn-sm" onclick="editBook('${docId}')"><span class="ms">edit</span></button>
+        <button class="btn btn-danger btn-sm" onclick="delItem('books','${docId}',renderBooks)"><span class="ms">delete</span></button>
+      </td>
+    </tr>`;
+      }).join('');
+
+      setMain(ph('<span class="ms">menu_book</span>', 'Kitaplar', 'Tüm kitaplar', `<button class="btn btn-primary" onclick="editBook(null)"><span class="ms">add</span> Yeni Kitap</button>`) + `
+    <div class="tcard">
+      <div class="ttbar"><h3>${items.length} Kitap</h3></div>
+      ${items.length ? `<table><thead><tr><th>Kapak</th><th>Başlık</th><th>Kategori</th><th></th><th>İşlem</th></tr></thead><tbody>${rows}</tbody></table>`
+          : '<div class="empty"><span class="ms ms-xl" style="display:block;margin-bottom:12px">menu_book</span>Henüz kitap yok</div>'}
+    </div></div>`);
+    }
+
+    async function editBook(id) {
+      const [cats, ins, subs] = await Promise.all([
+        get('/book-categories?sort=name:asc&pagination[pageSize]=50'),
+        get('/instructors?sort=name:asc&pagination[pageSize]=50'),
+        get('/subjects?sort=name:asc&pagination[pageSize]=100'),
+      ]);
+      let a2 = {};
+      if (id) {
+        try {
+          const d = await get('/books/' + id
+            + '?populate[solution_categories][fields][0]=name'
+            + '&populate[instructors][fields][0]=name'
+            + '&populate[subjects][fields][0]=name'
+            + '&populate[cover][fields][0]=url');
+          a2 = d.data || {};
+          if (!a2.title) console.warn('Kitap verisi boş geldi:', d);
+        } catch (e) { console.error('Kitap yüklenemedi:', e); }
+      }
+      const rawCats = Array.isArray(a2.solution_categories) ? a2.solution_categories : (a2.solution_categories?.data || []);
+      const rawIns = Array.isArray(a2.instructors) ? a2.instructors : (a2.instructors?.data || []);
+      const rawSubs = Array.isArray(a2.subjects) ? a2.subjects : (a2.subjects?.data || []);
+      const curCats = rawCats.map(c => c.documentId || c.id);
+      const curIns = rawIns.map(c => c.documentId || c.id);
+      const curSubs = rawSubs.map(c => c.documentId || c.id);
+      const catOpts = (cats.data || []).map(c => `<label class="cb-label"><input type="checkbox" class="cb-bcat" value="${esc(c.documentId || c.id)}"${curCats.includes(c.documentId || c.id) ? ' checked' : ''}> ${esc(a(c).name)}</label>`).join('');
+      const insOpts = (ins.data || []).map(c => `<label class="cb-label"><input type="checkbox" class="cb-bins" value="${esc(c.documentId || c.id)}"${curIns.includes(c.documentId || c.id) ? ' checked' : ''}> ${esc(a(c).name)}</label>`).join('');
+      const subOpts = (subs.data || []).map(c => `<label class="cb-label"><input type="checkbox" class="cb-bsub" value="${esc(c.documentId || c.id)}"${curSubs.includes(c.documentId || c.id) ? ' checked' : ''}> ${esc(c.name)}</label>`).join('');
+
+      const coverRaw = a2.cover?.data?.attributes || a2.cover;
+      const existingCoverUrl = coverRaw?.url ? ('' + coverRaw.url) : '';
+
+      setMain(`
+    <div class="ph">
+      <div>
+        <button class="btn btn-ghost btn-sm" onclick="renderBooks()" style="margin-bottom:8px">← Kitaplar</button>
+        <h2><span class="ms">menu_book</span> ${id ? esc(a2.title || 'Kitabı Düzenle') : 'Yeni Kitap'}</h2>
+        <p>${id ? 'Kitap bilgilerini düzenle' : 'Yeni kitap oluştur'}</p>
+      </div>
+      <button class="btn btn-primary" onclick="saveBook('${id || ''}')"><span class="ms">save</span> ${id ? 'Güncelle' : 'Kaydet'}</button>
+    </div>
+    <div class="pb">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+        <div>
+          <div class="tcard" style="padding:20px;margin-bottom:16px">
+            <div style="font-weight:700;color:#fff;margin-bottom:16px"><span class="ms">edit_note</span> Temel Bilgiler</div>
+            <div class="fg"><label>Başlık</label><input id="fT" value="${esc(a2.title || '')}" oninput="autoFillBookAlt(this.value)"/></div>
+            <div class="fg"><label>Görsel Alt Metni <small style="color:#64748b;font-weight:400">(SEO – otomatik oluşturulur, düzenlenebilir)</small></label><input id="fImgAlt" value="${(function(){try{var m=JSON.parse(localStorage.getItem('dp_img_alts')||'{}');return m['book_'+(id||'')]||''}catch(e){return ''}})() || (a2.title ? a2.title+' – Ders Platosu' : '')}" placeholder="Kitap başlığı – Ders Platosu"/><small>Boş bırakılırsa: Başlık – Ders Platosu</small></div>
+            <div class="fg"><label>Satın Alma Linki</label><input id="fBL" value="${esc(a2.buy_link || '')}" placeholder="https://..."/></div>
+            <div class="fg"><label>Demo Link</label><input id="fSL" value="${esc(a2.solution_link || '')}" placeholder="https://..."/></div>
+            <div class="fg"><label><input type="checkbox" id="fFeat" ${a2.featured ? 'checked' : ''} style="width:auto;margin-right:6px"/>Öne Çıkan</label></div>
+          </div>
+          <div class="tcard" style="padding:20px">
+            <div style="font-weight:700;color:#fff;margin-bottom:14px"><span class="ms">image</span> Kapak Görseli</div>
+            <div id="instrPhotoPreview" style="margin-bottom:10px">
+              ${existingCoverUrl ? '<img src="' + safeAssetUrl(existingCoverUrl, '') + '" style="width:100px;height:auto;border-radius:10px;display:block;border:2px solid #334155"/>' : ''}
+            </div>
+            <input type="file" id="fCover" accept="image/*" style="background:#0f172a;border:1.5px solid #334155;border-radius:9px;padding:8px;width:100%;color:#94a3b8;font-size:.82rem" onchange="previewBookCover(this)"/>
+            <div id="bookCoverPreview" style="margin-top:10px"></div>
+            <small style="color:#64748b;font-size:.72rem;display:block;margin-top:6px">JPG, PNG, WEBP — Mevcut kapağı korumak için boş bırakın.</small>
+          </div>
+        </div>
+        <div class="tcard" style="padding:20px">
+          <div style="font-weight:700;color:#fff;margin-bottom:14px"><span class="ms">link</span> İlişkiler</div>
+          <div class="fg"><label>Dersler</label><div class="cb-list">${subOpts}</div></div>
+          <div class="fg"><label>Kategoriler</label><div class="cb-list">${catOpts}</div></div>
+          <div class="fg"><label>Eğitimciler</label><div class="cb-list">${insOpts}</div></div>
+        </div>
+      </div>
+    </div>`);
+    }
+
+    async function saveBook(id) {
+      const cats = Array.from(document.querySelectorAll('.cb-bcat:checked')).map(cb => cb.value);
+      const ins = Array.from(document.querySelectorAll('.cb-bins:checked')).map(cb => cb.value);
+      const subs = Array.from(document.querySelectorAll('.cb-bsub:checked')).map(cb => cb.value);
+      const data = { title: gv('fT'), buy_link: gv('fBL'), solution_link: gv('fSL'), featured: $('fFeat').checked, solution_categories: cats, instructors: ins, subjects: subs };
+      // Alt metni localStorage'a kaydet
+      try {
+        const alts = JSON.parse(localStorage.getItem('dp_img_alts') || '{}');
+        const altVal = gv('fImgAlt') || (gv('fT') ? gv('fT') + ' – Ders Platosu' : '');
+        if (altVal) alts['book_' + (id || 'new')] = altVal;
+        localStorage.setItem('dp_img_alts', JSON.stringify(alts));
+      } catch(e) {}
+      const coverFile = document.getElementById('fCover')?.files?.[0];
+      if (coverFile) {
+        try {
+          const fd = new FormData(); fd.append('files', coverFile);
+          const upRes = await fetch('/api/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + ensureApiToken() }, body: fd });
+          const upData = await upRes.json();
+          if (upData[0]?.id) data.cover = upData[0].id;
+        } catch (e) { notify('Kapak yüklenemedi', 'e'); }
+      }
+      if (id) await put('/books/' + id, data); else await post('/books', data);
+      notify(id ? 'Kitap güncellendi ✓' : 'Kitap eklendi ✓'); renderBooks();
+    }
+
+    window.autoFillBookAlt = function(title) {
+      const el = document.getElementById('fImgAlt');
+      if (el && !el.dataset.edited) el.value = (title || '') + ' \u2013 Ders Platosu';
+    };
+    window.autoFillCampAlt = function(title) {
+      const el = document.getElementById('fImgAlt');
+      if (el && !el.dataset.edited) el.value = (title || '') + ' Kamp\u0131 \u2013 Ders Platosu';
+      const slugEl = document.getElementById('fSlug');
+      if (slugEl && !slugEl.dataset.edited) slugEl.value = slugifyTR(title || '');
+    };
+    // Kullanıcı manuel düzenlerse otomatik doldurmayı durdur
+    document.addEventListener('input', function(e) {
+      if (e.target && e.target.id === 'fImgAlt') e.target.dataset.edited = '1';
+    });
+
+    function previewBookCover(input) {
+      if (!input.files || !input.files[0]) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const prev = document.getElementById('bookCoverPreview');
+        if (prev) prev.innerHTML = '<img src="' + e.target.result + '" style="width:120px;height:auto;border-radius:10px;display:block;box-shadow:0 4px 16px rgba(0,0,0,.4);border:2px solid #22c55e"/><div style="color:#22c55e;font-size:.72rem;margin-top:5px">✓ Yeni görsel seçildi</div>';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+
+    function previewCampCover(input) {
+      if (!input.files || !input.files[0]) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const prev = document.getElementById('campCoverPreview');
+        if (prev) prev.innerHTML = '<img src="' + e.target.result + '" style="width:170px;max-width:100%;height:auto;border-radius:10px;display:block;box-shadow:0 4px 16px rgba(0,0,0,.4);border:2px solid #22c55e"/><div style="color:#22c55e;font-size:.72rem;margin-top:5px">✓ Yeni kapak secildi</div>';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+
+
+    /* ════════════════════
+       SORU ÇÖZÜMLERİ
+    ════════════════════ */
+    let solBookId = '';
+
+    async function renderSolutions() {
+      loading();
+      const bd = await get('/books?sort=title:asc&pagination[pageSize]=100');
+      const books = bd.data || [];
+      const opts = books.map(b => `<option value="${b.id || b.documentId}">${a(b).title || 'Kitap'}</option>`).join('');
+      setMain(ph('<span class="ms">play_circle</span>', 'Soru Çözümleri', 'Bölüm ve test videolarını yönet',
+        `<div style="display:flex;gap:8px">
+                  <button class="btn btn-success btn-sm" id="saveOrderBtn" style="display:none;background:#22c55e" onclick="saveAllOrders()"><span class="ms">save</span> Sıralamayı Kaydet</button>
+                  <button class="btn btn-success btn-sm" id="csvToggleBtn" style="display:none" onclick="toggleCsvPanel()"><span class="ms">upload_file</span> CSV Yükle</button>
+                  <button class="btn btn-primary" id="addChBtn" style="display:none" onclick="addChapter()">+ Bölüm Ekle</button>
+                 </div>`) + `
+    <div class="book-sel">
+      <div class="fg" style="margin:0"><label>Kitap Seç</label>
+        <select id="bookSel" onchange="loadSolChapters(this.value)">
+          <option value="">-- Kitap seçin --</option>${opts}
+        </select>
+      </div>
+    </div>
+    <div id="csvPanel" style="display:none;margin-bottom:14px">
+      <div style="background:#1e293b;border:1.5px solid #22c55e;border-radius:13px;padding:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div style="font-weight:700;color:#fff;font-size:.92rem"><span class="ms">upload_file</span> CSV ile Toplu Video Yükle</div>
+          <button class="btn btn-ghost btn-sm" onclick="toggleCsvPanel()">✕ Kapat</button>
+        </div>
+        <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:11px;margin-bottom:12px">
+          <div style="font-size:.72rem;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:7px">FORMAT (3 sütun, virgülle ayrılır)</div>
+          <table style="font-size:.75rem;color:#94a3b8">
+            <thead><tr>
+              <th style="padding:3px 10px;background:#162032;color:#60a5fa;border:1px solid #334155">bolum_adi</th>
+              <th style="padding:3px 10px;background:#162032;color:#60a5fa;border:1px solid #334155">baslik</th>
+              <th style="padding:3px 10px;background:#162032;color:#60a5fa;border:1px solid #334155">youtube_id</th>
+            </tr></thead>
+            <tbody>
+              <tr><td style="padding:2px 10px;border:1px solid #1e293b">Paragraf</td><td style="padding:2px 10px;border:1px solid #1e293b">Test 1</td><td style="padding:2px 10px;border:1px solid #1e293b">VIDEO_ID</td></tr>
+              <tr><td style="padding:2px 10px;border:1px solid #1e293b">Paragraf</td><td style="padding:2px 10px;border:1px solid #1e293b">Test 2</td><td style="padding:2px 10px;border:1px solid #1e293b">VIDEO_ID</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:8px"><button class="btn btn-ghost btn-sm" onclick="downloadSimpleCsvTemplate()"><span class="ms">download</span> Boş Şablon İndir</button></div>
+        </div>
+        <div id="csvDropArea2" style="border:2px dashed #334155;border-radius:10px;padding:22px;text-align:center;cursor:pointer;transition:all .2s"
+          onclick="document.getElementById('csvFileInput2').click()"
+          ondragover="event.preventDefault();this.style.borderColor='#22c55e'"
+          ondragleave="this.style.borderColor='#334155'"
+          ondrop="event.preventDefault();this.style.borderColor='#334155';handleSimpleCsvFile(event.dataTransfer.files)">
+          <div style="margin-bottom:5px"><span class="ms ms-lg" style="color:#64748b">description</span></div>
+          <div style="color:#94a3b8;font-size:.82rem">CSV sürükle veya tıkla</div>
+          <input type="file" id="csvFileInput2" accept=".csv,text/csv" style="display:none" onchange="handleSimpleCsvFile(this.files)">
+        </div>
+        <div id="csvFileName2" style="margin-top:8px;color:#22c55e;font-size:.8rem"></div>
+        <div id="csvSimplePreview" style="display:none;margin-top:12px">
+          <div style="font-size:.79rem;color:#94a3b8;margin-bottom:6px"><span id="csvSimpleCount"></span></div>
+          <div style="max-height:180px;overflow-y:auto;background:#0f172a;border:1px solid #334155;border-radius:8px">
+            <table style="width:100%;font-size:.75rem">
+              <thead><tr>
+                <th style="padding:5px 10px;background:#162032;color:#64748b;border-bottom:1px solid #334155">#</th>
+                <th style="padding:5px 10px;background:#162032;color:#64748b;border-bottom:1px solid #334155">Bölüm</th>
+                <th style="padding:5px 10px;background:#162032;color:#64748b;border-bottom:1px solid #334155">Başlık</th>
+                <th style="padding:5px 10px;background:#162032;color:#64748b;border-bottom:1px solid #334155">YouTube ID</th>
+              </tr></thead>
+              <tbody id="csvSimpleBody"></tbody>
+            </table>
+          </div>
+          <div style="margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <label style="display:flex;align-items:center;gap:5px;font-size:.8rem;color:#f87171;cursor:pointer">
+              <input type="checkbox" id="csvClearFirst2" style="width:auto;accent-color:#ef4444"> Önce mevcut soru çözümlerini sil
+            </label>
+            <button class="btn btn-success" id="csvImportBtn2" onclick="startSimpleCsvImport()"><span class="ms">rocket_launch</span> Strapi'ye Yükle</button>
+          </div>
+          <div id="csvProgress2" style="margin-top:10px;display:none">
+            <div style="background:#0f172a;border-radius:50px;height:5px;overflow:hidden;margin-bottom:5px">
+              <div id="csvProgressBar2" style="height:100%;background:linear-gradient(90deg,#22c55e,#3b82f6);border-radius:50px;width:0%;transition:width .3s"></div>
+            </div>
+            <div id="csvProgressText2" style="color:#94a3b8;font-size:.77rem"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="chList"></div></div>`);
+    }
+
+
+    var solChapters = []; // module-level chapters
+    var dragChIdx = null;
+
+    async function loadSolChapters(bookId) {
+      solBookId = bookId;
+      if (!bookId) { $('chList').innerHTML = ''; $('addChBtn').style.display = 'none'; $('csvToggleBtn').style.display = 'none'; if ($('saveOrderBtn')) $('saveOrderBtn').style.display = 'none'; $('csvPanel').style.display = 'none'; return; }
+      $('addChBtn').style.display = 'flex';
+      $('csvToggleBtn').style.display = 'flex';
+      if ($('saveOrderBtn')) $('saveOrderBtn').style.display = 'flex';
+      $('chList').innerHTML = '<div class="loading"><div class="spin"></div><br>Yükleniyor…</div>';
+      const d = await get(`/solution-videos?filters[book][id][$eq]=${bookId}&sort[0]=bolum_no:asc&sort[1]=sira:asc&pagination[pageSize]=200`);
+      const items = d.data || [];
+      const chMap = {};
+      items.forEach(item => {
+        const key = item.bolum_adi || 'Bölüm';
+        if (!chMap[key]) chMap[key] = { no: item.bolum_no || 0, name: key, tests: [] };
+        chMap[key].tests.push({ id: item.documentId || item.id, baslik: item.baslik || 'Test', youtube_id: item.youtube_id || '', sira: item.sira || 0 });
+      });
+      solChapters = Object.values(chMap).sort((x, y) => x.no - y.no);
+      renderChapters();
+    }
+    function renderChapters() {
+      const newChFormHtml = `
+        <div id="newChForm" style="display:none;background:#1e293b;border:1.5px solid #3b82f6;border-radius:11px;padding:16px;margin-bottom:12px">
+          <div style="font-weight:700;color:#60a5fa;margin-bottom:12px;font-size:.9rem"><span class="ms">create_new_folder</span> Yeni Bölüm + İlk Test</div>
+          <div class="fg"><label>Bölüm Adı</label><input id="fChN" placeholder="Paragrafın Ana Düşüncesi"/></div>
+          <div class="fg"><label>İlk Test Adı</label><input id="fBas" placeholder="Test 1"/></div>
+          <div class="fg"><label>YouTube URL / ID</label><input id="fYT" placeholder="https://youtu.be/..."/><small>Tam URL veya sadece ID kabul edilir</small></div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('newChForm').style.display='none'">İptal</button>
+            <button class="btn btn-primary btn-sm" onclick="saveNewChapter()"><span class="ms">save</span> Kaydet</button>
+          </div>
+        </div>`;
+
+      if (!solChapters.length) {
+        $('chList').innerHTML = newChFormHtml + '<div class="empty"><span class="ms ms-xl" style="display:block;margin-bottom:12px">folder_open</span>Henüz bölüm yok. "Bölüm Ekle" ile başlayın.</div>';
+        return;
+      }
+
+      $('chList').innerHTML = [
+        newChFormHtml,
+        ...solChapters.map((ch, i) => `
+    <div class="ch-item" id="ch-${i}" draggable="true"
+         ondragstart="dragStartCh(${i})"
+         ondragover="dragOverCh(event,${i})"
+         ondrop="dropCh(event,${i})"
+         ondragleave="this.style.opacity=''">
+      <div class="ch-row" onclick="toggleCh(this)">
+        <span style="cursor:grab;color:#475569;padding:0 6px;font-size:1.1rem" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">&#x22EE;&#x22EE;</span>
+        <span class="ch-num" style="min-width:24px">${i + 1}.</span>
+        <span class="ch-name" id="chname-${i}">${ch.name}</span>
+        <button class="btn btn-ghost btn-sm" style="padding:3px 8px" onclick="event.stopPropagation();editChName(${i})"><span class="ms" style="font-size:15px">edit</span></button>
+        <span class="ch-meta">${ch.tests.length} test</span>
+        <div class="ch-acts" onclick="event.stopPropagation()">
+          <button class="btn btn-ghost btn-sm" onclick="showAddTestForm('${encodeURIComponent(ch.name)}',${i + 1},${i})">+ Test</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteChapter('${encodeURIComponent(ch.name)}')"><span class="ms" style="font-size:15px">delete</span></button>
+        </div>
+        <span class="arrow">›</span>
+      </div>
+      <div class="tests-box">
+        ${ch.tests.map((t, ti) => `
+          <div id="trow-${t.id}" draggable="true"
+               ondragstart="dragStartTest(${i},${ti})"
+               ondragover="dragOverTest(event,${i},${ti})"
+               ondrop="dropTest(event,${i},${ti})"
+               ondragleave="this.style.background=''">
+            <div class="test-row" style="cursor:default">
+              <span style="cursor:grab;color:#475569;padding:0 6px;font-size:1rem;flex-shrink:0">⋮⋮</span>
+              <div class="test-info">
+                <div class="test-title">▶ ${t.baslik}</div>
+                <div class="test-sub">${t.youtube_id || '—'} · Sıra: ${ti + 1}</div>
+              </div>
+              <div class="td-act">
+                <button class="btn btn-ghost btn-sm" onclick="toggleTestEdit('${t.id}')"><span class="ms" style="font-size:15px">edit</span></button>
+                <button class="btn btn-danger btn-sm" onclick="deleteTest('${t.id}')"><span class="ms" style="font-size:15px">delete</span></button>
+              </div>
+            </div>
+            <div id="tedit-${t.id}" style="display:none;background:#0f172a;border-left:3px solid #3b82f6;padding:12px;margin:4px 0;border-radius:0 8px 8px 0">
+              <div class="g2">
+                <div class="fg" style="margin-bottom:8px"><label>Başlık</label><input id="tb-${t.id}" value="${t.baslik}"/></div>
+                <div class="fg" style="margin-bottom:8px"><label>Sıra No</label><input type="number" id="ts-${t.id}" value="${t.sira}"/></div>
+              </div>
+              <div class="fg" style="margin-bottom:8px"><label>YouTube URL / ID</label><input id="ty-${t.id}" value="${t.youtube_id}"/></div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-ghost btn-sm" onclick="document.getElementById('tedit-${t.id}').style.display='none'">İptal</button>
+                <button class="btn btn-primary btn-sm" onclick="saveTestInline('${t.id}')"><span class="ms">save</span> Güncelle</button>
+              </div>
+            </div>
+          </div>`).join('')}
+        <div id="addtest-${i}" style="display:none;background:#0f172a;border:1.5px dashed #3b82f6;border-radius:9px;padding:12px;margin-top:8px">
+          <div style="font-size:.8rem;font-weight:700;color:#60a5fa;margin-bottom:10px">+ Yeni Test</div>
+          <div class="fg"><label>Test Adı</label><input id="abt-${i}" placeholder="Test ${ch.tests.length + 1}"/></div>
+          <div class="fg"><label>YouTube URL / ID</label><input id="ayt-${i}" placeholder="https://youtu.be/..."/></div>
+          <div class="fg"><label>Sıra No</label><input type="number" id="asr-${i}" value="${ch.tests.length + 1}"/></div>
+          <div style="display:flex;gap:8px;margin-top:4px">
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('addtest-${i}').style.display='none'">İptal</button>
+            <button class="btn btn-primary btn-sm" onclick="saveAddTestInline(${i},'${encodeURIComponent(ch.name)}',${i + 1})"><span class="ms">save</span> Ekle</button>
+          </div>
+        </div>
+      </div>
+    </div>`)
+      ].join('');
+    }
+
+    var dragTestChIdx = null, dragTestIdx = null;
+    function dragStartTest(chI, tI) { dragTestChIdx = chI; dragTestIdx = tI; }
+    function dragOverTest(e, chI, tI) {
+      e.preventDefault(); e.stopPropagation();
+      const el = document.getElementById('trow-' + solChapters[chI]?.tests[tI]?.id);
+      if (el) el.style.background = '#1a2d4a';
+    }
+    async function dropTest(e, chI, tI) {
+      e.preventDefault(); e.stopPropagation();
+      document.querySelectorAll('[id^="trow-"]').forEach(el => el.style.background = '');
+      if (dragTestChIdx === null || (dragTestChIdx === chI && dragTestIdx === tI)) return;
+      if (dragTestChIdx !== chI) { notify('Testleri farklı bölüme taşıyamazsınız', 'e'); return; }
+      const tests = solChapters[chI].tests;
+      const [moved] = tests.splice(dragTestIdx, 1);
+      tests.splice(tI, 0, moved);
+      dragTestChIdx = null; dragTestIdx = null;
+      renderChapters();
+      notify('Sıralama değiştirildi. Kaydetmeyi unutmayın!', 'i');
+    }
+
+    /* ── Drag & Drop ── */
+    function dragStartCh(i) { dragChIdx = i; }
+    function dragOverCh(e, i) {
+      e.preventDefault();
+      const el = document.getElementById('ch-' + i);
+      if (el) el.style.opacity = '0.6';
+    }
+    async function dropCh(e, i) {
+      e.preventDefault();
+      document.querySelectorAll('.ch-item').forEach(el => el.style.opacity = '');
+      if (dragChIdx === null || dragChIdx === i) return;
+      const [moved] = solChapters.splice(dragChIdx, 1);
+      solChapters.splice(i, 0, moved);
+      dragChIdx = null;
+      renderChapters(); // Show new order immediately
+      notify('Sıralama değiştirildi. Kaydetmeyi unutmayın!', 'i');
+    }
+
+    async function saveAllOrders() {
+      if (!solChapters || solChapters.length === 0) return;
+      const btn = document.getElementById('saveOrderBtn');
+      if (btn) btn.innerHTML = 'Kaydediliyor…';
+      notify('Tüm sıralamalar kaydediliyor…', 'i');
+
+      const updates = [];
+      for (let c = 0; c < solChapters.length; c++) {
+        const tests = solChapters[c].tests || [];
+        for (let t = 0; t < tests.length; t++) {
+          const id = tests[t].id;
+          updates.push(put('/solution-videos/' + id, { bolum_no: c + 1, sira: t + 1 }));
+        }
+      }
+
+      try {
+        await Promise.all(updates);
+        notify('Tüm sıralamalar başarıyla kaydedildi ✓', 's');
+      } catch (err) {
+        console.error(err);
+        notify('Sıralama kaydedilirken hata oluştu!', 'e');
+      }
+      if (btn) btn.innerHTML = '<span class="ms">save</span> Sıralamayı Kaydet';
+      loadSolChapters(solBookId); // Yeniden yükle ekranı tazelemek için
+    }
+
+    /* ── Chapter Name Edit ── */
+    function editChName(i) {
+      const span = document.getElementById('chname-' + i);
+      if (!span) return;
+      const oldName = solChapters[i].name;
+      span.innerHTML = `<input id="cni-${i}" value="${esc(oldName)}" style="background:#0f172a;border:1.5px solid #3b82f6;border-radius:6px;padding:4px 8px;color:#f1f5f9;font-size:.88rem;width:220px" onclick="event.stopPropagation()"/>
+              <button class="btn btn-primary btn-sm" style="margin-left:5px" onclick="event.stopPropagation();saveChName(${i})">✓</button>
+              <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();renderChapters()">✕</button>`;
+    }
+    async function saveChName(i) {
+      const newName = (document.getElementById('cni-' + i)?.value || '').trim();
+      if (!newName) return;
+      const oldName = solChapters[i].name;
+      notify('Bölüm adı güncelleniyor…');
+      const d2 = await get(`/solution-videos?filters[book][id][$eq]=${solBookId}&filters[bolum_adi][$eq]=${encodeURIComponent(oldName)}&pagination[pageSize]=100`);
+      await Promise.all((d2.data || []).map(item => put('/solution-videos/' + (item.documentId || item.id), { bolum_adi: newName })));
+      solChapters[i].name = newName;
+      notify('Bölüm adı güncellendi ✓');
+      renderChapters();
+    }
+
+    function toggleCh(row) {
+      row.classList.toggle('open');
+      row.nextElementSibling.classList.toggle('open');
+    }
+
+    function showAddChapterForm() {
+      if (!solBookId) { notify('Önce kitap seçin', 'e'); return; }
+      const f = document.getElementById('newChForm');
+      f.style.display = f.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function showAddTestForm(chName, chNo, idx) {
+      const f = document.getElementById('addtest-' + idx);
+      if (!f) return;
+      // Make sure chapter is open
+      const chItem = document.getElementById('ch-' + idx);
+      if (chItem) {
+        const row = chItem.querySelector('.ch-row');
+        const box = chItem.querySelector('.tests-box');
+        if (row && !row.classList.contains('open')) { row.classList.add('open'); box.classList.add('open'); }
+      }
+      f.style.display = f.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function toggleTestEdit(id, baslik, yt, sira) {
+      const f = document.getElementById('tedit-' + id);
+      if (!f) return;
+      f.style.display = f.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function addChapter() { showAddChapterForm(); }
+
+    async function saveNewChapter() {
+      const ytRaw = (document.getElementById('fYT')?.value || '').trim();
+      const ytId = ytRaw.includes('youtu') ? (ytRaw.split('v=')[1]?.split('&')[0] || ytRaw.split('/').pop()?.split('?')[0]) : ytRaw;
+      const data = { bolum_adi: (document.getElementById('fChN')?.value || '').trim(), bolum_no: solChapters.length + 1, baslik: (document.getElementById('fBas')?.value || '').trim(), youtube_id: ytId, sira: 1, book: isNaN(solBookId) ? solBookId : Number(solBookId) };
+      await post('/solution-videos', data);
+      notify('Bölüm ve test eklendi ✓'); loadSolChapters(solBookId);
+    }
+
+    async function saveAddTestInline(idx, chName, chNo) {
+      const name = decodeURIComponent(chName);
+      const ytRaw = (document.getElementById('ayt-' + idx)?.value || '').trim();
+      const ytId = ytRaw.includes('youtu') ? (ytRaw.split('v=')[1]?.split('&')[0] || ytRaw.split('/').pop()?.split('?')[0]) : ytRaw;
+      const data = { baslik: (document.getElementById('abt-' + idx)?.value || '').trim(), youtube_id: ytId, sira: parseInt(document.getElementById('asr-' + idx)?.value || 1), bolum_adi: name, bolum_no: chNo, book: isNaN(solBookId) ? solBookId : Number(solBookId) };
+      await post('/solution-videos', data);
+      notify('Test eklendi ✓'); loadSolChapters(solBookId);
+    }
+
+    async function saveTestInline(id) {
+      const ytRaw = (document.getElementById('ty-' + id)?.value || '').trim();
+      const ytId = ytRaw.includes('youtu') ? (ytRaw.split('v=')[1]?.split('&')[0] || ytRaw.split('/').pop()?.split('?')[0]) : ytRaw;
+      await put('/solution-videos/' + id, { baslik: (document.getElementById('tb-' + id)?.value || '').trim(), youtube_id: ytId, sira: parseInt(document.getElementById('ts-' + id)?.value || 1) });
+      notify('Test güncellendi ✓'); loadSolChapters(solBookId);
+    }
+
+    async function deleteTest(id) {
+      if (!confirm('Bu testi sil?')) return;
+      await del('/solution-videos/' + id);
+      notify('Test silindi'); loadSolChapters(solBookId);
+    }
+
+    async function deleteChapter(chName) {
+      const name = decodeURIComponent(chName);
+      if (!confirm(`"${name}" bölümünü ve tüm testlerini sil?`)) return;
+      const d = await get(`/solution-videos?filters[book][id][$eq]=${solBookId}&filters[bolum_adi][$eq]=${encodeURIComponent(name)}&pagination[pageSize]=100`);
+      await Promise.all((d.data || []).map(item => del('/solution-videos/' + (item.documentId || item.id))));
+      notify('Bölüm silindi'); loadSolChapters(solBookId);
+    }
+
+    /* ════════════════════
+       EĞİTİMCİLER
+    ════════════════════ */
+    var instrItems = [];
+    var instrDragIdx = null;
+
+    async function renderInstructors() {
+      loading();
+      const d = await get('/instructors?sort=displayOrder:asc&pagination[pageSize]=100');
+      instrItems = d.data || [];
+      renderInstructorRows();
+    }
+
+    function renderInstructorRows() {
+      const rows = instrItems.map((item, i) => {
+        const a2 = a(item);
+        const docId = item.documentId || item.id;
+        return `<tr id="instr-${i}" draggable="true"
+                  ondragstart="instrDragStart(${i})"
+                  ondragover="instrDragOver(event,${i})"
+                  ondragleave="instrDragLeave(${i})"
+                  ondrop="instrDrop(event,${i})"
+                  style="cursor:grab;transition:all .15s">
+      <td style="width:24px;color:#475569;font-size:1.1rem;padding-right:0;user-select:none">&#9776;</td>
+              <td><strong style="color:#e2e8f0">${esc(a2.name || '—')}</strong></td>
+              <td style="font-size:.8rem">${a2.youtube ? `<a href="${safeHttpUrl(a2.youtube, '#')}" target="_blank" rel="noopener" style="color:#60a5fa;text-decoration:none">&#9654; YouTube</a>` : '—'}</td>
+              <td style="font-size:.8rem">${a2.instagram ? `<a href="${safeHttpUrl(a2.instagram, '#')}" target="_blank" rel="noopener" style="color:#e879f9;text-decoration:none">&#9654; Instagram</a>` : '—'}</td>
+      <td style="color:#475569;font-size:.8rem;text-align:center">${i + 1}</td>
+      <td class="td-act">
+        <button class="btn btn-ghost btn-sm" onclick="editInstructor('${docId}')"><span class="ms">edit</span></button>
+        <button class="btn btn-danger btn-sm" onclick="delItem('instructors','${docId}',renderInstructors)"><span class="ms">delete</span></button>
+      </td>
+    </tr>`;
+      }).join('');
+
+      setMain(ph('<span class="ms">supervisor_account</span>', 'Eğitimciler', 'Sürükleyerek sıralayın ve ardından Kaydet butonuna basın',
+        `<button class="btn btn-success" onclick="saveInstructorOrder()" style="margin-right:8px"><span class="ms">save</span> Sıralamayı Kaydet</button><button class="btn btn-primary" onclick="editInstructor(null)"><span class="ms">add</span> Yeni Eğitimci</button>`) + `
+    <div class="tcard">
+      <div class="ttbar"><h3>${instrItems.length} Eğitimci</h3><small style="color:#64748b;font-size:.75rem"><span class="ms" style="font-size:14px;vertical-align:middle">drag_indicator</span> satırı sürükle → sıra değişir</small></div>
+      ${instrItems.length
+          ? `<table><thead><tr><th style="width:28px"></th><th>Ad</th><th>YouTube</th><th>Instagram</th><th style="text-align:center">Sıra</th><th>İşlem</th></tr></thead><tbody id="instrTbody">${rows}</tbody></table>`
+          : '<div class="empty"><span class="ms ms-xl" style="display:block;margin-bottom:12px">supervisor_account</span>Henüz eğitimci yok</div>'
+        }
+    </div></div>`);
+    }
+
+    function instrDragStart(i) {
+      instrDragIdx = i;
+      const row = document.getElementById('instr-' + i);
+      if (row) { row.style.opacity = '0.4'; row.style.outline = '2px solid #3b82f6'; }
+    }
+    function instrDragOver(e, i) {
+      e.preventDefault();
+      if (instrDragIdx === i) return;
+      const row = document.getElementById('instr-' + i);
+      if (row) row.style.background = 'rgba(59,130,246,.15)';
+    }
+    function instrDragLeave(i) {
+      const row = document.getElementById('instr-' + i);
+      if (row) row.style.background = '';
+    }
+    async function instrDrop(e, i) {
+      e.preventDefault();
+      instrItems.forEach((_, idx) => {
+        const r = document.getElementById('instr-' + idx);
+        if (r) { r.style.opacity = ''; r.style.outline = ''; r.style.background = ''; }
+      });
+      if (instrDragIdx === null || instrDragIdx === i) { instrDragIdx = null; return; }
+      const [moved] = instrItems.splice(instrDragIdx, 1);
+      instrItems.splice(i, 0, moved);
+      instrDragIdx = null;
+      // Sadece ekranı güncelle, DB'yi henüz güncelleme
+      renderInstructorRows();
+      notify('Sıralama değiştirildi. Kaydetmek için "Sıralamayı Kaydet" butonuna basmayı unutmayın.', 's');
+    }
+
+    async function saveInstructorOrder() {
+      notify('Sıralama veritabanına kaydediliyor...', 's');
+      try {
+        const btn = document.querySelector('button[onclick="saveInstructorOrder()"]');
+        if (btn) btn.disabled = true;
+
+        // Strapi'de displayOrder unique (benzersiz) olduğu için, 
+        // çakışma hatasını engellemek amacıyla sıralamaları önce +1000 ile offsetleyerek kaydediyoruz.
+        await Promise.all(instrItems.map((item, idx) => {
+          const docId = item.documentId || item.id;
+          return put('/instructors/' + docId, { displayOrder: idx + 1 + 1000 });
+        }));
+
+        // Offsetlenen sıralamaları kalıcı orijinal sıralarına güncelliyoruz.
+        await Promise.all(instrItems.map((item, idx) => {
+          const docId = item.documentId || item.id;
+          return put('/instructors/' + docId, { displayOrder: idx + 1 });
+        }));
+
+        notify('✅ Başarıyla kaydedildi!', 's');
+        await renderInstructors(); // Listeyi sunucudan en güncel haliyle çek
+      } catch (err) {
+        notify('Hata oluştu! Lütfen sayfayı yenileyip tekrar deneyin.', 'e');
+      }
+    }
+
+
+    async function editInstructor(id) {
+      loading();
+      const [instrRes, subsRes] = await Promise.all([
+        id ? get('/instructors/' + id + '?populate[photo][fields][0]=url&populate[subjects][fields][0]=name') : Promise.resolve({ data: {} }),
+        get('/subjects?sort=name:asc&pagination[pageSize]=100')
+      ]);
+      const a2 = instrRes.data || {};
+
+      const rawSubs = Array.isArray(a2.subjects) ? a2.subjects : (a2.subjects?.data || []);
+      const curSubs = rawSubs.map(s => s.documentId || s.id);
+      const subOpts = (subsRes.data || []).map(s => {
+        const sName = s.attributes?.name || s.name || '';
+        const sId = s.documentId || s.id;
+        return `<label class="cb-label"><input type="checkbox" class="cb-ins-sub" value="${sId}"${curSubs.includes(sId) ? ' checked' : ''}> ${sName}</label>`;
+      }).join('');
+
+      // Strapi v5: photo is direct object, not wrapped in data.attributes
+      const photoUrl = a2.photo?.url || a2.photo?.data?.attributes?.url || '';
+      const fullPhotoUrl = photoUrl ? (photoUrl.startsWith('http') ? photoUrl : '' + photoUrl) : '';
+
+      setMain(`
+    <div class="ph">
+      <div>
+        <button class="btn btn-ghost btn-sm" onclick="renderInstructors()" style="margin-bottom:8px">← Eğitimciler</button>
+        <h2><span class="ms">supervisor_account</span> ${id ? (a2.name || 'Eğitimciyi Düzenle') : 'Yeni Eğitimci'}</h2>
+        <p>${id ? 'Eğitimci bilgilerini düzenle' : 'Yeni eğitimci oluştur'}</p>
+      </div>
+      <button class="btn btn-primary" onclick="saveInstructor('${id || ''}')"><span class="ms">save</span> ${id ? 'Güncelle' : 'Kaydet'}</button>
+    </div>
+    <div class="pb">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div class="tcard" style="padding:20px">
+            <div style="font-weight:700;color:#fff;margin-bottom:16px"><span class="ms">edit_note</span> Temel Bilgiler</div>
+            <div class="fg"><label>Ad Soyad</label><input id="fNm" value="${a2.name || ''}"/></div>
+            <div class="fg"><label>YouTube</label><input id="fYT" value="${a2.youtube || ''}" placeholder="https://youtube.com/@kanal"/></div>
+            <div class="fg"><label>Instagram</label><input id="fIG" value="${a2.instagram || ''}" placeholder="https://instagram.com/@hesap"/></div>
+            <div class="fg"><label>Sıra (displayOrder)</label><input id="fDO" type="number" value="${a2.displayOrder || ''}"/></div>
+          </div>
+          <div class="tcard" style="padding:20px">
+            <div style="font-weight:700;color:#fff;margin-bottom:14px"><span class="ms">menu_book</span> Branş (Ders)</div>
+            <div class="cb-list" style="max-height:200px;overflow-y:auto">
+              ${subOpts || '<div style="color:#64748b;font-size:0.85rem">Henüz ders yok</div>'}
+            </div>
+          </div>
+        </div>
+        <div class="tcard" style="padding:20px">
+          <div style="font-weight:700;color:#fff;margin-bottom:14px"><span class="ms">photo_camera</span> Fotoğraf</div>
+          <div id="instrPhotoPreview" style="margin-bottom:14px;text-align:center">
+            ${fullPhotoUrl ? '<img src="' + fullPhotoUrl + '" style="width:100px;height:100px;object-fit:cover;border-radius:50%;display:inline-block;border:3px solid #334155"/>' : '<div style="width:100px;height:100px;border-radius:50%;background:#1e293b;border:3px dashed #334155;display:inline-flex;align-items:center;justify-content:center"><span class="ms" style="font-size:40px;color:#475569">person</span></div>'}
+          </div>
+          <input type="file" id="fPhoto" accept="image/*" style="background:#0f172a;border:1.5px solid #334155;border-radius:9px;padding:8px;width:100%;color:#94a3b8;font-size:.82rem" onchange="previewInstrPhoto(this)"/>
+          <small style="color:#64748b;font-size:.72rem;display:block;margin-top:6px">JPG, PNG, WEBP — Mevcut fotoğrafı korumak için boş bırakın.</small>
+        </div>
+      </div>
+    </div>`);
+    }
+
+    function previewInstrPhoto(input) {
+      if (!input.files || !input.files[0]) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const prev = document.getElementById('instrPhotoPreview');
+        if (prev) prev.innerHTML = '<img src="' + e.target.result + '" style="width:80px;height:80px;object-fit:cover;border-radius:50%;display:block;border:3px solid #22c55e"/><div style="color:#22c55e;font-size:.72rem;margin-top:4px">✓ Yeni fotoğraf seçildi</div>';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+
+    async function saveInstructor(id) {
+      const subs = Array.from(document.querySelectorAll('.cb-ins-sub:checked')).map(cb => cb.value);
+      const data = { name: gv('fNm'), youtube: gv('fYT'), instagram: gv('fIG'), subjects: subs };
+      const do2 = gv('fDO'); if (do2) data.displayOrder = parseInt(do2);
+      // Fotoğraf yükleme
+      const photoFile = document.getElementById('fPhoto')?.files?.[0];
+      if (photoFile) {
+        try {
+          const fd = new FormData();
+          fd.append('files', photoFile);
+          const upRes = await fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + ensureApiToken() },
+            body: fd
+          });
+          const upData = await upRes.json();
+          if (upData[0]?.id) data.photo = upData[0].id;
+        } catch (e) { notify('Fotoğraf yüklenemedi', 'e'); }
+      }
+      if (id) await put('/instructors/' + id, data); else await post('/instructors', data);
+      notify(id ? 'Güncellendi ✓' : 'Eklendi ✓'); renderInstructors();
+    }
+
+    /* ════════════════════
+       SAYFALAR (KVKK, GIZLILIK, VB.)
+    ════════════════════ */
+    function slugifyTR(text) {
+      return (text || '')
+        .toLowerCase()
+        .trim()
+        .replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ı/g, 'i')
+        .replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ü/g, 'u')
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function fillPageSlugFromTitle() {
+      const t = gv('fPT');
+      const s = gv('fPS');
+      if (!s && t) $('fPS').value = slugifyTR(t);
+    }
+
+    async function renderPages() {
+      loading();
+      const d = await get('/pages?sort=updatedAt:desc&pagination[pageSize]=200');
+      const items = d.data || [];
+
+      // Sistem config kayıtlarını listeden gizle
+      const SYSTEM_SLUGS = ['site-nav-footer-config', 'site-nav-footer-config-1', 'site-config-nav-footer'];
+      const pageItems = items.filter(item => !SYSTEM_SLUGS.includes((a(item).slug || '')));
+
+      const rows = pageItems.map(item => {
+        const p = a(item);
+        const docId = item.documentId || item.id;
+        const title = p.title || '—';
+        const slug = p.slug || '';
+        const pageUrl = slug ? `/sayfa/${encodeURIComponent(slug)}` : '#';
+        return `<tr>
+          <td><strong style="color:#e2e8f0">${title}</strong></td>
+          <td style="font-family:monospace;color:#93c5fd">${slug || '—'}</td>
+          <td class="td-act">
+            <button class="btn btn-ghost btn-sm" onclick="editPage('${docId}')"><span class="ms">edit</span></button>
+            <a class="btn btn-ghost btn-sm" href="${pageUrl}" target="_blank" rel="noopener"><span class="ms">open_in_new</span></a>
+            <button class="btn btn-danger btn-sm" onclick="delItem('pages','${docId}',renderPages)"><span class="ms">delete</span></button>
+          </td>
+        </tr>`;
+      }).join('');
+
+      setMain(ph('<span class="ms">description</span>', 'Sayfalar', 'KVKK, Gizlilik Politikası, Kullanım Koşulları gibi sayfaları yönet', `<button class="btn btn-primary" onclick="editPage(null)"><span class="ms">add</span> Yeni Sayfa</button>`) + `
+        <div class="tcard">
+          <div class="ttbar"><h3>${pageItems.length} Sayfa</h3></div>
+          ${pageItems.length
+            ? `<table><thead><tr><th>Başlık</th><th>Slug</th><th>İşlem</th></tr></thead><tbody>${rows}</tbody></table>`
+            : '<div class="empty"><span class="ms ms-xl" style="display:block;margin-bottom:12px">description</span>Henüz sayfa yok</div>'}
+        </div></div>`);
+    }
+
+    async function editPage(docId) {
+      loading();
+      let p = {};
+      if (docId) {
+        const d = await get('/pages/' + docId);
+        p = a(d.data || {});
+      }
+
+      const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+      setMain(`
+        <div class="ph">
+          <div>
+            <button class="btn btn-ghost btn-sm" onclick="renderPages()" style="margin-bottom:8px">← Sayfalar</button>
+            <h2><span class="ms">description</span> ${docId ? 'Sayfayı Düzenle' : 'Yeni Sayfa'}</h2>
+            <p>WordPress tarzı editör — biçimlendirme, görsel ekleme, bağlantı</p>
+          </div>
+          <button class="btn btn-primary" onclick="savePage('${docId || ''}')"><span class="ms">save</span> ${docId ? 'Güncelle' : 'Kaydet'}</button>
+        </div>
+        <div class="pb">
+          <div class="tcard" style="padding:20px">
+            <div class="fg"><label>Başlık</label><input id="fPT" value="${esc(p.title || '')}" oninput="fillPageSlugFromTitle()"/></div>
+            <div class="fg"><label>Slug</label><input id="fPS" value="${esc(p.slug || '')}" placeholder="gizlilik-politikasi"/></div>
+            <div class="fg">
+              <label>İçerik</label>
+              <!-- Toolbar -->
+              <div id="rte-toolbar" style="display:flex;flex-wrap:wrap;gap:2px;padding:6px 8px;background:#1e293b;border:1px solid #334155;border-bottom:none;border-radius:8px 8px 0 0;align-items:center">
+                <select onchange="rteHeading(this.value);this.value=''" style="background:#0f172a;color:#94a3b8;border:1px solid #334155;border-radius:4px;padding:3px 6px;font-size:.75rem;cursor:pointer">
+                  <option value="">Başlık</option>
+                  <option value="h1">Başlık 1</option>
+                  <option value="h2">Başlık 2</option>
+                  <option value="h3">Başlık 3</option>
+                  <option value="h4">Başlık 4</option>
+                  <option value="p">Paragraf</option>
+                </select>
+                <div style="width:1px;height:20px;background:#334155;margin:0 4px"></div>
+                <button type="button" onclick="rteCmd('bold')" title="Kalın" class="rte-btn"><b>B</b></button>
+                <button type="button" onclick="rteCmd('italic')" title="İtalik" class="rte-btn"><i>I</i></button>
+                <button type="button" onclick="rteCmd('underline')" title="Alt Çizgi" class="rte-btn"><u>U</u></button>
+                <button type="button" onclick="rteCmd('strikeThrough')" title="Üstü Çizili" class="rte-btn"><s>S</s></button>
+                <div style="width:1px;height:20px;background:#334155;margin:0 4px"></div>
+                <button type="button" onclick="rteCmd('insertUnorderedList')" title="Madde Listesi" class="rte-btn"><span class="ms" style="font-size:16px">format_list_bulleted</span></button>
+                <button type="button" onclick="rteCmd('insertOrderedList')" title="Numaralı Liste" class="rte-btn"><span class="ms" style="font-size:16px">format_list_numbered</span></button>
+                <div style="width:1px;height:20px;background:#334155;margin:0 4px"></div>
+                <button type="button" onclick="rteLink()" title="Bağlantı Ekle" class="rte-btn"><span class="ms" style="font-size:16px">link</span></button>
+                <button type="button" onclick="rteCmd('unlink')" title="Bağlantı Kaldır" class="rte-btn"><span class="ms" style="font-size:16px">link_off</span></button>
+                <button type="button" onclick="rteImage()" title="Görsel Ekle" class="rte-btn" style="color:#6366f1"><span class="ms" style="font-size:16px">image</span></button>
+                <div style="width:1px;height:20px;background:#334155;margin:0 4px"></div>
+                <button type="button" onclick="rteQuote()" title="Alıntı" class="rte-btn"><span class="ms" style="font-size:16px">format_quote</span></button>
+                <button type="button" onclick="rteCmd('insertHorizontalRule')" title="Yatay Çizgi" class="rte-btn"><span class="ms" style="font-size:16px">horizontal_rule</span></button>
+                <button type="button" onclick="rteCmd('removeFormat')" title="Biçimlendirmeyi Temizle" class="rte-btn"><span class="ms" style="font-size:16px">format_clear</span></button>
+                <div style="flex:1"></div>
+                <button type="button" onclick="rteToggleSource()" title="HTML Kaynağı" class="rte-btn" id="rte-src-btn" style="font-size:.7rem;font-family:monospace;color:#94a3b8">&lt;/&gt;</button>
+              </div>
+              <!-- Editor -->
+              <div id="rte-editor" contenteditable="true" style="min-height:360px;max-height:600px;overflow-y:auto;background:#0f172a;border:1px solid #334155;border-radius:0 0 8px 8px;padding:16px 20px;color:#e2e8f0;font-size:.9rem;line-height:1.8;outline:none;cursor:text">${p.content || '<p></p>'}</div>
+              <!-- Source (hidden) -->
+              <textarea id="rte-source" style="display:none;min-height:360px;max-height:600px;background:#0f172a;border:1px solid #334155;border-radius:0 0 8px 8px;padding:16px 20px;color:#6ee7b7;font-size:.82rem;line-height:1.6;font-family:'Cascadia Code',Consolas,monospace;resize:vertical;width:100%;box-sizing:border-box"></textarea>
+              <small>Bu içerik /sayfa/slug-adi altında yayınlanır.</small>
+            </div>
+            <!-- Gizli dosya input'u görsel yükleme için -->
+            <input type="file" id="rte-file-input" accept="image/*" style="display:none" onchange="rteHandleFile(this)"/>
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px">
+              <button class="btn btn-ghost" onclick="renderPages()">İptal</button>
+              <button class="btn btn-primary" onclick="savePage('${docId || ''}')"><span class="ms">save</span> ${docId ? 'Güncelle' : 'Kaydet'}</button>
+            </div>
+          </div>
+        </div>
+        <style>
+          .rte-btn{background:none;border:1px solid transparent;color:#94a3b8;padding:3px 7px;border-radius:4px;cursor:pointer;font-size:.85rem;line-height:1;transition:all .15s}
+          .rte-btn:hover{background:#334155;color:#e2e8f0;border-color:#475569}
+          #rte-editor:focus{border-color:#6366f1}
+          #rte-editor img{max-width:100%;height:auto;border-radius:8px;margin:12px 0;cursor:pointer;transition:outline .15s}
+          #rte-editor img:hover{outline:2px solid rgba(99,102,241,.4);outline-offset:2px}
+          #rte-editor img.rte-img-selected{outline:2px solid #6366f1;outline-offset:2px}
+          #rte-editor blockquote{border-left:3px solid #6366f1;margin:16px 0;padding:8px 16px;color:#94a3b8;background:rgba(99,102,241,.06);border-radius:0 6px 6px 0}
+          #rte-editor a{color:#818cf8;text-decoration:underline}
+          #rte-editor h1,#rte-editor h2,#rte-editor h3,#rte-editor h4{color:#fff;margin:16px 0 8px}
+          #rte-editor h1{font-size:1.6rem}#rte-editor h2{font-size:1.35rem}#rte-editor h3{font-size:1.1rem}#rte-editor h4{font-size:1rem}
+          #rte-editor hr{border:none;border-top:1px solid #334155;margin:20px 0}
+          #rte-editor ul,#rte-editor ol{padding-left:24px;margin:8px 0}
+          #rte-editor p{margin:0 0 8px}
+          .rte-img-bar{position:absolute;display:flex;gap:3px;padding:5px 8px;background:#1e293b;border:1px solid #475569;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.5);z-index:50;align-items:center}
+          .rte-img-bar button{padding:3px 9px;background:#0f172a;border:1px solid #334155;border-radius:4px;color:#94a3b8;cursor:pointer;font-size:.72rem;transition:all .15s}
+          .rte-img-bar button:hover,.rte-img-bar button.active{background:#6366f1;border-color:#6366f1;color:#fff}
+          .rte-img-bar input{width:60px;background:#0f172a;border:1px solid #334155;border-radius:4px;color:#e2e8f0;padding:3px 6px;font-size:.72rem;text-align:center}
+          .rte-img-bar select{background:#0f172a;border:1px solid #334155;border-radius:4px;color:#94a3b8;padding:3px 4px;font-size:.72rem;cursor:pointer}
+        </style>`);
+
+      // Editor'a ilk fokus
+      const ed = document.getElementById('rte-editor');
+      if(ed && !ed.textContent.trim()) ed.innerHTML = '<p><br></p>';
+
+      // Görsele tıklama → boyutlandırma çubuğu
+      if (ed) {
+        ed.addEventListener('click', function(e) {
+          rteHideImgBar();
+          if (e.target.tagName === 'IMG') {
+            e.target.classList.add('rte-img-selected');
+            window._rteSelectedImg = e.target;
+            rteShowImgBar(e.target);
+          }
+        });
+        document.addEventListener('click', function(e) {
+          if (!e.target.closest('.rte-img-bar') && e.target.tagName !== 'IMG') rteHideImgBar();
+        });
+      }
+    }
+
+    /* ── Rich Text Editor komutları ── */
+    window.rteCmd = function(cmd, val) {
+      document.execCommand(cmd, false, val || null);
+      document.getElementById('rte-editor')?.focus();
+    };
+
+    window.rteHeading = function(tag) {
+      if (!tag) return;
+      document.execCommand('formatBlock', false, '<' + tag + '>');
+      document.getElementById('rte-editor')?.focus();
+    };
+
+    window.rteLink = function() {
+      const sel = window.getSelection();
+      const hasText = sel && sel.toString().trim();
+      const url = prompt('Bağlantı URL:', 'https://');
+      if (!url || url === 'https://') return;
+      if (!hasText) {
+        const label = prompt('Bağlantı metni:', url);
+        document.execCommand('insertHTML', false, '<a href="' + url.replace(/"/g,'&quot;') + '" target="_blank" rel="noopener">' + (label || url).replace(/</g,'&lt;') + '</a>');
+      } else {
+        document.execCommand('createLink', false, url);
+        // target="_blank" ekle
+        const ed = document.getElementById('rte-editor');
+        if(ed) ed.querySelectorAll('a:not([target])').forEach(a => { a.target='_blank'; a.rel='noopener'; });
+      }
+      document.getElementById('rte-editor')?.focus();
+    };
+
+    window.rteQuote = function() {
+      document.execCommand('formatBlock', false, '<blockquote>');
+      document.getElementById('rte-editor')?.focus();
+    };
+
+    window.rteImage = function() {
+      _rteUploadData = '';
+      openM('Görsel Ekle', `
+        <div style="margin-bottom:16px">
+          <div style="font-weight:600;color:#e2e8f0;margin-bottom:12px">📎 Dosyadan Yükle</div>
+          <label style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:#1e293b;border:2px dashed #334155;border-radius:8px;cursor:pointer;color:#94a3b8;transition:border-color .2s" onmouseenter="this.style.borderColor='#6366f1'" onmouseleave="this.style.borderColor='#334155'">
+            <span class="ms" style="font-size:1.3rem">cloud_upload</span>
+            Görsel Seç (max 2MB)
+            <input type="file" accept="image/*" style="display:none" onchange="rteHandleFileModal(this)"/>
+          </label>
+          <div id="rte-upload-preview" style="margin-top:10px"></div>
+        </div>
+        <div style="border-top:1px solid #334155;padding-top:14px">
+          <div style="font-weight:600;color:#e2e8f0;margin-bottom:10px">🔗 URL ile Ekle</div>
+          <div class="fg"><input id="rte-img-url" placeholder="https://ornek.com/gorsel.jpg"/></div>
+          <div class="fg"><input id="rte-img-alt" placeholder="Görsel açıklaması (alt metin)"/></div>
+        </div>
+        <div style="border-top:1px solid #334155;padding-top:14px;margin-top:14px">
+          <div style="font-weight:600;color:#e2e8f0;margin-bottom:10px">📐 Boyut</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+            <button type="button" class="rte-size-btn" onclick="rteSetSize('25')" style="padding:5px 12px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#94a3b8;cursor:pointer;font-size:.78rem;transition:all .15s">25%</button>
+            <button type="button" class="rte-size-btn" onclick="rteSetSize('50')" style="padding:5px 12px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#94a3b8;cursor:pointer;font-size:.78rem;transition:all .15s">50%</button>
+            <button type="button" class="rte-size-btn" onclick="rteSetSize('75')" style="padding:5px 12px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#94a3b8;cursor:pointer;font-size:.78rem;transition:all .15s">75%</button>
+            <button type="button" class="rte-size-btn active" onclick="rteSetSize('100')" style="padding:5px 12px;background:#6366f1;border:1px solid #6366f1;border-radius:6px;color:#fff;cursor:pointer;font-size:.78rem;transition:all .15s">100%</button>
+            <button type="button" class="rte-size-btn" onclick="rteSetSize('auto')" style="padding:5px 12px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#94a3b8;cursor:pointer;font-size:.78rem;transition:all .15s">Orijinal</button>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="fg" style="flex:1;margin:0"><label style="font-size:.72rem">Genişlik (px)</label><input id="rte-img-w" type="number" placeholder="Otomatik" min="50" max="2000"/></div>
+            <div class="fg" style="flex:1;margin:0"><label style="font-size:.72rem">Hizalama</label>
+              <select id="rte-img-align" style="background:#0f172a;color:#94a3b8;border:1px solid #334155;border-radius:4px;padding:5px 8px;font-size:.8rem;width:100%">
+                <option value="center">Orta</option>
+                <option value="left">Sol</option>
+                <option value="right">Sağ</option>
+                <option value="none">Yok</option>
+              </select>
+            </div>
+          </div>
+        </div>`,
+        `<button class="btn btn-ghost" onclick="closeM()">Vazgeç</button>
+         <button class="btn btn-primary" onclick="rteInsertImage()"><span class="ms">image</span> Görseli Ekle</button>`
+      );
+    };
+
+    window.rteSetSize = function(val) {
+      document.querySelectorAll('.rte-size-btn').forEach(b => { b.style.background='#1e293b'; b.style.borderColor='#334155'; b.style.color='#94a3b8'; });
+      if (event && event.target) { event.target.style.background='#6366f1'; event.target.style.borderColor='#6366f1'; event.target.style.color='#fff'; }
+      const wInput = document.getElementById('rte-img-w');
+      if (val === 'auto') { if(wInput) wInput.value=''; window._rteImgPercent=''; }
+      else { window._rteImgPercent=val; if(wInput) wInput.value=''; }
+    };
+    window._rteImgPercent = '100';
+
+    var _rteUploadData = '';
+    window.rteHandleFileModal = function(input) {
+      const file = input?.files?.[0];
+      if (!file) return;
+      if (!/^image\//.test(file.type)) { notify('Geçerli bir görsel seçin.', 'e'); return; }
+      if (file.size > 2 * 1024 * 1024) { notify('Görsel en fazla 2MB olmalı.', 'e'); return; }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        _rteUploadData = e.target?.result || '';
+        const prev = document.getElementById('rte-upload-preview');
+        if (prev && _rteUploadData) {
+          prev.innerHTML = '<img src="' + _rteUploadData + '" style="max-height:120px;max-width:300px;object-fit:contain;border-radius:6px;border:1px solid #334155;background:#0f172a;padding:2px"/>';
+        }
+        const urlInput = document.getElementById('rte-img-url');
+        if (urlInput) urlInput.value = '';
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.rteInsertImage = function() {
+      const url = (document.getElementById('rte-img-url')?.value || '').trim();
+      const alt = (document.getElementById('rte-img-alt')?.value || '').trim() || 'Görsel';
+      const src = url || _rteUploadData;
+      if (!src) { notify('Bir görsel seçin veya URL girin.', 'e'); return; }
+      const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+      const customW = (document.getElementById('rte-img-w')?.value || '').trim();
+      const align = document.getElementById('rte-img-align')?.value || 'center';
+      const pct = window._rteImgPercent || '';
+
+      let sty = 'height:auto;border-radius:8px';
+      if (customW) sty = 'width:' + parseInt(customW) + 'px;' + sty;
+      else if (pct && pct !== '100') sty = 'width:' + pct + '%;' + sty;
+      else sty = 'max-width:100%;' + sty;
+
+      let wrapSty = 'margin:12px 0';
+      if (align === 'center') wrapSty += ';text-align:center';
+      else if (align === 'left') wrapSty += ';text-align:left';
+      else if (align === 'right') wrapSty += ';text-align:right';
+
+      const html = '<div style="' + wrapSty + '"><img src="' + esc(src) + '" alt="' + esc(alt) + '" style="' + sty + '" loading="lazy"/></div><p><br></p>';
+      closeM();
+      _rteUploadData = '';
+      const ed = document.getElementById('rte-editor');
+      if (ed) { ed.focus(); document.execCommand('insertHTML', false, html); }
+    };
+
+    var _rteSourceMode = false;
+    window.rteToggleSource = function() {
+      const ed = document.getElementById('rte-editor');
+      const src = document.getElementById('rte-source');
+      const btn = document.getElementById('rte-src-btn');
+      const tb = document.getElementById('rte-toolbar');
+      if (!ed || !src) return;
+      _rteSourceMode = !_rteSourceMode;
+      if (_rteSourceMode) {
+        src.value = ed.innerHTML;
+        ed.style.display = 'none';
+        src.style.display = 'block';
+        btn.style.color = '#6366f1';
+        // toolbar butonlarını devre dışı
+        tb.querySelectorAll('.rte-btn:not(#rte-src-btn),select').forEach(b => { b.disabled=true; b.style.opacity='.35'; });
+      } else {
+        ed.innerHTML = src.value;
+        src.style.display = 'none';
+        ed.style.display = 'block';
+        btn.style.color = '#94a3b8';
+        tb.querySelectorAll('.rte-btn:not(#rte-src-btn),select').forEach(b => { b.disabled=false; b.style.opacity='1'; });
+      }
+    };
+
+    /* ── Editör içi görsel boyutlandırma çubuğu ── */
+    window._rteSelectedImg = null;
+
+    function rteHideImgBar() {
+      const bar = document.getElementById('rte-img-bar');
+      if (bar) bar.remove();
+      document.querySelectorAll('#rte-editor .rte-img-selected').forEach(i => i.classList.remove('rte-img-selected'));
+      window._rteSelectedImg = null;
+    }
+
+    function rteShowImgBar(img) {
+      rteHideImgBar();
+      img.classList.add('rte-img-selected');
+      window._rteSelectedImg = img;
+
+      const bar = document.createElement('div');
+      bar.className = 'rte-img-bar';
+      bar.id = 'rte-img-bar';
+
+      const curW = img.style.width || '';
+      const isPercent = curW.includes('%');
+      const curAlign = img.parentElement?.style?.textAlign || 'center';
+
+      bar.innerHTML = `
+        <button onclick="rteResizeImg('25%')" title="25%">25%</button>
+        <button onclick="rteResizeImg('50%')" title="50%">50%</button>
+        <button onclick="rteResizeImg('75%')" title="75%">75%</button>
+        <button onclick="rteResizeImg('100%')" title="100%">100%</button>
+        <span style="width:1px;height:16px;background:#334155;margin:0 2px"></span>
+        <input type="number" id="rte-bar-w" placeholder="px" value="${parseInt(img.offsetWidth)||''}" min="50" max="2000" onchange="rteResizeImg(this.value+'px')" title="Piksel genişlik"/>
+        <span style="width:1px;height:16px;background:#334155;margin:0 2px"></span>
+        <select onchange="rteAlignImg(this.value)" title="Hizalama">
+          <option value="center"${curAlign==='center'?' selected':''}>⬛ Orta</option>
+          <option value="left"${curAlign==='left'?' selected':''}>◀ Sol</option>
+          <option value="right"${curAlign==='right'?' selected':''}>▶ Sağ</option>
+        </select>
+        <span style="width:1px;height:16px;background:#334155;margin:0 2px"></span>
+        <button onclick="rteDeleteImg()" title="Görseli Sil" style="color:#f87171">✕</button>`;
+
+      // Butonları aktif yap
+      const btns = bar.querySelectorAll('button');
+      btns.forEach(b => { if (b.textContent.trim() === curW || (!curW && b.textContent.trim()==='100%') || (curW==='max-width:100%' && b.textContent.trim()==='100%')) b.classList.add('active'); });
+      if (isPercent) { const match = btns[['25%','50%','75%','100%'].indexOf(curW)]; if(match) match.classList.add('active'); }
+
+      const ed = document.getElementById('rte-editor');
+      ed.style.position = 'relative';
+      ed.appendChild(bar);
+
+      // Pozisyon: görselin üstünde ortada
+      const imgRect = img.getBoundingClientRect();
+      const edRect = ed.getBoundingClientRect();
+      bar.style.top = (imgRect.top - edRect.top - bar.offsetHeight - 6 + ed.scrollTop) + 'px';
+      bar.style.left = Math.max(0, (imgRect.left - edRect.left + imgRect.width/2 - bar.offsetWidth/2)) + 'px';
+    }
+
+    window.rteResizeImg = function(val) {
+      const img = window._rteSelectedImg;
+      if (!img) return;
+      if (val === '100%') { img.style.width = ''; img.style.maxWidth = '100%'; }
+      else { img.style.width = val; img.style.maxWidth = ''; }
+      img.style.height = 'auto';
+      // px input güncelle
+      const pxInput = document.getElementById('rte-bar-w');
+      if (pxInput && val.includes('%')) pxInput.value = '';
+      rteShowImgBar(img);
+    };
+
+    window.rteAlignImg = function(align) {
+      const img = window._rteSelectedImg;
+      if (!img) return;
+      const wrap = img.parentElement;
+      if (wrap && wrap.id !== 'rte-editor') {
+        wrap.style.textAlign = align;
+      }
+    };
+
+    window.rteDeleteImg = function() {
+      const img = window._rteSelectedImg;
+      if (!img) return;
+      const wrap = img.parentElement;
+      rteHideImgBar();
+      if (wrap && wrap.id !== 'rte-editor' && wrap.children.length <= 1) wrap.remove();
+      else img.remove();
+    };
+
+    async function savePage(docId) {
+      const title = gv('fPT');
+      let slug = gv('fPS');
+      // Rich editor'dan içerik al
+      const ed = document.getElementById('rte-editor');
+      const src = document.getElementById('rte-source');
+      const content = (_rteSourceMode && src) ? src.value.trim() : (ed ? ed.innerHTML.trim() : '');
+      if (!title) { notify('Başlık zorunlu', 'e'); return; }
+      if (!slug) slug = slugifyTR(title);
+      if (!slug) { notify('Slug üretilemedi', 'e'); return; }
+
+      const data = { title, slug, content };
+      try {
+        if (docId) await put('/pages/' + docId, data);
+        else await post('/pages', data);
+        notify(docId ? 'Sayfa güncellendi ✓' : 'Sayfa eklendi ✓');
+        renderPages();
+      } catch (err) {
+        notify('Sayfa kaydedilemedi. Slug benzersiz olmalı.', 'e');
+      }
+    }
+
+    /* ════════════════════
+       SIMPLE LISTS
+    ════════════════════ */
+    var campCatItems = [];
+    var campCatDragIdx = null;
+
+    async function renderList(col, page, label) {
+      loading();
+      const q = (page === 'campcats')
+        ? ('/' + col + '?pagination[pageSize]=100')
+        : ('/' + col + '?sort=name:asc&pagination[pageSize]=100');
+      let d = await get(q);
+      if (page === 'campcats' && d?.error) {
+        d = await get('/' + col + '?sort=name:asc&pagination[pageSize]=100');
+      }
+      const items = d.data || [];
+
+      if (page === 'campcats') {
+        const shared = await fetchSharedNavFootConfig();
+        const catOrderIds = shared?.ordering?.categoryIds || [];
+        campCatItems = sortBySavedIdOrder(
+          items,
+          catOrderIds,
+          (item) => item.documentId || item.id,
+          (x, y) => String(x.name || '').localeCompare(String(y.name || ''), 'tr')
+        );
+        const rows = campCatRowsHtml(col, page, label);
+
+        setMain(ph('<span class="ms">local_offer</span>', label, 'Sürükleyerek sıralayın ve ardından Kaydet butonuna basın', `<button class="btn btn-success" onclick="saveCampCategoryOrder()" style="margin-right:8px"><span class="ms">save</span> Sıralamayı Kaydet</button><button class="btn btn-primary" onclick="addListItem('${col}','${page}','${label}')"><span class="ms">add</span> Ekle</button>`) + `
+    <div class="tcard">
+      <div class="ttbar"><h3>${campCatItems.length} Kayıt</h3><small style="color:#64748b;font-size:.75rem"><span class="ms" style="font-size:14px;vertical-align:middle">drag_indicator</span> satırı sürükle → sıra değişir</small></div>
+      ${campCatItems.length ? `<table><thead><tr><th style="width:28px"></th><th>Ad</th><th style="text-align:center">Sıra</th><th>İşlem</th></tr></thead><tbody id="campCatTbody">${rows}</tbody></table>`
+            : '<div class="empty"><span class="ms ms-xl" style="display:block;margin-bottom:12px">local_offer</span>Henüz kayıt yok</div>'}
+    </div></div>`);
+        return;
+      }
+
+      const rows = items.map(item => {
+        const a2 = a(item); const id = item.documentId || item.id;
+        return `<tr><td><strong style="color:#e2e8f0">${a2.name || '—'}</strong></td>
+      <td class="td-act">
+        <button class="btn btn-ghost btn-sm" onclick="editListItem('${col}','${page}','${label}','${id}')"><span class="ms">edit</span></button>
+        <button class="btn btn-danger btn-sm" onclick="delItem('${col}','${id}',()=>renderList('${col}','${page}','${label}'))"><span class="ms">delete</span></button>
+      </td></tr>`;
+      }).join('');
+      setMain(ph('<span class="ms">local_offer</span>', label, label + ' listesi', `<button class="btn btn-primary" onclick="addListItem('${col}','${page}','${label}')"><span class="ms">add</span> Ekle</button>`) + `
+    <div class="tcard">
+      <div class="ttbar"><h3>${items.length} Kayıt</h3></div>
+      ${items.length ? `<table><thead><tr><th>Ad</th><th>İşlem</th></tr></thead><tbody>${rows}</tbody></table>`
+          : '<div class="empty"><span class="ms ms-xl" style="display:block;margin-bottom:12px">local_offer</span>Henüz kayıt yok</div>'}
+    </div></div>`);
+    }
+
+    function addListItem(col, page, label) {
+      openM('Yeni ' + label, `<div class="fg"><label>Ad</label><input id="fNm" placeholder="${label} adı"/></div>`,
+        `<button class="btn btn-ghost" onclick="closeM()">İptal</button>
+     <button class="btn btn-primary" onclick="saveListItem(null,'${col}','${page}','${label}')"><span class="ms">save</span> Kaydet</button>`);
+    }
+
+    async function editListItem(col, page, label, id) {
+      const d = await get('/' + col + '/' + id); const a2 = a(d.data || {});
+      openM(label + ' Düzenle', `<div class="fg"><label>Ad</label><input id="fNm" value="${a2.name || ''}"/></div>`,
+        `<button class="btn btn-ghost" onclick="closeM()">İptal</button>
+     <button class="btn btn-primary" onclick="saveListItem('${id}','${col}','${page}','${label}')"><span class="ms">save</span> Güncelle</button>`);
+    }
+
+    async function saveListItem(id, col, page, label) {
+      const data = { name: gv('fNm') };
+      if (id) await put('/' + col + '/' + id, data); else await post('/' + col, data);
+      closeM(); notify(id ? 'Güncellendi ✓' : 'Eklendi ✓'); renderList(col, page, label);
+    }
+
+    function campCatRowsHtml(col, page, label) {
+      return campCatItems.map((item, i) => {
+        const a2 = a(item); const id = item.documentId || item.id;
+        return `<tr id="campcat-${i}" draggable="true"
+      ondragstart="campCatDragStart(${i})"
+      ondragover="campCatDragOver(event,${i})"
+      ondragleave="campCatDragLeave(${i})"
+      ondrop="campCatDrop(event,${i})"
+      style="cursor:grab;transition:all .15s">
+      <td style="width:24px;color:#475569;font-size:1.1rem;padding-right:0;user-select:none">&#9776;</td>
+      <td><strong style="color:#e2e8f0">${a2.name || '—'}</strong></td>
+      <td style="color:#475569;font-size:.8rem;text-align:center">${i + 1}</td>
+      <td class="td-act">
+        <button class="btn btn-ghost btn-sm" onclick="editListItem('${col}','${page}','${label}','${id}')"><span class="ms">edit</span></button>
+        <button class="btn btn-danger btn-sm" onclick="delItem('${col}','${id}',()=>renderList('${col}','${page}','${label}'))"><span class="ms">delete</span></button>
+      </td></tr>`;
+      }).join('');
+    }
+
+    function campCatDragStart(i) {
+      campCatDragIdx = i;
+      const row = document.getElementById('campcat-' + i);
+      if (row) { row.style.opacity = '0.4'; row.style.outline = '2px solid #3b82f6'; }
+    }
+    function campCatDragOver(e, i) {
+      e.preventDefault();
+      if (campCatDragIdx === i) return;
+      const row = document.getElementById('campcat-' + i);
+      if (row) row.style.background = 'rgba(59,130,246,.15)';
+    }
+    function campCatDragLeave(i) {
+      const row = document.getElementById('campcat-' + i);
+      if (row) row.style.background = '';
+    }
+    function campCatDrop(e, i) {
+      e.preventDefault();
+      campCatItems.forEach((_, idx) => {
+        const r = document.getElementById('campcat-' + idx);
+        if (r) { r.style.opacity = ''; r.style.outline = ''; r.style.background = ''; }
+      });
+      if (campCatDragIdx === null || campCatDragIdx === i) { campCatDragIdx = null; return; }
+      const moved = campCatItems.splice(campCatDragIdx, 1)[0];
+      campCatItems.splice(i, 0, moved);
+      campCatDragIdx = null;
+      const tbody = document.getElementById('campCatTbody');
+      if (tbody) tbody.innerHTML = campCatRowsHtml('categories', 'campcats', 'Kamp Kategorileri');
+      notify('Sıralama değiştirildi. Kaydetmek için "Sıralamayı Kaydet" butonuna basın.', 's');
+    }
+
+    async function saveCampCategoryOrder() {
+      notify('Kamp kategorisi sıralaması kaydediliyor...', 's');
+      try {
+        const btn = document.querySelector('button[onclick="saveCampCategoryOrder()"]');
+        if (btn) btn.disabled = true;
+        await saveSharedOrderingConfig({
+          categoryIds: campCatItems.map(item => String(item.documentId || item.id)).filter(Boolean)
+        });
+
+        notify('Kamp kategori sıralaması kaydedildi ✓');
+        await renderList('categories', 'campcats', 'Kamp Kategorileri');
+      } catch (e) {
+        notify('Kayıt hatası: ' + e.message, 'e');
+      } finally {
+        const btn = document.querySelector('button[onclick="saveCampCategoryOrder()"]');
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    /* ════════════════════
+       CSV + KATEGORi
+    ════════════════════ */
+    var csvSimpleRows = [];
+
+    function toggleCsvPanel() {
+      const p = $('csvPanel'); if (!p) return;
+      const open = p.style.display !== 'none';
+      p.style.display = open ? 'none' : 'block';
+      const btn = $('csvToggleBtn');
+      if (btn) btn.innerHTML = open ? '<span class="ms">upload_file</span> CSV Yükle' : '<span class="ms">close</span> CSV Kapat';
+    }
+
+    function downloadSimpleCsvTemplate() {
+      const csv = '\uFEFFbolum_adi,baslik,youtube_id\nParagraf,Test 1,VIDEO_ID\nParagraf,Test 2,VIDEO_ID\nCümlede Anlam,Test 1,VIDEO_ID';
+      const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+      const el = document.createElement('a'); el.href = url; el.download = 'soru_cozumleri_sablon.csv'; el.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function handleSimpleCsvFile(files) {
+      if (!files || !files[0]) return;
+      $('csvFileName2').textContent = '✅ ' + files[0].name;
+      const reader = new FileReader();
+      reader.onload = e => parseSimpleCsv(e.target.result);
+      reader.readAsText(files[0], 'UTF-8');
+    }
+
+    function parseSimpleCsv(text) {
+      if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+      const lines = text.split(/\r?\n/).filter(l => l.trim());
+      if (lines.length < 2) { notify('CSV çok kısa', 'e'); return; }
+      const hdrs = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/[\'"]/g, ''));
+      const iB = hdrs.indexOf('bolum_adi'), iT = hdrs.indexOf('baslik'), iY = hdrs.indexOf('youtube_id');
+      if (iB === -1 || iT === -1 || iY === -1) { notify('Eksik sütun! bolum_adi, baslik, youtube_id gerekli', 'e'); return; }
+      const chOrd = {}, chSira = {}; let chN = 0;
+      csvSimpleRows = lines.slice(1).map((line, li) => {
+        const c = line.split(',').map(x => x.trim().replace(/^[\'"]+|[\'"]+$/g, ''));
+        const bAdi = c[iB] || '', bas = c[iT] || '';
+        let yt = c[iY] || '';
+        if (yt.includes('youtu')) {
+          const m1 = yt.match(/[?&]v=([a-zA-Z0-9_-]{11})/), m2 = yt.match(/(?:youtu\.be\/|youtube\.com\/(?:embed|v)\/)([a-zA-Z0-9_-]{11})/);
+          yt = (m1 && m1[1]) || (m2 && m2[1]) || yt.split('/').pop().split('?')[0];
+        }
+        if (bAdi && !(bAdi in chOrd)) { chOrd[bAdi] = ++chN; chSira[bAdi] = 1; }
+        const sira = chSira[bAdi] || 1; if (bAdi) chSira[bAdi] = sira + 1;
+        return { bolum_no: chOrd[bAdi] || li + 1, bolum_adi: bAdi, sira, baslik: bas, youtube_id: yt, _ok: !!(bAdi && bas && yt) };
+      });
+      $('csvSimpleCount').textContent = csvSimpleRows.length + ' satır';
+      $('csvSimpleBody').innerHTML = csvSimpleRows.map((r, i) => `
+              <tr style="border-bottom:1px solid #1e293b">
+                <td style="padding:4px 10px;color:#475569">${i + 1}</td>
+                <td style="padding:4px 10px;color:#cbd5e1">${r.bolum_adi}</td>
+                <td style="padding:4px 10px;color:#e2e8f0">${r.baslik}</td>
+                <td style="padding:4px 10px;color:#60a5fa;font-family:monospace;font-size:.71rem">${r.youtube_id}</td>
+              </tr>`).join('');
+      $('csvSimplePreview').style.display = 'block';
+    }
+
+    async function startSimpleCsvImport() {
+      if (!solBookId) { notify('Lütfen kitap seçin', 'e'); return; }
+      const valid = csvSimpleRows.filter(r => r._ok);
+      if (!valid.length) { notify('Geçerli satır yok', 'e'); return; }
+      const btn = $('csvImportBtn2'); btn.disabled = true; btn.textContent = '⏳ Yükleniyor…';
+      $('csvProgress2').style.display = 'block';
+      if ($('csvClearFirst2')?.checked) {
+        $('csvProgressText2').textContent = 'Mevcut kayıtlar siliniyor…';
+        const ex = await get(`/solution-videos?filters[book][id][$eq]=${solBookId}&pagination[pageSize]=500&fields[0]=id`);
+        for (const item of (ex.data || [])) await del('/solution-videos/' + (item.documentId || item.id));
+      }
+      let done = 0;
+      for (const row of valid) {
+        try { await post('/solution-videos', { bolum_no: row.bolum_no, bolum_adi: row.bolum_adi, sira: row.sira, baslik: row.baslik, youtube_id: row.youtube_id, book: isNaN(solBookId) ? solBookId : Number(solBookId) }); }
+        catch (e) { console.warn('hata', row, e); }
+        done++;
+        const pct = Math.round(done / valid.length * 100);
+        $('csvProgressBar2').style.width = pct + '%';
+        $('csvProgressText2').textContent = done + ' / ' + valid.length + ' yüklendi (' + pct + '%)';
+      }
+      btn.disabled = false; btn.innerHTML = '<span class="ms">rocket_launch</span> Strapi\'ye Yükle';
+      notify('✅ ' + done + ' kayıt yüklendi!');
+      csvSimpleRows = [];
+      $('csvSimplePreview').style.display = 'none';
+      $('csvFileName2').textContent = '';
+      $('csvProgress2').style.display = 'none';
+      $('csvProgressBar2').style.width = '0%';
+      toggleCsvPanel();
+      loadSolChapters(solBookId);
+    }
+
+    async function togglePublish(col, page, label, id, isPub) {
+      await put('/' + col + '/' + id, { publishedAt: isPub ? null : new Date().toISOString() });
+      notify(isPub ? '⏸ Yayından kaldırıldı' : '✅ Yayınlandı!');
+      renderList(col, page, label);
+    }
+
+    /* ════════════════════
+       SİTE DÜZENLEMEsİ
+    ════════════════════ */
+    const SITE_KEY = 'dp_site_content';
+
+    function getSiteData() {
+      try { return JSON.parse(localStorage.getItem(SITE_KEY)) || {}; } catch { return {}; }
+    }
+
+    function renderSiteEdit() {
+      const s = getSiteData();
+      setMain(`
+    <div class="ph">
+      <div>
+        <button class="btn btn-ghost btn-sm" onclick="goTo('settings')" style="margin-bottom:8px">← Ayarlar</button>
+        <h2><span class="ms">language</span> Site Düzenleme</h2>
+        <p>Ana sayfadaki metinleri ve butonları buradan düzenle</p>
+      </div>
+      <button class="btn btn-primary" onclick="saveSiteEdit()"><span class="ms">save</span> Kaydet</button>
+    </div>
+    <div class="pb">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+
+        <!-- HERO METİNLERİ -->
+        <div>
+          <div class="tcard" style="padding:20px;margin-bottom:16px">
+            <div style="font-weight:700;color:#fff;margin-bottom:16px"><span class="ms">view_carousel</span> Hero Bölümü</div>
+            <div class="fg">
+              <label>Badge Metni (küçük etiket)</label>
+              <input id="se_badge" value="${s.badge || '🎓 Türkiye\'nin #1 Ücretsiz Eğitim Platformu'}" placeholder="🎓 Türkiye'nin #1 Ücretsiz..."/>
+            </div>
+            <div class="fg">
+              <label>Başlık — 1. Satır (renkli)</label>
+              <input id="se_title1" value="${s.title1 || 'TYT &amp; AYT\'ye'}" placeholder="TYT & AYT'ye"/>
+            </div>
+            <div class="fg">
+              <label>Başlık — 2. Satır</label>
+              <input id="se_title2" value="${s.title2 || 'Hazırlanmanın'}" placeholder="Hazırlanmanın"/>
+            </div>
+            <div class="fg">
+              <label>Başlık — 3. Satır</label>
+              <input id="se_title3" value="${s.title3 || 'En Akıllı Yolu'}" placeholder="En Akıllı Yolu"/>
+            </div>
+            <div class="fg">
+              <label>Açıklama Metni</label>
+              <textarea id="se_desc" rows="3" style="resize:vertical">${s.desc || 'Alanında uzman öğretmenlerle sınava hazırlan. Binlerce ücretsiz ders, kamplar ve soru çözümlerine hemen eriş.'}</textarea>
+            </div>
+          </div>
+
+          <!-- FLOATING BADGE -->
+          <div class="tcard" style="padding:20px">
+            <div style="font-weight:700;color:#fff;margin-bottom:16px"><span class="ms">auto_awesome</span> Yüzen Etiketler</div>
+            <div class="fg">
+              <label>Üst Etiket</label>
+              <input id="se_badgeTop" value="${s.badgeTop || '✨ Ücretsiz!'}" placeholder="✨ Ücretsiz!"/>
+            </div>
+            <div class="fg">
+              <label>Alt Etiket</label>
+              <input id="se_badgeBot" value="${s.badgeBot || '🔥 İşler Yayın Grubu Katkıları ile'}" placeholder="🔥 İşler Yayın Grubu..."/>
+            </div>
+          </div>
+        </div>
+
+        <!-- BUTONLAR -->
+        <div>
+          <div class="tcard" style="padding:20px;margin-bottom:16px">
+            <div style="font-weight:700;color:#fff;margin-bottom:16px"><span class="ms">smart_button</span> Buton 1 (Ana Buton)</div>
+            <div class="fg">
+              <label>Buton Metni</label>
+              <input id="se_btn1text" value="${s.btn1text || 'Kamplarımız'}" placeholder="Kamplarımız"/>
+            </div>
+            <div class="fg">
+              <label>Buton Linki</label>
+              <input id="se_btn1link" value="${s.btn1link || '#dersler'}" placeholder="#dersler"/>
+            </div>
+          </div>
+
+          <div class="tcard" style="padding:20px;margin-bottom:16px">
+            <div style="font-weight:700;color:#fff;margin-bottom:16px"><span class="ms">smart_button</span> Buton 2 (İkinci Buton)</div>
+            <div class="fg">
+              <label>Buton Metni</label>
+              <input id="se_btn2text" value="${s.btn2text || 'Kitaplarımız'}" placeholder="Kitaplarımız"/>
+            </div>
+            <div class="fg">
+              <label>Buton Linki</label>
+              <input id="se_btn2link" value="${s.btn2link || '/kitaplar'}" placeholder="/kitaplar"/>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:10px;padding-bottom:40px">
+        <button class="btn btn-ghost" onclick="resetSiteEdit()">↩ Varsayılana Dön</button>
+        <button class="btn btn-primary" onclick="saveSiteEdit()"><span class="ms">save</span> Kaydet & Uygula</button>
+      </div>
+    </div>`);
+    }
+
+    function saveSiteEdit() {
+      const data = {
+        badge: document.getElementById('se_badge').value,
+        title1: document.getElementById('se_title1').value,
+        title2: document.getElementById('se_title2').value,
+        title3: document.getElementById('se_title3').value,
+        desc: document.getElementById('se_desc').value,
+        badgeTop: document.getElementById('se_badgeTop').value,
+        badgeBot: document.getElementById('se_badgeBot').value,
+        btn1text: document.getElementById('se_btn1text').value,
+        btn1link: document.getElementById('se_btn1link').value,
+        btn2text: document.getElementById('se_btn2text').value,
+        btn2link: document.getElementById('se_btn2link').value
+      };
+      localStorage.setItem(SITE_KEY, JSON.stringify(data));
+      notify('✅ Site içeriği kaydedildi! Sayfayı yenileyince değişiklikler görünür.');
+    }
+
+    function resetSiteEdit() {
+      if (!confirm('Varsayılan değerlere dönmek istediğinize emin misiniz?')) return;
+      localStorage.removeItem(SITE_KEY);
+      notify('↩ Varsayılan değerlere döndürüldü');
+      renderSiteEdit();
+    }
+
+    /* ════════════════════════════════════════
+       HEADER & FOOTER DÜZENLEMESİ
+    ════════════════════════════════════════ */
+    const NAV_KEY = 'dp_nav_config';
+    const FOOT_KEY = 'dp_footer_config';
+    const FOOT_BRAND_KEY = 'dp_footer_brand';
+    const NAV_FOOT_PAGE_SLUG = 'site-nav-footer-config';
+    let _navFootSharedDocId = null;
+
+    const DEFAULT_FOOT_BRAND = [
+      {
+        name: 'Ders Platosu',
+        desc: "Türkiye'nin en buyuk ucretsiz TYT & AYT egitim platformu.",
+        logo: 'https://i.hizliresim.com/ag3gf4d.png',
+        url: '/'
+      },
+      {
+        name: 'Isler Yayin Grubu',
+        desc: 'Yayincilik ve egitimde guvenilir cozum ortagi.',
+        logo: 'https://i.hizliresim.com/8c5v6k7.png',
+        url: 'https://isler.com.tr/'
+      }
+    ];
+
+    const DEFAULT_NAV = [
+      { label: 'Ana Sayfa', url: "/" },
+      { label: 'Youtuber Hocalarımız', url: "/youtuber-hocalar" },
+      { label: 'Kitaplarımız', url: "/kitaplar" },
+      { label: 'Videolu Soru Çözümleri', url: "/video-soru-cozumleri" }
+    ];
+
+    const DEFAULT_FOOTER = [
+      {
+        title: 'Platform',
+        links: [
+          { label: 'Ana Sayfa', url: "/" },
+          { label: 'Youtuber Hocalarımız', url: "/youtuber-hocalar" },
+          { label: 'Kitaplarımız', url: "/kitaplar" },
+          { label: 'Videolu Soru Çözümleri', url: "/video-soru-cozumleri" }
+        ]
+      },
+      {
+        title: 'Hizmetler',
+        links: [
+          { label: 'Kamplar', url: '#kamplar' },
+          { label: 'Soru Çözümleri', url: "/video-soru-cozumleri" },
+          { label: 'Blog', url: '#' }
+        ]
+      },
+      {
+        title: 'Hesap',
+        links: [
+          { label: 'Ücretsiz Üye Ol', url: "/kayit" },
+          { label: 'Gizlilik Politikası', url: '#' },
+          { label: 'Kullanım Koşulları', url: '#' }
+        ]
+      }
+    ];
+
+    function getNavConfig() { try { return JSON.parse(localStorage.getItem(NAV_KEY)) || DEFAULT_NAV; } catch { return DEFAULT_NAV; } }
+    function getFootConfig() { try { return JSON.parse(localStorage.getItem(FOOT_KEY)) || DEFAULT_FOOTER; } catch { return DEFAULT_FOOTER; } }
+    function getFootBrandConfig() { try { return JSON.parse(localStorage.getItem(FOOT_BRAND_KEY)) || DEFAULT_FOOT_BRAND; } catch { return DEFAULT_FOOT_BRAND; } }
+
+    function cloneDefaultsNavFoot() {
+      return {
+        nav: JSON.parse(JSON.stringify(DEFAULT_NAV)),
+        footer: JSON.parse(JSON.stringify(DEFAULT_FOOTER)),
+        brand: JSON.parse(JSON.stringify(DEFAULT_FOOT_BRAND))
+      };
+    }
+
+    function normalizeNavFootData(raw) {
+      const base = cloneDefaultsNavFoot();
+      const src = raw && typeof raw === 'object' ? raw : {};
+      const normalizeIds = (arr) => (Array.isArray(arr) ? arr : []).map(function (v) { return String(v || '').trim(); }).filter(Boolean);
+      const normalizeUrl = (u) => {
+        const rawUrl = String(u || '').trim();
+        if (!rawUrl) return '#';
+        if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://') || rawUrl.startsWith('mailto:') || rawUrl.startsWith('tel:')) return rawUrl;
+        if (rawUrl.startsWith('/') || rawUrl.startsWith('#')) return rawUrl;
+        return '/' + rawUrl.replace(/^\/+/, '');
+      };
+      const normalizeLinks = (arr) => (Array.isArray(arr) ? arr : []).map(function (l) {
+        return {
+          label: (l?.label || '').toString().trim(),
+          url: normalizeUrl(l?.url)
+        };
+      }).filter(function (l) { return !!l.label; });
+
+      const nav = (Array.isArray(src.nav) && src.nav.length ? src.nav : base.nav).map(function (l) {
+        return {
+          label: (l?.label || '').toString().trim(),
+          url: normalizeUrl(l?.url)
+        };
+      }).filter(function (l) { return !!l.label; });
+
+      const footer = (Array.isArray(src.footer) && src.footer.length ? src.footer : base.footer).map(function (c) {
+        return {
+          title: (c?.title || '').toString().trim(),
+          links: normalizeLinks(c?.links)
+        };
+      }).filter(function (c) { return !!c.title; });
+
+      const brand = (Array.isArray(src.brand) && src.brand.length ? src.brand : base.brand).map(function (b) {
+        return {
+          name: (b?.name || '').toString().trim(),
+          desc: (b?.desc || '').toString(),
+          logo: (b?.logo || '').toString().trim(),
+          url: normalizeUrl(b?.url || '#')
+        };
+      }).filter(function (b) { return !!b.name; });
+
+      const orderingSrc = (src.ordering && typeof src.ordering === 'object') ? src.ordering : {};
+      const ordering = {
+        campIds: normalizeIds(orderingSrc.campIds),
+        categoryIds: normalizeIds(orderingSrc.categoryIds)
+      };
+
+      return {
+        nav: nav.length ? nav : base.nav,
+        footer: footer.length ? footer : base.footer,
+        brand: brand.length ? brand : base.brand,
+        ordering: ordering
+      };
+    }
+
+    async function fetchSharedNavFootConfig() {
+      try {
+        const d = await get('/pages?filters[slug][$eq]=' + encodeURIComponent(NAV_FOOT_PAGE_SLUG) + '&pagination[pageSize]=1');
+        const item = (d?.data || [])[0];
+        if (!item) return null;
+        _navFootSharedDocId = item.documentId || item.id || null;
+        if (!item.content) return null;
+        let parsed = null;
+        try { parsed = JSON.parse(item.content); } catch { return null; }
+        return normalizeNavFootData(parsed);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function loadNavFootConfig() {
+      const shared = await fetchSharedNavFootConfig();
+      if (shared) return shared;
+      return {
+        nav: getNavConfig(),
+        footer: getFootConfig(),
+        brand: getFootBrandConfig()
+      };
+    }
+
+    async function saveSharedNavFootConfig(state) {
+      const current = await fetchSharedNavFootConfig();
+      const merged = normalizeNavFootData(Object.assign({}, current || {}, state || {}));
+      const payload = {
+        title: 'Site Nav Footer Config',
+        slug: NAV_FOOT_PAGE_SLUG,
+        content: JSON.stringify(merged)
+      };
+
+      if (_navFootSharedDocId) {
+        await put('/pages/' + _navFootSharedDocId, payload);
+        return;
+      }
+
+      if (current && _navFootSharedDocId) {
+        await put('/pages/' + _navFootSharedDocId, payload);
+        return;
+      }
+
+      const created = await post('/pages', payload);
+      const createdItem = created?.data;
+      _navFootSharedDocId = createdItem?.documentId || createdItem?.id || null;
+    }
+
+    async function saveSharedOrderingConfig(orderingState) {
+      const safeState = orderingState && typeof orderingState === 'object' ? orderingState : {};
+      const current = await fetchSharedNavFootConfig();
+      const currentOrdering = (current && typeof current.ordering === 'object') ? current.ordering : {};
+      const nextOrdering = Object.assign({}, currentOrdering, safeState);
+      await saveSharedNavFootConfig(Object.assign({}, current || {}, { ordering: nextOrdering }));
+    }
+
+    /* ── Render Header/Footer Editor ── */
+    async function renderNavFootEdit() {
+      setMain(`
+    <div class="ph">
+      <div>
+        <button class="btn btn-ghost btn-sm" onclick="goTo('settings')" style="margin-bottom:8px">← Ayarlar</button>
+        <h2><span class="ms">tune</span> Header & Footer Düzenleme</h2>
+        <p>Navigasyon linklerini ve footer sütunlarını sürükle-bırak ile düzenle</p>
+      </div>
+    </div>
+    <div class="pb">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+
+        <!-- HEADER / NAVBAR -->
+        <div>
+          <div class="tcard" style="padding:20px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+              <div style="font-weight:700;color:#fff;font-size:.95rem"><span class="ms">menu</span> Header – Navigasyon Linkleri</div>
+              <button class="btn btn-ghost btn-sm" onclick="addNavLink()"><span class="ms">add</span> Link Ekle</button>
+            </div>
+            <div id="navLinkList" style="display:flex;flex-direction:column;gap:8px"></div>
+            <div style="margin-top:16px;display:flex;justify-content:flex-end;gap:10px">
+              <button class="btn btn-ghost btn-sm" onclick="resetNavConfig()"><span class="ms">restart_alt</span> Sıfırla</button>
+              <button class="btn btn-primary" onclick="saveNavConfig()"><span class="ms">save</span> Kaydet</button>
+            </div>
+          </div>
+          <div style="margin-top:12px;padding:12px 16px;background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.15);border-radius:8px;font-size:.78rem;color:#60a5fa;line-height:1.6">
+            💡 <strong>Sürükle-bırak</strong> ile sırayı değiştir. Kaydet'e basınca tüm sayfalarda geçerli olur.
+          </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div>
+            <div class="tcard" style="padding:20px;margin-bottom:24px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                <div style="font-weight:700;color:#fff;font-size:.95rem"><span class="ms">view_column</span> Footer – Bağlantı Sütunları</div>
+                <button class="btn btn-ghost btn-sm" onclick="addFooterCol()"><span class="ms">add</span> Sütun Ekle</button>
+              </div>
+              <div id="footerColList" style="display:flex;flex-direction:column;gap:16px"></div>
+              <div style="margin-top:16px;display:flex;justify-content:flex-end;gap:10px">
+                <button class="btn btn-ghost btn-sm" onclick="resetFootConfig()"><span class="ms">restart_alt</span> Sıfırla</button>
+                <button class="btn btn-primary" onclick="saveFootConfig()"><span class="ms">save</span> Kaydet</button>
+              </div>
+            </div>
+
+            <!-- FOOTER BRAND (LOGOS) -->
+            <div class="tcard" style="padding:20px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                <div style="font-weight:700;color:#fff;font-size:.95rem"><span class="ms">image</span> Footer – Logolar (Sol Alan)</div>
+                <button class="btn btn-ghost btn-sm" onclick="addFootBrand()"><span class="ms">add</span> Logo Ekle</button>
+              </div>
+              <div id="footBrandList" style="display:flex;flex-direction:column;gap:8px"></div>
+              <div style="margin-top:16px;display:flex;justify-content:flex-end;gap:10px">
+                <button class="btn btn-ghost btn-sm" onclick="resetFootBrandConfig()"><span class="ms">restart_alt</span> Sıfırla</button>
+                <button class="btn btn-primary" onclick="saveFootBrandConfig()"><span class="ms">save</span> Kaydet</button>
+              </div>
+              <div style="margin-top:12px;font-size:.78rem;color:#64748b;line-height:1.6">
+                Footer'ın sol bölümünde yer alan marka/logo açıklama alanlarını düzenler.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>`);
+
+        const cfg = await loadNavFootConfig();
+        _navLinks = (cfg.nav || []).map(l => ({ ...l }));
+        _footCols = (cfg.footer || []).map(c => ({ ...c, links: [...(c.links || [])] }));
+        _footBrand = (cfg.brand || []).map(b => ({ ...b }));
+        renderNavList();
+        renderFooterCols();
+        renderFootBrandList();
+      }
+
+    /* NAV LINK EDITOR */
+    let _navLinks = [];
+
+    function renderNavList() {
+      const list = document.getElementById('navLinkList');
+      if (!list) return;
+      list.innerHTML = '';
+      _navLinks.forEach((link, i) => {
+        const row = document.createElement('div');
+        row.dataset.idx = i;
+        row.draggable = true;
+        row.style.cssText = 'display:flex;align-items:center;gap:8px;background:#1e293b;padding:10px 12px;border-radius:8px;cursor:grab;border:1px solid #334155;transition:opacity .2s';
+        row.innerHTML = `
+          <span class="ms" style="color:#475569;font-size:18px;cursor:grab;flex-shrink:0">drag_indicator</span>
+          <input value="${link.label}" placeholder="Link adı" style="flex:1;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:6px 10px;color:#e2e8f0;font-size:.83rem;font-family:inherit;outline:none" onchange="_navLinks[${i}].label=this.value">
+          <input value="${link.url}" placeholder="URL (ör: index.html)" style="flex:1.2;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:6px 10px;color:#60a5fa;font-size:.83rem;font-family:monospace;outline:none" onchange="_navLinks[${i}].url=this.value">
+          <button onclick="removeNavLink(${i})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:18px;line-height:1;flex-shrink:0" title="Sil"><span class="ms">close</span></button>`;
+        // Drag & Drop
+        row.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', i); row.style.opacity = '.4'; });
+        row.addEventListener('dragend', () => { row.style.opacity = '1'; });
+        row.addEventListener('dragover', e => { e.preventDefault(); row.style.background = '#1e3a5f'; });
+        row.addEventListener('dragleave', () => { row.style.background = '#1e293b'; });
+        row.addEventListener('drop', e => {
+          e.preventDefault(); row.style.background = '#1e293b';
+          const from = parseInt(e.dataTransfer.getData('text/plain'));
+          const to = parseInt(row.dataset.idx);
+          if (from !== to) {
+            const moved = _navLinks.splice(from, 1)[0];
+            _navLinks.splice(to, 0, moved);
+            renderNavList();
+          }
+        });
+        list.appendChild(row);
+      });
+    }
+
+    window.addNavLink = function () {
+      _navLinks.push({ label: 'Yeni Sayfa', url: '#' });
+      renderNavList();
+    };
+    window.removeNavLink = function (i) {
+      _navLinks.splice(i, 1);
+      renderNavList();
+    };
+    window.saveNavConfig = async function () {
+      // Son değerleri inputlardan oku
+      document.querySelectorAll('#navLinkList > div').forEach((row, i) => {
+        const inputs = row.querySelectorAll('input');
+        if (_navLinks[i]) { _navLinks[i].label = inputs[0].value; _navLinks[i].url = inputs[1].value; }
+      });
+      localStorage.setItem(NAV_KEY, JSON.stringify(_navLinks));
+      try {
+        await saveSharedNavFootConfig({ nav: _navLinks, footer: _footCols, brand: _footBrand });
+        notify('✅ Header linkleri kaydedildi! Tüm sayfalarda geçerli oldu.');
+      } catch (e) {
+        notify('⚠ Header local kaydedildi, merkezi kayit basarisiz.', 'e');
+      }
+    };
+    window.resetNavConfig = async function () {
+      if (!confirm('Header linklerini varsayılana döndürmek istiyor musunuz?')) return;
+      localStorage.removeItem(NAV_KEY);
+      _navLinks = JSON.parse(JSON.stringify(DEFAULT_NAV));
+      renderNavList();
+      try { await saveSharedNavFootConfig({ nav: _navLinks, footer: _footCols, brand: _footBrand }); } catch (e) { }
+      notify('↩ Varsayılan linkler geri yüklendi');
+    };
+
+    /* FOOTER COLUMN EDITOR */
+    let _footCols = [];
+
+    function renderFooterCols() {
+      const list = document.getElementById('footerColList');
+      if (!list) return;
+      list.innerHTML = '';
+      _footCols.forEach((col, ci) => {
+        const colDiv = document.createElement('div');
+        colDiv.style.cssText = 'background:#1e293b;border-radius:10px;padding:14px;border:1px solid #334155';
+        colDiv.innerHTML = `
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <input value="${col.title}" placeholder="Sütun başlığı" style="flex:1;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:6px 10px;color:#f1f5f9;font-weight:600;font-size:.88rem;font-family:inherit;outline:none" onchange="_footCols[${ci}].title=this.value">
+            <button onclick="removeFooterCol(${ci})" style="background:none;border:none;color:#ef4444;cursor:pointer" title="Sütunu Sil"><span class="ms">delete</span></button>
+          </div>
+          <div id="footLinks_${ci}" style="display:flex;flex-direction:column;gap:6px"></div>
+          <button onclick="addFooterLink(${ci})" style="margin-top:10px;background:rgba(59,130,246,.1);border:1px dashed rgba(59,130,246,.3);color:#60a5fa;padding:5px 12px;border-radius:6px;font-size:.78rem;cursor:pointer;width:100%"><span class="ms" style="font-size:14px;vertical-align:middle">add</span> Link Ekle</button>`;
+        list.appendChild(colDiv);
+
+        const linkList = colDiv.querySelector(`#footLinks_${ci}`);
+        col.links.forEach((link, li) => {
+          const row = document.createElement('div');
+          row.dataset.idx = li;
+          row.draggable = true;
+          row.style.cssText = 'display:flex;align-items:center;gap:6px;cursor:grab';
+          row.innerHTML = `
+            <span class="ms" style="color:#475569;font-size:16px;flex-shrink:0">drag_indicator</span>
+            <input value="${link.label}" placeholder="Link adı" style="flex:1;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:.8rem;font-family:inherit;outline:none" onchange="_footCols[${ci}].links[${li}].label=this.value">
+            <input value="${link.url}" placeholder="URL" style="flex:1.1;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#60a5fa;font-size:.75rem;font-family:monospace;outline:none" onchange="_footCols[${ci}].links[${li}].url=this.value">
+            <button onclick="removeFooterLink(${ci},${li})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px"><span class="ms">close</span></button>`;
+          // Drag
+          row.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', li.toString()); row.style.opacity = '.4'; });
+          row.addEventListener('dragend', () => { row.style.opacity = '1'; });
+          row.addEventListener('dragover', e => { e.preventDefault(); row.style.background = '#1e3a5f'; });
+          row.addEventListener('dragleave', () => { row.style.background = ''; });
+          row.addEventListener('drop', e => {
+            e.preventDefault(); row.style.background = '';
+            const from = parseInt(e.dataTransfer.getData('text/plain'));
+            const to = parseInt(row.dataset.idx);
+            if (from !== to) {
+              const moved = _footCols[ci].links.splice(from, 1)[0];
+              _footCols[ci].links.splice(to, 0, moved);
+              renderFooterCols();
+            }
+          });
+          linkList.appendChild(row);
+        });
+      });
+    }
+
+    window.addFooterCol = function () { _footCols.push({ title: 'Yeni Sütun', links: [] }); renderFooterCols(); };
+    window.removeFooterCol = function (ci) { _footCols.splice(ci, 1); renderFooterCols(); };
+    window.addFooterLink = function (ci) {
+      // Önce inputlardan son değerleri kaydet
+      _footCols[ci].links.push({ label: 'Yeni Link', url: '#' }); renderFooterCols();
+    };
+    window.removeFooterLink = function (ci, li) { _footCols[ci].links.splice(li, 1); renderFooterCols(); };
+    window.saveFootConfig = async function () {
+      // Inputlardan son değerleri oku
+      document.querySelectorAll('#footerColList > div').forEach((colEl, ci) => {
+        const titleInp = colEl.querySelector('input'); if (titleInp && _footCols[ci]) _footCols[ci].title = titleInp.value;
+        colEl.querySelectorAll(`#footLinks_${ci} > div`).forEach((row, li) => {
+          const inps = row.querySelectorAll('input');
+          if (_footCols[ci]?.links[li]) { _footCols[ci].links[li].label = inps[0].value; _footCols[ci].links[li].url = inps[1].value; }
+        });
+      });
+      localStorage.setItem(FOOT_KEY, JSON.stringify(_footCols));
+      try {
+        await saveSharedNavFootConfig({ nav: _navLinks, footer: _footCols, brand: _footBrand });
+        notify('✅ Footer bağlantıları kaydedildi! Tüm sayfalarda geçerli oldu.');
+      } catch (e) {
+        notify('⚠ Footer local kaydedildi, merkezi kayit basarisiz.', 'e');
+      }
+    };
+    window.resetFootConfig = async function () {
+      if (!confirm('Footer linklerini varsayılana döndürmek istiyor musunuz?')) return;
+      localStorage.removeItem(FOOT_KEY);
+      _footCols = JSON.parse(JSON.stringify(DEFAULT_FOOTER));
+      renderFooterCols();
+      try { await saveSharedNavFootConfig({ nav: _navLinks, footer: _footCols, brand: _footBrand }); } catch (e) { }
+      notify('↩ Varsayılan footer geri yüklendi');
+    };
+
+      /* FOOT BRAND (LOGOS) EDITOR */
+      let _footBrand = [];
+
+      function onFootBrandLogoSelected(i, input) {
+        const file = input?.files?.[0];
+        if (!file) return;
+        if (!/^image\//.test(file.type)) {
+          notify('Lutfen gecerli bir gorsel secin.', 'e');
+          input.value = '';
+          return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+          notify('Logo dosyasi en fazla 2MB olmali.', 'e');
+          input.value = '';
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const dataUrl = e.target?.result || '';
+          if (!dataUrl) return;
+          _footBrand[i].logo = dataUrl;
+          const prev = document.getElementById('footBrandPreview_' + i);
+          if (prev) {
+            prev.innerHTML = '<img src="' + dataUrl + '" alt="Logo Onizleme" style="height:36px;max-width:140px;object-fit:contain;border:1px solid #334155;border-radius:6px;background:#0f172a;padding:4px" />';
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function renderFootBrandList() {
+        const list = document.getElementById('footBrandList');
+        if (!list) return;
+        list.innerHTML = '';
+        _footBrand.forEach((brand, i) => {
+          const row = document.createElement('div');
+          row.style.cssText = 'background:#1e293b;padding:12px;border-radius:8px;border:1px solid #334155;margin-bottom:8px;position:relative';
+          row.innerHTML = `
+            <button onclick="removeFootBrand(${i})" style="position:absolute;top:8px;right:8px;background:none;border:none;color:#ef4444;cursor:pointer;font-size:18px" title="Sil"><span class="ms">close</span></button>
+            <div style="display:flex;gap:10px;margin-bottom:8px">
+              <input value="${brand.name}" placeholder="Marka Adı (ör: Ders Platosu)" style="flex:1;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:6px 10px;color:#e2e8f0;font-size:.83rem" onchange="_footBrand[${i}].name=this.value">
+              <input value="${brand.url || ''}" placeholder="Marka URL (ör: / veya https://...)" style="flex:1;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:6px 10px;color:#e2e8f0;font-size:.83rem" onchange="_footBrand[${i}].url=this.value">
+            </div>
+            <div style="margin-bottom:8px">
+              <input type="file" accept=".png,.jpg,.jpeg,.webp,.svg,.ico,image/png,image/jpeg,image/webp,image/svg+xml,image/x-icon" style="width:100%;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:6px 10px;color:#93c5fd;font-size:.83rem" onchange="onFootBrandLogoSelected(${i}, this)">
+              <div id="footBrandPreview_${i}" style="margin-top:8px;color:#94a3b8;font-size:.76rem">
+                ${brand.logo ? '<img src="' + brand.logo + '" alt="Logo" style="height:36px;max-width:140px;object-fit:contain;border:1px solid #334155;border-radius:6px;background:#0f172a;padding:4px" />' : 'Henuz logo secilmedi'}
+              </div>
+            </div>
+            <textarea placeholder="Kısa Açıklama" style="width:100%;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:6px 10px;color:#cbd5e1;font-size:.83rem;resize:vertical;min-height:40px" onchange="_footBrand[${i}].desc=this.value">${brand.desc || ''}</textarea>
+          `;
+          list.appendChild(row);
+        });
+      }
+
+      window.addFootBrand = function () {
+        _footBrand.push({ name: 'Yeni Marka', desc: 'Aciklama...', logo: '', url: '#' });
+        renderFootBrandList();
+      };
+      window.removeFootBrand = function (i) {
+        _footBrand.splice(i, 1);
+        renderFootBrandList();
+      };
+      window.saveFootBrandConfig = async function () {
+        document.querySelectorAll('#footBrandList > div').forEach((row, i) => {
+          const inputs = row.querySelectorAll('input');
+          const txt = row.querySelector('textarea');
+          if (_footBrand[i]) {
+            _footBrand[i].name = inputs[0].value;
+            _footBrand[i].url = inputs[1].value;
+            _footBrand[i].desc = txt.value;
+          }
+        });
+        localStorage.setItem(FOOT_BRAND_KEY, JSON.stringify(_footBrand));
+        try {
+          await saveSharedNavFootConfig({ nav: _navLinks, footer: _footCols, brand: _footBrand });
+          notify('✅ Footer Logoları kaydedildi!');
+        } catch (e) {
+          notify('⚠ Footer logo local kaydedildi, merkezi kayit basarisiz.', 'e');
+        }
+      };
+      window.resetFootBrandConfig = async function () {
+        if (!confirm('Footer logolarını varsayılana döndürmek istiyor musunuz?')) return;
+        localStorage.removeItem(FOOT_BRAND_KEY);
+        _footBrand = JSON.parse(JSON.stringify(DEFAULT_FOOT_BRAND));
+        renderFootBrandList();
+        try { await saveSharedNavFootConfig({ nav: _navLinks, footer: _footCols, brand: _footBrand }); } catch (e) { }
+        notify('↩ Varsayılan logolar geri yüklendi');
+      };
+
+    /* ════════════════════════════════════════
+       AYARLAR
+    ════════════════════════════════════════ */
+    const SEO_KEY = 'dp_seo_settings';
+    let seoFaviconData = '';
+    let seoOgImageData = '';
+    function getSeoData() {
+      try { return JSON.parse(localStorage.getItem(SEO_KEY) || '{}'); } catch { return {}; }
+    }
+
+    function onSeoFaviconSelected(input) {
+      const file = input?.files?.[0];
+      if (!file) return;
+      if (!/^image\//.test(file.type)) {
+        notify('Lutfen gecerli bir gorsel secin (PNG, ICO, SVG, WEBP).', 'e');
+        input.value = '';
+        return;
+      }
+      if (file.size > 1024 * 1024) {
+        notify('Favicon dosyasi en fazla 1MB olmali.', 'e');
+        input.value = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        seoFaviconData = e.target?.result || '';
+        const prev = document.getElementById('seo_favicon_preview');
+        if (prev && seoFaviconData) {
+          prev.innerHTML = '<img src="' + seoFaviconData + '" alt="Favicon Onizleme" style="width:32px;height:32px;border-radius:6px;border:1px solid #334155;background:#0f172a" />';
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function onSeoOgImageSelected(input) {
+      const file = input?.files?.[0];
+      if (!file) return;
+      if (!/^image\//.test(file.type)) {
+        notify('Lutfen gecerli bir gorsel secin.', 'e');
+        input.value = '';
+        return;
+      }
+      if (file.size > 2 * 1024 * 1024) {
+        notify('OG gorsel dosyasi en fazla 2MB olmali.', 'e');
+        input.value = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        seoOgImageData = e.target?.result || '';
+        const prev = document.getElementById('seo_ogimage_preview');
+        if (prev && seoOgImageData) {
+          prev.innerHTML = '<img src="' + seoOgImageData + '" alt="OG Gorsel Onizleme" style="max-height:80px;max-width:240px;object-fit:contain;border:1px solid #334155;border-radius:8px;background:#0f172a;padding:4px" />';
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    /* ── Ana Ayarlar sayfası (hub) ── */
+    function renderSettings() {
+      setMain(`
+    <div class="ph">
+      <div><h2><span class="ms">settings</span> Ayarlar</h2><p>Güvenlik ve site yönetimi</p></div>
+    </div>
+    <div class="pb">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+
+        <!-- SEO Kısayol -->
+        <div class="tcard" style="padding:24px;cursor:pointer;transition:border-color .2s" onmouseenter="this.style.borderColor='rgba(99,102,241,.5)'" onmouseleave="this.style.borderColor=''" onclick="goTo('settings-seo')">
+          <div style="font-weight:700;color:#fff;font-size:1rem;margin-bottom:10px"><span class="ms">manage_search</span> SEO &amp; Kod Yönetimi</div>
+          <div style="font-size:.83rem;color:#64748b;line-height:1.7;margin-bottom:16px">
+            Site başlığı, açıklama, anahtar kelimeler, Open Graph, Twitter Cards,<br>
+            arama motoru doğrulama, Google Analytics, GTM, Facebook Pixel.
+          </div>
+          <button class="btn btn-primary" onclick="event.stopPropagation();goTo('settings-seo')">
+            <span class="ms">manage_search</span> SEO Ayarlarını Aç →
+          </button>
+        </div>
+
+        <!-- Site Düzenleme Kısayol -->
+        <div class="tcard" style="padding:24px;cursor:pointer;transition:border-color .2s" onmouseenter="this.style.borderColor='rgba(16,185,129,.5)'" onmouseleave="this.style.borderColor=''" onclick="goTo('siteedit')">
+          <div style="font-weight:700;color:#fff;font-size:1rem;margin-bottom:10px"><span class="ms">language</span> Site Düzenleme</div>
+          <div style="font-size:.83rem;color:#64748b;line-height:1.7;margin-bottom:16px">
+            Ana sayfa hero metinleri, buton etiketleri,<br>
+            yüzen etiketler ve “Neden Biz” özellik kartlarını<br>
+            buradan hızlıca düzenle.
+          </div>
+          <button class="btn btn-primary" onclick="event.stopPropagation();goTo('siteedit')">
+            <span class="ms">language</span> Site Düzenleme'yi Aç →
+          </button>
+        </div>
+
+        <!-- Sayfalar Kısayol -->
+        <div class="tcard" style="padding:24px;cursor:pointer;transition:border-color .2s" onmouseenter="this.style.borderColor='rgba(14,165,233,.5)'" onmouseleave="this.style.borderColor=''" onclick="goTo('pages')">
+          <div style="font-weight:700;color:#fff;font-size:1rem;margin-bottom:10px"><span class="ms">description</span> Sayfalar</div>
+          <div style="font-size:.83rem;color:#64748b;line-height:1.7;margin-bottom:16px">
+            KVKK, Gizlilik Politikası, Kullanım Koşulları gibi
+            statik sayfaları ekle, düzenle ve yayına al.
+          </div>
+          <button class="btn btn-primary" onclick="event.stopPropagation();goTo('pages')">
+            <span class="ms">description</span> Sayfaları Aç →
+          </button>
+        </div>
+
+        <!-- Görsel Alt Metinleri Kısayol -->
+        <div class="tcard" style="padding:24px;cursor:pointer;transition:border-color .2s" onmouseenter="this.style.borderColor='rgba(168,85,247,.5)'" onmouseleave="this.style.borderColor=''" onclick="goTo('settings-img-alts')">
+          <div style="font-weight:700;color:#fff;font-size:1rem;margin-bottom:10px"><span class="ms">image_search</span> Görsel Alt Metinleri</div>
+          <div style="font-size:.83rem;color:#64748b;line-height:1.7;margin-bottom:16px">
+            Kitap ve kamp görselleri için SEO uyumlu alt metinler.<br>
+            Başlıktan otomatik oluşturulur, içerik bazında düzenlenebilir.
+          </div>
+          <button class="btn btn-primary" onclick="event.stopPropagation();goTo('settings-img-alts')">
+            <span class="ms">image_search</span> Alt Metinleri Aç →
+          </button>
+        </div>
+
+        <!-- Header & Footer Kısayol -->
+        <div class="tcard" style="padding:24px;cursor:pointer;transition:border-color .2s" onmouseenter="this.style.borderColor='rgba(59,130,246,.5)'" onmouseleave="this.style.borderColor=''" onclick="goTo('nav-footer')">
+          <div style="font-weight:700;color:#fff;font-size:1rem;margin-bottom:10px"><span class="ms">tune</span> Header &amp; Footer</div>
+          <div style="font-size:.83rem;color:#64748b;line-height:1.7;margin-bottom:16px">
+            Navigasyon linklerini ekle, sil veya sırala.<br>
+            Footer sütunlarını ve bağlantılarını düzenle.<br>
+            Sürükle-bırak ile kolay sıralama desteği.
+          </div>
+          <button class="btn btn-primary" onclick="event.stopPropagation();goTo('nav-footer')">
+            <span class="ms">tune</span> Header &amp; Footer'ı Aç →
+          </button>
+        </div>
+
+        <!-- Sitemap Güncelle -->
+        <div class="tcard" style="padding:24px">
+          <div style="font-weight:700;color:#fff;font-size:1rem;margin-bottom:10px"><span class="ms">account_tree</span> Sitemap Güncelle</div>
+          <div style="font-size:.83rem;color:#64748b;line-height:1.7;margin-bottom:16px">
+            Strapi'deki tüm <strong style="color:#94a3b8">hocalar</strong>, <strong style="color:#94a3b8">kamplar</strong> ve <strong style="color:#94a3b8">kitaplar</strong>
+            otomatik taranır, <code style="background:#0f172a;padding:2px 6px;border-radius:4px;color:#60a5fa">sitemap.xml</code> güncellenir.
+          </div>
+          <button class="btn btn-primary" id="sitemapBtn" onclick="generateSitemap()" style="min-width:180px">
+            <span class="ms">autorenew</span> Sitemap Güncelle
+          </button>
+          <div id="sitemapResult" style="display:none;margin-top:14px;padding:12px 16px;border-radius:10px;font-size:.85rem"></div>
+        </div>
+
+      </div>
+    </div>`);
+    }
+
+
+    async function renderImgAlts() {
+      setMain(`
+    <div class="ph">
+      <div>
+        <button class="btn btn-ghost btn-sm" onclick="goTo('settings')" style="margin-bottom:8px">← Ayarlar</button>
+        <h2><span class="ms">image_search</span> Görsel Alt Metinleri</h2>
+        <p>Görsele tıkla, alt metnini düzenle → SEO güçlenir</p>
+      </div>
+    </div>
+    <div class="pb"><div id="imgalts-content" style="color:#94a3b8;text-align:center;padding:40px">Yükleniyor…</div></div>`);
+
+      const esc = s => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      const ytId = url => { try { const m = String(url).match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([A-Za-z0-9_-]{11})/); return m?.[1]||''; } catch { return ''; } };
+      const base = API.replace('/api','');
+
+      try {
+        const [booksRes, campsRes] = await Promise.all([
+          get('/books?populate[cover][fields][0]=url&fields[0]=title&pagination[pageSize]=200&sort=title:asc'),
+          get('/camps?fields[0]=title&fields[1]=introVideo&pagination[pageSize]=200&sort=title:asc')
+        ]);
+
+        const alts = (() => { try { return JSON.parse(localStorage.getItem('dp_img_alts') || '{}'); } catch { return {}; } })();
+
+        const books = (booksRes?.data || []).map(b => {
+          const rawUrl = b.cover?.url || '';
+          const imgSrc = rawUrl ? (rawUrl.startsWith('http') ? rawUrl : base + rawUrl) : '';
+          return { title: b.title || '', documentId: b.documentId || String(b.id), imgSrc };
+        });
+
+        const camps = (campsRes?.data || []).map(c => {
+          const vid = ytId(c.introVideo || '');
+          return { title: c.title || '', documentId: c.documentId || String(c.id), imgSrc: vid ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg` : '' };
+        });
+
+        window._imgAltsData = { books, camps };
+
+        function card(type, item) {
+          const key = type + '_' + item.documentId;
+          const defAlt = type === 'camp' ? item.title + ' Kampı – Ders Platosu' : item.title + ' – Ders Platosu';
+          const currentAlt = alts[key] || defAlt;
+          const imgTag = item.imgSrc
+            ? `<img src="${esc(item.imgSrc)}" alt="${esc(currentAlt)}" style="width:100%;height:130px;object-fit:cover;display:block;transition:transform .2s" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
+            : '';
+          const placeholder = `<div style="${item.imgSrc?'display:none;':'display:flex;'}align-items:center;justify-content:center;height:130px;background:#1e293b;color:#475569;font-size:1.6rem;flex-direction:column;gap:4px">${type==='book'?'📚':'🏕️'}<span style="font-size:.65rem;margin-top:2px">Görsel yok</span></div>`;
+          return `<div class="tcard" style="padding:0;overflow:hidden;cursor:pointer;transition:border-color .2s" onmouseenter="this.style.borderColor='rgba(99,102,241,.55)';this.querySelector('img')&&(this.querySelector('img').style.transform='scale(1.04)')" onmouseleave="this.style.borderColor='';this.querySelector('img')&&(this.querySelector('img').style.transform='')" onclick="openAltEdit('${esc(type)}','${esc(item.documentId)}')">
+            <div style="overflow:hidden">${imgTag}${placeholder}</div>
+            <div style="padding:10px 12px 6px">
+              <div style="font-size:.8rem;font-weight:600;color:#e2e8f0;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc(item.title)}">${esc(item.title)||'—'}</div>
+              <div style="font-size:.7rem;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="alt-preview-${esc(key)}" title="${esc(currentAlt)}">${esc(currentAlt)}</div>
+            </div>
+            <div style="padding:4px 12px 10px;display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:.67rem;padding:2px 7px;border-radius:10px;background:${type==='book'?'rgba(99,102,241,.15)':'rgba(16,185,129,.12)'};color:${type==='book'?'#a5b4fc':'#6ee7b7'}">${type==='book'?'Kitap':'Kamp'}</span>
+              <span style="font-size:.7rem;color:#6366f1"><span class="ms" style="font-size:.75rem;vertical-align:middle">edit</span> Düzenle</span>
+            </div>
+          </div>`;
+        }
+
+        document.getElementById('imgalts-content').innerHTML = `
+          <div style="margin-bottom:18px;padding:10px 14px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:8px;font-size:.78rem;color:#a5b4fc;line-height:1.6">
+            <span class="ms" style="vertical-align:middle;font-size:1rem">info</span>
+            Görsele tıklayarak alt metnini düzenleyebilirsin. Her düzenleme anında kaydedilir.
+          </div>
+          ${books.length ? `
+          <div style="font-weight:700;color:#fff;margin-bottom:10px;font-size:.95rem"><span class="ms">menu_book</span> Kitaplar <span style="font-size:.75rem;color:#64748b;font-weight:400">${books.length} adet</span></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px;margin-bottom:28px">${books.map(b=>card('book',b)).join('')}</div>` : ''}
+          ${camps.length ? `
+          <div style="font-weight:700;color:#fff;margin-bottom:10px;font-size:.95rem"><span class="ms">school</span> Kamplar <span style="font-size:.75rem;color:#64748b;font-weight:400">${camps.length} adet</span></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px">${camps.map(c=>card('camp',c)).join('')}</div>` : ''}
+          ${!books.length && !camps.length ? '<div style="color:#64748b;text-align:center;padding:40px">İçerik bulunamadı.</div>' : ''}`;
+
+      } catch(e) {
+        document.getElementById('imgalts-content').innerHTML = `<div style="color:#f87171;padding:16px">Veriler yüklenemedi: ${String(e?.message||e)}</div>`;
+      }
+    }
+
+    window.openAltEdit = function(type, docId) {
+      const esc = s => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      const alts = (() => { try { return JSON.parse(localStorage.getItem('dp_img_alts') || '{}'); } catch { return {}; } })();
+      const data = window._imgAltsData || {};
+      const list = type === 'book' ? (data.books || []) : (data.camps || []);
+      const item = list.find(i => String(i.documentId) === String(docId)) || { title: '', imgSrc: '' };
+      const key = type + '_' + docId;
+      const defAlt = type === 'camp' ? item.title + ' Kampı – Ders Platosu' : item.title + ' – Ders Platosu';
+      const currentAlt = alts[key] || defAlt;
+      window._altEditMeta = { key, defAlt };
+
+      openM(
+        (type === 'book' ? '📚 Kitap' : '🏕️ Kamp') + ' – Alt Metin Düzenle',
+        `${item.imgSrc ? `<img src="${esc(item.imgSrc)}" style="max-width:100%;max-height:150px;object-fit:contain;border-radius:8px;border:1px solid #334155;background:#0f172a;padding:4px;margin-bottom:14px;display:block" onerror="this.style.display='none'">` : ''}
+        <div style="font-weight:600;color:#e2e8f0;margin-bottom:12px">${esc(item.title)}</div>
+        <div class="fg" style="margin-bottom:4px">
+          <label>Alt Metin</label>
+          <input id="alt-edit-input" value="${esc(currentAlt)}" placeholder="${esc(defAlt)}"/>
+          <small>Boş bırakılırsa otomatik: <em>${esc(defAlt)}</em></small>
+        </div>`,
+        `<button class="btn btn-ghost" onclick="closeM()">Vazgeç</button>
+         <button class="btn btn-primary" onclick="applyAltEdit()"><span class="ms">save</span> Kaydet</button>`
+      );
+      setTimeout(() => { const el = document.getElementById('alt-edit-input'); if(el){el.focus();el.select();} }, 100);
+    };
+
+    window.applyAltEdit = function() {
+      const { key, defAlt } = window._altEditMeta || {};
+      if (!key) return;
+      const val = (document.getElementById('alt-edit-input')?.value || '').trim();
+      const alts = (() => { try { return JSON.parse(localStorage.getItem('dp_img_alts') || '{}'); } catch { return {}; } })();
+      if (val && val !== defAlt) alts[key] = val; else delete alts[key];
+      localStorage.setItem('dp_img_alts', JSON.stringify(alts));
+      const prev = document.getElementById('alt-preview-' + key);
+      if (prev) { prev.textContent = val || defAlt; prev.title = val || defAlt; }
+      closeM();
+      notify('Alt metin kaydedildi ✓');
+    };
+
+    function saveImgAlts() { notify('Alt metinler zaten anlık kaydediliyor ✓'); }
+
+
+    function renderSettingsSEO() {
+      const s = getSeoData();
+      seoFaviconData = s.faviconUrl || '';
+      seoOgImageData = s.ogImage || '';
+      setMain(`
+    <div class="ph">
+      <div>
+        <button class="btn btn-ghost btn-sm" onclick="goTo('settings')" style="margin-bottom:8px">← Ayarlar</button>
+        <h2><span class="ms">manage_search</span> SEO &amp; Kod Yönetimi</h2>
+        <p>Arama motoru optimizasyonu ve analitik ayarları</p>
+      </div>
+      <button class="btn btn-primary" onclick="saveSettingsSEO()"><span class="ms">save</span> Kaydet &amp; Uygula</button>
+    </div>
+    <div class="pb">
+
+      <!-- BÖLÜM 0: Sosyal Medya Paylaşım (OG) -->
+      <div style="margin-bottom:14px;padding:6px 0 10px;border-bottom:1px solid rgba(255,255,255,.07)">
+        <div style="font-size:.72rem;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:.1em">🔗 Sosyal Medya Paylaşım Kartı (Open Graph)</div>
+      </div>
+      <div style="margin-bottom:12px;padding:10px 12px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:8px;font-size:.78rem;color:#93c5fd;line-height:1.6">
+        WhatsApp, Telegram, Facebook vb. platformlarda link paylaşıldığında görünen başlık, açıklama ve kapak görseli burada ayarlanır.
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+        <div class="tcard" style="padding:16px">
+          <div style="font-weight:600;color:#fff;margin-bottom:10px;font-size:.85rem">📝 Başlık &amp; Açıklama</div>
+          <div class="fg">
+            <label>Site Adı</label>
+            <input id="seo_sitename" value="${s.siteName || ''}" placeholder="Ders Platosu"/>
+            <small>Paylaşımlarda görünen site adı</small>
+          </div>
+          <div class="fg">
+            <label>OG Başlık</label>
+            <input id="seo_ogtitle" value="${s.ogTitle || ''}" placeholder="Ders Platosu - TYT AYT Ücretsiz Eğitim Platformu"/>
+            <small>Paylaşım kartında görünen ana başlık</small>
+          </div>
+          <div class="fg">
+            <label>OG Açıklama</label>
+            <textarea id="seo_ogdesc" rows="3" style="width:100%;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:8px 10px;color:#e2e8f0;font-size:.83rem;font-family:inherit;resize:vertical" placeholder="Türkiye'nin en kapsamlı TYT AYT ücretsiz online eğitim platformu.">${s.ogDesc || ''}</textarea>
+            <small>Paylaşım kartında başlığın altında görünen metin</small>
+          </div>
+        </div>
+        <div class="tcard" style="padding:16px">
+          <div style="font-weight:600;color:#fff;margin-bottom:10px;font-size:.85rem">🖼 Paylaşım Kapak Görseli</div>
+          <div class="fg">
+            <label>Görsel URL (harici link)</label>
+            <input id="seo_ogimage_url" value="${s.ogImage || ''}" placeholder="https://... veya dosya yükleyin"/>
+            <small>1200×630 piksel önerilir (Facebook/WhatsApp standart boyut)</small>
+          </div>
+          <div class="fg">
+            <label>veya Görsel Yükle</label>
+            <input id="seo_ogimage_file" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" onchange="onSeoOgImageSelected(this)" />
+          </div>
+          <div id="seo_ogimage_preview" style="margin-top:8px;display:flex;align-items:center;gap:8px;color:#94a3b8;font-size:.76rem">
+            ${s.ogImage ? '<img src="' + s.ogImage + '" alt="OG Gorsel" style="max-height:80px;max-width:240px;object-fit:contain;border:1px solid #334155;border-radius:8px;background:#0f172a;padding:4px" /> <span>Mevcut gorsel</span>' : '<span>Henuz gorsel secilmedi</span>'}
+          </div>
+          <div style="margin-top:12px;padding:8px 10px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:6px;font-size:.74rem;color:#fbbf24;line-height:1.5">
+            ⚠️ Not: Harici URL tercih edilir. Büyük dosya yüklemek localStorage limitini aşabilir.
+          </div>
+        </div>
+      </div>
+
+      <!-- BÖLÜM 1: Doğrulama -->
+      <div style="margin-bottom:14px;padding:6px 0 10px;border-bottom:1px solid rgba(255,255,255,.07)">
+        <div style="font-size:.72rem;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:.1em">✅ Arama Motoru Doğrulama</div>
+      </div>
+      <div style="margin-bottom:12px;padding:10px 12px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:8px;font-size:.78rem;color:#93c5fd;line-height:1.6">
+        Yalnizca dogrulama meta degerlerini buraya girin. Tam meta etiketi degil, sadece content="..." icindeki deger gereklidir.
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px">
+        <div class="tcard" style="padding:16px">
+          <div style="font-weight:600;color:#fff;margin-bottom:10px;font-size:.85rem">🔵 Google Search Console</div>
+          <div class="fg" style="margin-bottom:0">
+            <label>Meta Content Değeri</label>
+            <input id="seo_gverify" value="${s.googleVerify || ''}" placeholder="abcdef1234567890..."/>
+            <small>Sadece content="..." içindeki değer</small>
+          </div>
+        </div>
+        <div class="tcard" style="padding:16px">
+          <div style="font-weight:600;color:#fff;margin-bottom:10px;font-size:.85rem">🟢 Bing Webmaster</div>
+          <div class="fg" style="margin-bottom:0">
+            <label>msvalidate.01 Değeri</label>
+            <input id="seo_bverify" value="${s.bingVerify || ''}" placeholder="XXXXXXXXXXXXXXXX"/>
+          </div>
+        </div>
+        <div class="tcard" style="padding:16px">
+          <div style="font-weight:600;color:#fff;margin-bottom:10px;font-size:.85rem">🔴 Yandex Webmaster</div>
+          <div class="fg" style="margin-bottom:0">
+            <label>yandex-verification Değeri</label>
+            <input id="seo_yverify" value="${s.yandexVerify || ''}" placeholder="XXXXXXXXXXXXXXXX"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÖLÜM 2: Analitik -->
+      <div style="margin-bottom:14px;padding:6px 0 10px;border-bottom:1px solid rgba(255,255,255,.07)">
+        <div style="font-size:.72rem;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:.1em">📊 Analitik &amp; Takip Kodları</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px">
+        <div class="tcard" style="padding:16px">
+          <div style="font-weight:600;color:#fff;margin-bottom:10px;font-size:.85rem">📈 Google Analytics 4</div>
+          <div class="fg" style="margin-bottom:0">
+            <label>Ölçüm ID</label>
+            <input id="seo_ga4" value="${s.ga4Id || ''}" placeholder="G-XXXXXXXXXX"/>
+            <small>Tüm sayfalara otomatik eklenir</small>
+          </div>
+        </div>
+        <div class="tcard" style="padding:16px">
+          <div style="font-weight:600;color:#fff;margin-bottom:10px;font-size:.85rem">🏷 Google Tag Manager</div>
+          <div class="fg" style="margin-bottom:0">
+            <label>Container ID</label>
+            <input id="seo_gtm" value="${s.gtmId || ''}" placeholder="GTM-XXXXXXX"/>
+          </div>
+        </div>
+        <div class="tcard" style="padding:16px">
+          <div style="font-weight:600;color:#fff;margin-bottom:10px;font-size:.85rem">📘 Facebook Pixel</div>
+          <div class="fg" style="margin-bottom:0">
+            <label>Pixel ID</label>
+            <input id="seo_fbpixel" value="${s.fbPixelId || ''}" placeholder="1234567890123456"/>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:14px;padding:6px 0 10px;border-bottom:1px solid rgba(255,255,255,.07)">
+        <div style="font-size:.72rem;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:.1em">🖼 Site İkonu (Favicon)</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:20px">
+        <div class="tcard" style="padding:16px">
+          <div class="fg" style="margin-bottom:0">
+            <label>Favicon Resmi Yükle</label>
+            <input id="seo_favicon_file" type="file" accept=".png,.ico,.svg,.webp,image/png,image/x-icon,image/svg+xml,image/webp" onchange="onSeoFaviconSelected(this)" />
+            <div id="seo_favicon_preview" style="margin-top:8px;display:flex;align-items:center;gap:8px;color:#94a3b8;font-size:.76rem">
+              ${s.faviconUrl ? '<img src="' + s.faviconUrl + '" alt="Favicon" style="width:32px;height:32px;border-radius:6px;border:1px solid #334155;background:#0f172a" /> <span>Mevcut ikon</span>' : '<span>Henuz favicon secilmedi</span>'}
+            </div>
+            <small>PNG, ICO, SVG veya WEBP yukleyin. Dosya boyutu en fazla 1MB olmali.</small>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:40px;border-top:1px solid rgba(255,255,255,.07);padding-top:20px">
+        <button class="btn btn-danger btn-sm" onclick="if(confirm('Tüm SEO ayarları silinecek, emin misiniz?')){localStorage.removeItem(SEO_KEY);notify('SEO ayarları temizlendi');renderSettingsSEO();}"><span class="ms">delete</span> Temizle</button>
+        <button class="btn btn-primary" onclick="saveSettingsSEO()"><span class="ms">save</span> Kaydet &amp; Uygula</button>
+      </div>
+    </div>`);
+    }
+
+    function saveSettingsSEO() {
+      const gv = id => (document.getElementById(id)?.value || '').trim();
+      const ogImageVal = seoOgImageData || gv('seo_ogimage_url');
+      const data = {
+        siteName: gv('seo_sitename'),
+        ogTitle: gv('seo_ogtitle'),
+        ogDesc: (document.getElementById('seo_ogdesc')?.value || '').trim(),
+        ogImage: ogImageVal,
+        googleVerify: gv('seo_gverify'),
+        bingVerify: gv('seo_bverify'),
+        yandexVerify: gv('seo_yverify'),
+        ga4Id: gv('seo_ga4'),
+        gtmId: gv('seo_gtm'),
+        fbPixelId: gv('seo_fbpixel'),
+        faviconUrl: seoFaviconData
+      };
+      localStorage.setItem(SEO_KEY, JSON.stringify(data));
+      notify('✅ SEO ayarları kaydedildi! Sayfa yenilendiğinde tüm siteye uygulanır.');
+    }
+
+    /* ══ SİTEMAP ══ */
+    async function generateSitemap() {
+      const btn = document.getElementById('sitemapBtn');
+      const res = document.getElementById('sitemapResult');
+      if (!btn || !res) return;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spin" style="width:14px;height:14px;border-width:2px;margin:0;vertical-align:middle;display:inline-block"></span>&nbsp; Güncelleniyor…';
+      res.style.display = 'none';
+      try {
+        const r = await fetch(SITEMAP_API + '/generate', {
+          headers: SITEMAP_CLIENT_KEY ? { 'x-api-key': SITEMAP_CLIENT_KEY } : {}
+        });
+        const d = await r.json();
+        if (d.success) {
+          const details = d.details || {};
+          const staticCount = Number(details.staticUrls || 0);
+          const instructorCount = Number(details.instructorUrls || 0);
+          const campCount = Number(details.campUrls || 0);
+          const totalCount = Number(details.totalUrls || d.urlCount || 0);
+          const hasDetails = !!d.details;
+
+          res.style.cssText = 'display:block;margin-top:14px;padding:12px 16px;border-radius:10px;font-size:.85rem;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:#34d399';
+          res.innerHTML = '<strong>✅ Sitemap güncellendi!</strong><br><span style="color:#64748b">' + totalCount + ' URL sitemap.xml dosyasına yazıldı.</span>'
+            + (hasDetails
+              ? '<div style="margin-top:8px;color:#94a3b8;font-size:.8rem">Statik: <strong style="color:#e2e8f0">' + staticCount + '</strong> · Hoca: <strong style="color:#e2e8f0">' + instructorCount + '</strong> · Kamp: <strong style="color:#e2e8f0">' + campCount + '</strong></div>'
+              : '');
+          notify('✅ Sitemap güncellendi — ' + totalCount + ' URL' + (hasDetails ? (' (S:' + staticCount + ', H:' + instructorCount + ', K:' + campCount + ')') : ''));
+        } else {
+          throw new Error(d.error || 'Bilinmeyen hata');
+        }
+      } catch (e) {
+        res.style.cssText = 'display:block;margin-top:14px;padding:12px 16px;border-radius:10px;font-size:.85rem;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171';
+        res.innerHTML = '<strong>❌ Hata:</strong> ' + (e.message || 'Bağlantı kurulamadı') + '<br><small style="color:#64748b">sitemap-api.js sunucusunun çalıştığından emin olun.</small>';
+        notify('Sitemap güncellenemedi', 'e');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span class="ms">autorenew</span> Sitemap Güncelle';
+      }
+    }
+
+    /* ═ INIT ═ */
+    if (sessionStorage.getItem('dp_auth')) goTo('camps');
+
+  </script>
+</body>
+
+</html>

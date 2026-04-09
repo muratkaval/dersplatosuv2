@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <!-- dp-seo-injector -->
+    <script>
+        (function () {
+            try {
+                var s = JSON.parse(localStorage.getItem('dp_seo_settings') || '{}');
+                if (!s || !Object.keys(s).length) return;
+                var h = document.head;
+
+                // Mevcut meta etiketini bulup günceller, yoksa yenisini oluşturur
+                function up(n, c, isProp) {
+                    if (!c) return;
+                    var sel = isProp ? 'meta[property="' + n + '"]' : 'meta[name="' + n + '"]';
+                    var el = document.querySelector(sel);
+                    if (el) { el.content = c; }
+                    else {
+                        var m = document.createElement('meta');
+                        isProp ? m.setAttribute('property', n) : m.name = n;
+                        m.content = c;
+                        h.appendChild(m);
+                    }
+                }
+
+                function addScript(code) { var t = document.createElement('script'); t.textContent = code; h.appendChild(t); }
+                function addSrcScript(src) { var t = document.createElement('script'); t.async = true; t.src = src; h.appendChild(t); }
+                function upFavicon(url) {
+                    if (!url) return;
+                    ['icon', 'shortcut icon', 'apple-touch-icon'].forEach(function (rel) {
+                        var el = document.querySelector('link[rel="' + rel + '"]');
+                        if (!el) {
+                            el = document.createElement('link');
+                            el.setAttribute('rel', rel);
+                            h.appendChild(el);
+                        }
+                        el.setAttribute('href', url);
+                    });
+                }
+
+                // Temel SEO & Open Graph
+                if (s.title) document.title = s.title;
+                up('description', s.desc, false);
+                up('keywords', s.keywords, false);
+                up('author', s.author, false);
+                up('og:site_name', s.siteName, true);
+                up('og:title', s.ogTitle, true);
+                up('og:description', s.ogDesc, true);
+                up('og:image', s.ogImage, true);
+                upFavicon(s.faviconUrl || s.iconUrl);
+
+                // Doğrulama & Analitik
+                if (s.googleVerify) up('google-site-verification', s.googleVerify, false);
+                if (s.bingVerify) up('msvalidate.01', s.bingVerify, false);
+                if (s.yandexVerify) up('yandex-verification', s.yandexVerify, false);
+
+                if (s.ga4Id) { addSrcScript('https://www.googletagmanager.com/gtag/js?id=' + s.ga4Id); addScript('window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","' + s.ga4Id + '");'); }
+                if (s.gtmId) { addScript('(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src="https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);})(window,document,"script","dataLayer","' + s.gtmId + '");'); }
+                if (s.fbPixelId) { addScript('!function(f,b,e,v,n,t,s2){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s2=b.getElementsByTagName(e)[0];s2.parentNode.insertBefore(t,s2)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","' + s.fbPixelId + '");fbq("track","PageView");'); }
+
+                // Özel Kodlar
+            } catch (e) { }
+        })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kitaplar - Ders Platosu</title>
+    <meta name="description"
+        content="Ders Platosu ile YKS, TYT ve AYT'ye en iyi şekilde hazırlanın. Uzman eğitmenlerden konu anlatım kampları, yeni nesil soru çözümleri ve kitaplar burada!" />
+    <meta name="keywords"
+        content="ders platosu, yks, tyt, ayt, online eğitim, yks hazırlık, tyt kampı, ayt kampı, soru çözümü, yks kitap, online ders, temel matematik" />
+    <meta name="author" content="Ders Platosu" />
+    <link rel="canonical" href="https://dersplatosu.com/kitaplar" />
+    <!-- Open Graph (Facebook, LinkedIn) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://dersplatosu.com/kitaplar" />
+    <meta property="og:title" content="Kitaplar - Ders Platosu" />
+    <meta property="og:description"
+        content="TYT ve AYT sınavlarına hazırlık için Ders Platosu eğitmenlerinin önerdiği en iyi kamp kitapları ve soru bankaları." />
+    <meta property="og:image" content="https://i.hizliresim.com/ag3gf4d.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:site_name" content="Ders Platosu" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://dersplatosu.com/kitaplar" />
+    <meta name="twitter:title" content="Kitaplar - Ders Platosu" />
+    <meta name="twitter:description"
+        content="TYT ve AYT sınavlarına hazırlık için Ders Platosu eğitmenlerinin önerdiği en iyi kamp kitapları ve soru bankaları." />
+    <meta name="twitter:image" content="https://i.hizliresim.com/ag3gf4d.png" />
+    <!-- Fonts & CSS -->
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        /* Prevent global book-item overflow from clipping the cover */
+        #booksGrid .book-item {
+            overflow: visible;
+        }
+
+        #booksGrid .book-cover-wrap {
+            overflow: hidden;
+        }
+
+        /* Unified Page Hero */
+        .page-hero {
+            background: var(--bg-secondary, #f0f4fa);
+            border-bottom: 1px solid var(--border, #e5e9f0);
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+        }
+
+        .page-hero-inner {
+            max-width: 620px;
+            margin: 0 auto;
+            padding: calc(var(--nav-h, 64px) + 44px) 24px 44px;
+            text-align: center;
+        }
+
+        .page-hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            background: rgba(59, 130, 246, .07);
+            border: 1px solid rgba(59, 130, 246, .18);
+            border-radius: 50px;
+            color: #3b82f6;
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .page-hero h1 {
+            font-size: 2.15rem;
+            font-weight: 800;
+            color: var(--text, #0f172a);
+            line-height: 1.18;
+            letter-spacing: -.025em;
+            margin-bottom: 14px;
+        }
+
+        .page-hero h1 span {
+            color: #3b82f6;
+        }
+
+        .page-hero p {
+            color: var(--text-muted, #64748b);
+            font-size: .95rem;
+            line-height: 1.7;
+        }
+
+        [data-theme="dark"] .page-hero {
+            background: #0b1221;
+            border-bottom-color: #1e293b;
+        }
+
+        [data-theme="dark"] .page-hero h1 {
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .page-hero p {
+            color: #64748b;
+        }
+
+        [data-theme="dark"] .page-hero-eyebrow {
+            background: rgba(59, 130, 246, .1);
+            border-color: rgba(59, 130, 246, .22);
+            color: #60a5fa;
+        }
+
+        /* Filter bar below hero */
+        .books-filter-bar {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+        }
+
+        .books-filter {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            max-width: var(--container-w, 1200px);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .filter-chip {
+            padding: 7px 18px;
+            border-radius: 50px;
+            border: 2px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .filter-chip:hover,
+        .filter-chip.active {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.07);
+        }
+
+        .books-main {
+            padding: 48px 0;
+        }
+
+        .books-all-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 28px;
+        }
+
+        @media (max-width:1100px) {
+            .books-all-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width:800px) {
+            .books-all-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width:640px) {
+            .books-main {
+                padding: 30px 0;
+            }
+
+            .books-main>.container {
+                padding: 0 12px;
+            }
+
+            .books-all-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .page-hero h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo"><img src="https://i.hizliresim.com/ag3gf4d.png" class="logo-img"
+                    alt="Ders Platosu"><span class="logo-text">Ders Platosu</span></a>
+            <ul class="nav-links">
+                <!-- Menü dinamik olarak main.js ile doldurulacak -->
+            </ul>
+            <div class="nav-actions">
+
+                <button class="btn-icon" id="themeToggle">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="5" />
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                    </svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" style="display:none">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                    </svg>
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <!-- Mobil menü dinamik olarak main.js ile doldurulacak -->
+        </div>
+    </nav>
+
+    <!-- PAGE HERO -->
+    <section class="page-hero">
+        <div class="page-hero-inner">
+            <div class="page-hero-eyebrow">Ders Platosu</div>
+            <h1><span>Kitaplar</span></h1>
+            <p>Ders Platosu öğretmenlerinin hazırladığı özel ders kitapları ve soru bankalarını keşfet.</p>
+        </div>
+    </section>
+
+    <!-- FILTER BAR -->
+    <div class="books-filter-bar">
+        <div class="books-filter" id="filterChips">
+            <button class="filter-chip active" id="chipTumu" onclick="filterBooks('tumu', this)">Tümü</button>
+            <!-- Dersler Strapi'den otomatik yükleniyor -->
+        </div>
+    </div>
+
+    <div class="books-main">
+        <div class="container">
+            <div class="books-all-grid" id="booksGrid">
+                <!-- Kitaplar buraya dinamik olarak yüklenecek -->
+            </div>
+        </div>
+    </div>
+
+
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Footer sütunları dinamik olarak main.js ile doldurulacak -->
+            </div>
+            <div class="footer-bottom">
+                <p>© Tüm hakları saklıdır. <a href="https://kvl.com.tr/" target="_blank" rel="noopener">KVL Digital</a> Tarafından Geliştirilmiştir.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js?v=999"></script>
+    <script>
+        /* Filtre butonlarını Strapi /subjects'ten çek */
+        (async function loadSubjectFilters() {
+            function toSlug(v) {
+                return (v || '')
+                    .toLowerCase()
+                    .replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ı/g, 'i')
+                    .replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ü/g, 'u')
+                    .replace(/\s+/g, '-')
+                    .replace(/[^a-z0-9-]/g, '');
+            }
+
+            async function fetchSubjects() {
+                const base = (typeof STRAPI_URL === 'string' && STRAPI_URL) ? STRAPI_URL : '/api';
+                const hdr = (typeof strapiHeaders === 'object' && strapiHeaders) ? strapiHeaders : {};
+
+                // 1) displayOrder varsa onu kullan
+                let res = await fetch(base + '/subjects?sort[0]=displayOrder:asc&sort[1]=name:asc&pagination[pageSize]=100', { headers: hdr });
+                let json = await res.json();
+
+                // 2) local modelde displayOrder yoksa name sırasına düş
+                if (!res.ok || json?.error) {
+                    res = await fetch(base + '/subjects?sort=name:asc&pagination[pageSize]=100', { headers: hdr });
+                    json = await res.json();
+                }
+
+                // 3) auth gereksinimi farklıysa public endpoint dene
+                if (!res.ok || json?.error) {
+                    res = await fetch('/api/subjects?sort=name:asc&pagination[pageSize]=100');
+                    json = await res.json();
+                }
+
+                return json?.data || [];
+            }
+
+            try {
+                const chips = document.getElementById('filterChips');
+                const seen = new Set();
+                const subjects = await fetchSubjects();
+
+                subjects.forEach(s => {
+                    const name = s?.name || s?.attributes?.name || '';
+                    const slug = toSlug(name);
+                    if (!name || !slug || seen.has(slug)) return;
+                    seen.add(slug);
+
+                    const btn = document.createElement('button');
+                    btn.className = 'filter-chip';
+                    btn.textContent = name;
+                    btn.onclick = function () { filterBooks(slug, this); };
+                    chips.appendChild(btn);
+                });
+            } catch (e) {
+                // Sessiz fallback: production'da detay log basma.
+            }
+        })();
+
+        function filterBooks(cat, btn) {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('#booksGrid .book-item').forEach(item => {
+                const cats = item.dataset.cats || item.dataset.cat || '';
+                if (cat === 'tumu' || cats.includes(' ' + cat + ' ') || cats === cat) {
+                    item.style.display = '';
+                    item.style.animation = 'fadeInUp 0.4s ease';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>

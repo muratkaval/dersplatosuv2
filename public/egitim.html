@@ -1,0 +1,1737 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <!-- dp-seo-injector -->
+    <script>
+        (function () {
+            try {
+                var s = JSON.parse(localStorage.getItem('dp_seo_settings') || '{}');
+                if (!s || !Object.keys(s).length) return;
+                var h = document.head;
+
+                // Mevcut meta etiketini bulup günceller, yoksa yenisini oluşturur
+                function up(n, c, isProp) {
+                    if (!c) return;
+                    var sel = isProp ? 'meta[property="' + n + '"]' : 'meta[name="' + n + '"]';
+                    var el = document.querySelector(sel);
+                    if (el) { el.content = c; }
+                    else {
+                        var m = document.createElement('meta');
+                        isProp ? m.setAttribute('property', n) : m.name = n;
+                        m.content = c;
+                        h.appendChild(m);
+                    }
+                }
+
+                function addScript(code) { var t = document.createElement('script'); t.textContent = code; h.appendChild(t); }
+                function addSrcScript(src) { var t = document.createElement('script'); t.async = true; t.src = src; h.appendChild(t); }
+                function upFavicon(url) {
+                    if (!url) return;
+                    ['icon', 'shortcut icon', 'apple-touch-icon'].forEach(function (rel) {
+                        var el = document.querySelector('link[rel="' + rel + '"]');
+                        if (!el) {
+                            el = document.createElement('link');
+                            el.setAttribute('rel', rel);
+                            h.appendChild(el);
+                        }
+                        el.setAttribute('href', url);
+                    });
+                }
+
+                // Temel SEO & Open Graph
+                if (s.title) document.title = s.title;
+                up('description', s.desc, false);
+                up('keywords', s.keywords, false);
+                up('author', s.author, false);
+                up('og:site_name', s.siteName, true);
+                up('og:title', s.ogTitle, true);
+                up('og:description', s.ogDesc, true);
+                up('og:image', s.ogImage, true);
+                upFavicon(s.faviconUrl || s.iconUrl);
+
+                // Doğrulama & Analitik
+                if (s.googleVerify) up('google-site-verification', s.googleVerify, false);
+                if (s.bingVerify) up('msvalidate.01', s.bingVerify, false);
+                if (s.yandexVerify) up('yandex-verification', s.yandexVerify, false);
+
+                if (s.ga4Id) { addSrcScript('https://www.googletagmanager.com/gtag/js?id=' + s.ga4Id); addScript('window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","' + s.ga4Id + '");'); }
+                if (s.gtmId) { addScript('(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src="https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);})(window,document,"script","dataLayer","' + s.gtmId + '");'); }
+                if (s.fbPixelId) { addScript('!function(f,b,e,v,n,t,s2){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s2=b.getElementsByTagName(e)[0];s2.parentNode.insertBefore(t,s2)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","' + s.fbPixelId + '");fbq("track","PageView");'); }
+
+                // Özel Kodlar
+            } catch (e) { }
+        })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <title id="pageTitle">Kamp – Ders Platosu</title>
+    <meta name="description"
+        content="Ders Platosu ile YKS, TYT ve AYT'ye en iyi şekilde hazırlanın. Uzman eğitmenlerden konu anlatım kampları, yeni nesil soru çözümleri ve kitaplar burada!" />
+    <meta name="keywords"
+        content="ders platosu, yks, tyt, ayt, online eğitim, yks hazırlık, tyt kampı, ayt kampı, soru çözümü, yks kitap, online ders, temel matematik" />
+    <meta name="author" content="Ders Platosu" />
+    <link rel="canonical" id="pageCanonical" />
+    <!-- Open Graph (Facebook, LinkedIn) -->
+    <meta property="og:type" content="video.other" />
+    <meta property="og:url" id="pageOgUrl" content="" />
+    <meta property="og:title" content="Kamp – Ders Platosu" />
+    <meta property="og:description"
+        content="Ders Platosu kamp dersleri. İstediğin yerden başla, oynatma listesiyle devam et." />
+    <meta property="og:image" content="https://i.hizliresim.com/ag3gf4d.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:site_name" content="Ders Platosu" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" id="pageTwUrl" content="" />
+    <script>
+        (function () {
+            var path = window.location.pathname.replace(/\/+$/, '') || '/';
+            var pageUrl = 'https://dersplatosu.com' + path;
+            var c = document.getElementById('pageCanonical');
+            var ogu = document.getElementById('pageOgUrl');
+            var twu = document.getElementById('pageTwUrl');
+            if (c) c.setAttribute('href', pageUrl);
+            if (ogu) ogu.setAttribute('content', pageUrl);
+            if (twu) twu.setAttribute('content', pageUrl);
+        })();
+    </script>
+    <meta name="twitter:title" content="Kamp – Ders Platosu" />
+    <meta name="twitter:description"
+        content="Ders Platosu kamp dersleri. İstediğin yerden başla, oynatma listesiyle devam et." />
+    <meta name="twitter:image" content="https://i.hizliresim.com/ag3gf4d.png" />
+    <!-- Fonts & CSS -->
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        /* ── Page Layout ── */
+        .egitim-page {
+            padding-top: var(--nav-h);
+            min-height: 100vh;
+            background: var(--bg);
+        }
+
+        /* ── Hero ── */
+        .egitim-hero {
+            background: linear-gradient(135deg, #0b1629 0%, #1e3a8a 60%, #0b1629 100%);
+            padding: 52px 0 44px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .egitim-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 70% 50%, rgba(37, 99, 235, 0.25) 0%, transparent 65%);
+            z-index: 1;
+        }
+
+        .egitim-hero::after {
+            content: '';
+            position: absolute;
+            inset: -6% -4%;
+            background-image: var(--hero-cover, none);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.16;
+            filter: blur(6px) saturate(1.05);
+            transform: scale(1.02);
+            z-index: 0;
+        }
+
+        .egitim-hero-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 40px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .egitim-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .ebadge {
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.12);
+            color: #e0e7ff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .ebadge.green {
+            background: rgba(22, 163, 74, 0.2);
+            color: #86efac;
+            border-color: rgba(22, 163, 74, 0.3);
+        }
+
+        .egitim-hero h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.25;
+            margin-bottom: 14px;
+        }
+
+        .egitim-hero p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 22px;
+        }
+
+        .egitim-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .emeta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #94a3b8;
+            font-size: 0.82rem;
+        }
+
+        .egitim-btns {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* ── Video Card (right side of hero) ── */
+        .egitim-video-card {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .egitim-player-wrap {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            background: #000;
+            cursor: pointer;
+        }
+
+        .egitim-player-wrap iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: none;
+        }
+
+        .egitim-thumb {
+            position: absolute;
+            inset: 0;
+            background: url('') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .egitim-play-btn {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .egitim-play-btn::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 12px 0 12px 22px;
+            border-color: transparent transparent transparent #1d4ed8;
+            margin-left: 4px;
+        }
+
+        .egitim-player-wrap:hover .egitim-play-btn {
+            transform: scale(1.08);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .egitim-video-label {
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #e2e8f0;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ── Tabs ── */
+        .egitim-body {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 32px;
+            align-items: flex-start;
+        }
+
+        .egitim-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 28px;
+        }
+
+        .etab {
+            padding: 12px 22px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .etab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* ── Lesson List ── */
+        .lesson-list-dyn {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .lesson-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 18px;
+            padding: 16px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: background 0.2s, border-color 0.2s;
+            position: relative;
+        }
+
+        .lesson-item:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border);
+        }
+
+        .lesson-item.active {
+            background: rgba(37, 99, 235, 0.07);
+            border-color: rgba(37, 99, 235, 0.25);
+        }
+
+        .lesson-row {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            width: 100%;
+        }
+
+        .lesson-item.active .lesson-row {
+            display: none;
+        }
+
+        .lesson-player-container {
+            width: 100%;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+            aspect-ratio: 16/9;
+            position: relative;
+        }
+
+        .lesson-item.active .lesson-player-container {
+            display: block;
+        }
+
+        .lesson-player-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .lesson-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.65);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            z-index: 10;
+            transition: background 0.2s;
+        }
+
+        .lesson-close-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .lesson-num {
+            width: 32px;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .lesson-thumb-sm {
+            width: 110px;
+            height: 68px;
+            border-radius: 10px;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: #1e293b;
+        }
+
+        .lesson-info-dyn {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .lesson-info-dyn h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.4;
+            margin-bottom: 5px;
+            white-space: normal;
+        }
+
+        .lesson-info-dyn span {
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .lesson-notes-btn {
+            flex-shrink: 0;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(37, 99, 235, 0.12);
+            color: #3b82f6;
+            border: 1px solid rgba(37, 99, 235, 0.25);
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background 0.2s, color 0.2s;
+            margin-left: auto;
+        }
+
+        .lesson-notes-under {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            background: rgba(37, 99, 235, 0.12);
+            color: #bfdbfe;
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .lesson-notes-under:hover {
+            background: rgba(37, 99, 235, 0.22);
+            color: #dbeafe;
+        }
+
+        .lesson-notes-btn:hover {
+            background: rgba(37, 99, 235, 0.22);
+            color: #2563eb;
+        }
+
+        .lessons-loading {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .lesson-skeleton {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 10px 14px;
+        }
+
+        .skel {
+            background: var(--border);
+            border-radius: 6px;
+            animation: skelPulse 1.4s ease-in-out infinite;
+        }
+
+        .skel-num {
+            width: 26px;
+            height: 16px;
+        }
+
+        .skel-thumb {
+            width: 80px;
+            height: 50px;
+            border-radius: 8px;
+        }
+
+        .skel-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .skel-line {
+            height: 12px;
+        }
+
+        .skel-line.short {
+            width: 60%;
+        }
+
+        @keyframes skelPulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.4
+            }
+        }
+
+        /* ── Sidebar ── */
+
+        .sidebar-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-size: 0.83rem;
+            color: var(--text-muted);
+        }
+
+        .detail-val {
+            font-size: 0.83rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .detail-val.green {
+            color: #16a34a;
+        }
+
+        /* ── Responsive ── */
+        @media(max-width:900px) {
+            .egitim-hero-inner {
+                grid-template-columns: 1fr;
+            }
+
+            .egitim-body {
+                grid-template-columns: 1fr;
+            }
+
+            .egitim-video-card {
+                max-width: 100%;
+            }
+        }
+
+        @media(max-width:600px) {
+            .egitim-hero {
+                padding: 24px 0 20px;
+            }
+
+            .egitim-hero-inner {
+                padding: 0 16px;
+                gap: 24px;
+            }
+
+            .egitim-hero h1 {
+                font-size: 1.15rem;
+                margin-bottom: 14px;
+            }
+
+            .egitim-hero p {
+                display: none;
+            }
+
+            .egitim-badges {
+                margin-bottom: 12px;
+                gap: 6px;
+            }
+
+            .ebadge {
+                padding: 3px 10px;
+                font-size: 0.68rem;
+            }
+
+            .egitim-btns {
+                gap: 10px;
+                width: 100%;
+            }
+
+            .egitim-btns .btn-primary,
+            .egitim-btns .btn-outline {
+                padding: 11px 16px;
+                font-size: 0.82rem;
+                flex: 0 0 100%;
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .egitim-video-card {
+                border-radius: 10px;
+            }
+
+            .egitim-video-label {
+                padding: 10px 14px;
+                font-size: 0.72rem;
+            }
+
+            .egitim-body {
+                padding: 16px 6px;
+                gap: 16px;
+            }
+
+            .lesson-list-dyn {
+                gap: 0;
+            }
+
+            .lesson-item {
+                padding: 8px 0;
+                gap: 4px;
+                border-radius: 0;
+                border: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .lesson-item:hover {
+                background: transparent;
+                border-color: var(--border);
+            }
+
+            .lesson-item.active {
+                border-color: var(--border);
+            }
+
+            .lesson-row {
+                gap: 6px;
+            }
+
+            .lesson-num {
+                width: 16px;
+                font-size: 0.78rem;
+            }
+
+            .lesson-thumb-sm {
+                width: 140px;
+                height: 84px;
+                border-radius: 8px;
+            }
+
+            .lesson-info-dyn h4 {
+                font-size: 0.8rem;
+                margin-bottom: 0;
+            }
+
+            .lesson-notes-btn {
+                display: none;
+            }
+
+            .egitim-tabs {
+                margin-bottom: 16px;
+            }
+
+            .etab {
+                flex: 1;
+                text-align: center;
+                padding: 12px 0;
+                font-size: 0.85rem;
+            }
+
+            .sidebar-card {
+                padding: 14px 12px;
+                border-radius: 10px;
+                margin-bottom: 12px;
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .sidebar-card h3 {
+                font-size: 0.88rem;
+                margin-bottom: 12px;
+                gap: 6px;
+            }
+
+            .sidebar-card img[style*="border-radius:50%"] {
+                width: 48px !important;
+                height: 48px !important;
+            }
+
+            .sidebar-card div[style*="font-size:1.8rem"] {
+                width: 48px !important;
+                height: 48px !important;
+                font-size: 1.4rem !important;
+            }
+
+            .sidebar-card div[style*="font-size:0.95rem"] {
+                font-size: 0.85rem !important;
+            }
+
+            .sidebar-card .exp-btn {
+                font-size: 0.7rem !important;
+                padding: 5px 10px !important;
+            }
+
+            .detail-row {
+                padding: 8px 0;
+            }
+
+            .detail-label,
+            .detail-val {
+                font-size: 0.78rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo"><img src="https://i.hizliresim.com/ag3gf4d.png" class="logo-img"
+                    alt="Ders Platosu"><span class="logo-text">Ders Platosu</span></a>
+            <ul class="nav-links">
+                <!-- Navigasyon linkleri main.js ile dinamik olarak yüklenecek -->
+            </ul>
+            <div class="nav-actions">
+                <button class="btn-icon" id="themeToggle" title="Tema">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="5" />
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                        <line x1="1" y1="12" x2="3" y2="12" />
+                        <line x1="21" y1="12" x2="23" y2="12" />
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                    </svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" style="display:none">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                    </svg>
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <!-- Mobil menü linkleri main.js ile dinamik olarak yüklenecek -->
+        </div>
+    </nav>
+
+    <div class="egitim-page">
+
+        <!-- HERO -->
+        <section class="egitim-hero">
+            <div class="egitim-hero-inner">
+                <div class="egitim-hero-left">
+                    <h1 id="heroTitle">Kamp Yükleniyor…</h1>
+                    <div class="egitim-btns">
+                        <button class="btn-primary btn-lg" type="button"
+                            onclick="document.querySelector('.egitim-body').scrollIntoView({behavior:'smooth'})">🚀 Hemen
+                            Başla</button>
+                    </div>
+                </div>
+
+                <!-- VIDEO CARD -->
+                <div class="egitim-video-card">
+                    <div class="egitim-player-wrap" id="playerWrap">
+                        <div class="egitim-thumb" id="heroThumb">
+                            <div class="egitim-play-btn" id="heroPlayBtn"></div>
+                        </div>
+                        <iframe id="heroIframe" allowfullscreen
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                        </iframe>
+                    </div>
+                    <div class="egitim-video-label">
+                        <span>▶</span>
+                        <span id="heroVideoLabel">Kamp Tanıtım Videsunu İzle</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BODY -->
+        <div class="egitim-body">
+            <div class="egitim-main">
+                <div class="egitim-tabs">
+                    <div class="etab active" data-tab="dersler">▶ Dersler</div>
+                    <div class="etab" data-tab="kitaplar">📚 Kitaplar</div>
+                </div>
+
+                <!-- LESSON LIST -->
+                <div id="tabDersler">
+                    <div class="lessons-loading" id="lessonsLoading">
+                        <!-- skeletons -->
+                        <div class="lesson-skeleton">
+                            <div class="skel skel-num"></div>
+                            <div class="skel skel-thumb"></div>
+                            <div class="skel-text">
+                                <div class="skel skel-line"></div>
+                                <div class="skel skel-line short"></div>
+                            </div>
+                        </div>
+                        <div class="lesson-skeleton">
+                            <div class="skel skel-num"></div>
+                            <div class="skel skel-thumb"></div>
+                            <div class="skel-text">
+                                <div class="skel skel-line"></div>
+                                <div class="skel skel-line short"></div>
+                            </div>
+                        </div>
+                        <div class="lesson-skeleton">
+                            <div class="skel skel-num"></div>
+                            <div class="skel skel-thumb"></div>
+                            <div class="skel-text">
+                                <div class="skel skel-line"></div>
+                                <div class="skel skel-line short"></div>
+                            </div>
+                        </div>
+                        <div class="lesson-skeleton">
+                            <div class="skel skel-num"></div>
+                            <div class="skel skel-thumb"></div>
+                            <div class="skel-text">
+                                <div class="skel skel-line"></div>
+                                <div class="skel skel-line short"></div>
+                            </div>
+                        </div>
+                        <div class="lesson-skeleton">
+                            <div class="skel skel-num"></div>
+                            <div class="skel skel-thumb"></div>
+                            <div class="skel-text">
+                                <div class="skel skel-line"></div>
+                                <div class="skel skel-line short"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lesson-list-dyn" id="lessonListDyn" style="display:none"></div>
+                </div>
+
+                <div id="tabKitaplar" style="display:none">
+                    <p style="color:var(--text-muted);padding:20px 0">Bu kampa ait kitaplar yakında eklenecek.</p>
+                </div>
+            </div>
+
+            <!-- SIDEBAR -->
+            <aside class="egitim-sidebar">
+                <!-- INSTRUCTOR KARTI -->
+                <div class="sidebar-card" id="instructorSidebarCard" style="display:none">
+                    <h3>👨‍🏫 Youtuber Hocalamız</h3>
+                    <div id="instructorSidebarBody"></div>
+                </div>
+                <div class="sidebar-card">
+                    <h3>📊 Kamp Detayları</h3>
+                    <div class="detail-row"><span class="detail-label">Toplam Ders</span><span class="detail-val"
+                            id="sidebarTotal">—</span></div>
+                    <div class="detail-row"><span class="detail-label">Seviye</span><span class="detail-val">Tüm
+                            Seviyeler</span></div>
+                    <div class="detail-row"><span class="detail-label">Ücret</span><span
+                            class="detail-val green">Ücretsiz</span></div>
+                </div>
+                <div class="sidebar-card">
+                    <h3>🔗 YouTube'da İzle</h3>
+                    <a id="ytPlaylistLink" href="#" target="_blank" class="btn-primary"
+                        style="display:inline-flex;align-items:center;gap:8px;width:100%;justify-content:center">
+                        ▶ Oynatma Listesini Aç
+                    </a>
+                </div>
+            </aside>
+        </div>
+
+    </div><!-- /egitim-page -->
+
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Footer alanı main.js ile dinamik olarak yüklenecek -->
+            </div>
+            <div class="footer-bottom">
+                <p>© Tüm hakları saklıdır. <a href="https://kvl.com.tr/" target="_blank" rel="noopener">KVL Digital</a> Tarafından Geliştirilmiştir.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js?v=999"></script>
+    <script>
+        (function () {
+            var DP_DEBUG = window.__DP_DEBUG__ === true;
+            function dpLog() { if (DP_DEBUG) console.log.apply(console, arguments); }
+            function dpWarn() { if (DP_DEBUG) console.warn.apply(console, arguments); }
+            function dpError() { if (DP_DEBUG) console.error.apply(console, arguments); }
+
+            // URL'den kamp slug veya eski v/list parametrelerini oku
+            // Desteklenen formatlar:
+            //   /egitim/7-gunde-tyt-matematik (yeni - SEO)
+            //   /egitim?v=xxx&list=yyy         (eski - geriye dönük uyumluluk)
+            var campSlug = null;
+            var pathMatch = window.location.pathname.match(/^\/egitim\/([^/]+)$/);
+            if (pathMatch) {
+                campSlug = decodeURIComponent(pathMatch[1]);
+            }
+
+            var params = new URLSearchParams(window.location.search);
+            // URL veya sade ID olarak gelebilir, extractYouTubeId/extractPlaylistId ile normalize et
+            var videoId = extractYouTubeId(params.get('v') || '');
+            var listId = extractPlaylistId(params.get('list') || '');
+            var campCoverUrl = '';
+            var campTitle = decodeURIComponent(params.get('title') || 'Kamp');
+
+            document.getElementById('heroTitle').textContent = campTitle;
+            document.title = campTitle + ' - Ders Platosu';
+            var heroBadgeSubjectEl = document.getElementById('heroBadgeSubject');
+            if (heroBadgeSubjectEl) heroBadgeSubjectEl.textContent = campTitle.split(' ')[0] || 'Kamp';
+
+            var thumbEl = document.getElementById('heroThumb');
+            var heroSection = document.querySelector('.egitim-hero');
+            function applyYoutubeThumb(vid) {
+                if (!vid || !thumbEl) return;
+                var fallbacks = [
+                    'https://img.youtube.com/vi/' + vid + '/hqdefault.jpg',
+                    'https://img.youtube.com/vi/' + vid + '/mqdefault.jpg'
+                ];
+                var attempt = 0;
+                function tryThumb() {
+                    if (attempt >= fallbacks.length) return;
+                    var testImg = new Image();
+                    testImg.onload = function () {
+                        if (this.naturalWidth <= 120 && attempt < fallbacks.length - 1) {
+                            attempt++;
+                            tryThumb();
+                        } else {
+                            thumbEl.style.backgroundImage = "url('" + fallbacks[attempt] + "')";
+                            if (heroSection) heroSection.style.setProperty('--hero-cover', "url('" + fallbacks[attempt] + "')");
+                        }
+                    };
+                    testImg.onerror = function () {
+                        attempt++;
+                        tryThumb();
+                    };
+                    testImg.src = fallbacks[attempt];
+                }
+                tryThumb();
+            }
+
+            function applyCoverThumb(url) {
+                if (!url || !thumbEl) return;
+                thumbEl.style.backgroundImage = "url('" + url + "')";
+                if (heroSection) heroSection.style.setProperty('--hero-cover', "url('" + url + "')");
+            }
+
+            // Ilk acilista URL'den video geldiyse YouTube kapagini goster.
+            if (videoId) applyYoutubeThumb(videoId);
+
+            var ytLink = document.getElementById('ytPlaylistLink');
+            if (listId && ytLink) ytLink.href = 'https://www.youtube.com/playlist?list=' + listId;
+
+            function playHeroVideo() {
+                var iframe = document.getElementById('heroIframe');
+                var heroThumb = document.getElementById('heroThumb');
+                var src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0&modestbranding=1';
+                if (iframe) {
+                    iframe.src = src;
+                    iframe.style.display = 'block';
+                }
+                if (heroThumb) heroThumb.style.display = 'none';
+
+                if (heroSection) heroSection.classList.add('video-active');
+            }
+
+            var playBtn = document.getElementById('heroPlayBtn');
+            var heroVideoLabel = document.getElementById('heroVideoLabel');
+            function syncHeroVideoState() {
+                var hasVideo = !!videoId;
+                if (playBtn) playBtn.style.display = hasVideo ? '' : 'none';
+                if (heroVideoLabel) heroVideoLabel.textContent = hasVideo ? 'Kamp Tanitim Videosunu Izle' : 'Kamp Kapagi';
+            }
+            if (playBtn) {
+                playBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (videoId) playHeroVideo();
+                });
+            }
+            syncHeroVideoState();
+
+            var currentPlayingItem = null;
+
+            function closeVideo(itemEl) {
+                var container = itemEl.querySelector('.lesson-player-container');
+                if (container) container.innerHTML = '';
+                var notesUnder = itemEl.querySelector('.lesson-notes-under');
+                if (notesUnder) notesUnder.remove();
+                itemEl.classList.remove('active');
+                currentPlayingItem = null;
+            }
+
+            function playVideo(vid, title, itemEl) {
+                // If there's an already active playing item, close its player
+                if (currentPlayingItem && currentPlayingItem !== itemEl) {
+                    closeVideo(currentPlayingItem);
+                }
+
+                // If clicking the same item that's already playing, toggle it closed
+                if (currentPlayingItem === itemEl && itemEl.classList.contains('active')) {
+                    closeVideo(itemEl);
+                    return;
+                }
+
+                currentPlayingItem = itemEl;
+
+                document.querySelectorAll('.lesson-item').forEach(function (it) {
+                    it.classList.remove('active');
+                });
+                itemEl.classList.add('active');
+
+                var container = itemEl.querySelector('.lesson-player-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.className = 'lesson-player-container';
+                    itemEl.appendChild(container);
+                }
+                var noteUrl = itemEl.dataset.notes || '';
+
+                var src = 'https://www.youtube-nocookie.com/embed/' + vid + '?autoplay=1&rel=0&modestbranding=1';
+                var ytWatchUrl = 'https://www.youtube.com/watch?v=' + vid;
+                container.innerHTML = '<button class="lesson-close-btn" onclick="event.stopPropagation()" title="Kapat">&times;</button>' +
+                    '<iframe allowfullscreen allow="autoplay; encrypted-media" src="' + src + '" id="lessonIframe_' + vid + '"></iframe>';
+
+                if (noteUrl) {
+                    var notesEl = document.createElement('a');
+                    notesEl.className = 'lesson-notes-under';
+                    notesEl.href = noteUrl;
+                    notesEl.target = '_blank';
+                    notesEl.rel = 'noopener';
+                    notesEl.textContent = '📄 Ders Notu Indir';
+                    itemEl.appendChild(notesEl);
+                }
+
+                // X butonuna tıklama
+                var closeBtn = container.querySelector('.lesson-close-btn');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        closeVideo(itemEl);
+                    });
+                }
+
+                // Hata 153 / embed kısıtlaması → fallback butonu göster
+                var iframe = container.querySelector('iframe');
+                if (iframe) {
+                    iframe.addEventListener('error', function () {
+                        showEmbedFallback(container, ytWatchUrl, title);
+                    });
+                    // postMessage ile YouTube hata mesajını yakala
+                    window.addEventListener('message', function onYTMsg(e) {
+                        try {
+                            var d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+                            if (d && d.event === 'onError' && (d.info === 153 || d.info === 150 || d.info === 101)) {
+                                showEmbedFallback(container, ytWatchUrl, title);
+                                window.removeEventListener('message', onYTMsg);
+                            }
+                        } catch (ex) { }
+                    });
+                    // 4 saniye sonra hâlâ siyahsa fallback göster
+                    setTimeout(function () {
+                        if (iframe.parentNode && iframe.clientHeight > 0) {
+                            var rect = iframe.getBoundingClientRect();
+                            if (rect.width === 0) showEmbedFallback(container, ytWatchUrl, title);
+                        }
+                    }, 4000);
+                }
+
+                function showEmbedFallback(cont, url, ttl) {
+                    cont.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:24px;gap:14px;background:#0f172a;border-radius:8px;">' +
+                        '<svg width="48" height="48" viewBox="0 0 24 24" fill="#ef4444"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.8 15.5V8.5l6.2 3.5-6.2 3.5z"/></svg>' +
+                        '<p style="color:#e2e8f0;font-size:0.9rem;text-align:center;margin:0;">Bu video gömülü oynatmaya kapalı</p>' +
+                        '<a href="' + url + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:#ef4444;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:0.9rem;">▶ YouTube\'da İzle</a>' +
+                        '</div>';
+                }
+
+                // Scroll into view smoothly
+                setTimeout(function () {
+                    itemEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
+
+            document.querySelectorAll('.etab').forEach(function (tab) {
+                tab.addEventListener('click', function () {
+                    document.querySelectorAll('.etab').forEach(function (t) { t.classList.remove('active'); });
+                    tab.classList.add('active');
+                    document.getElementById('tabDersler').style.display = tab.dataset.tab === 'dersler' ? '' : 'none';
+                    document.getElementById('tabKitaplar').style.display = tab.dataset.tab === 'kitaplar' ? '' : 'none';
+                });
+            });
+
+            // Populate Kitaplar Tab - will be overridden by Strapi data if available
+            var tabKitaplar = document.getElementById('tabKitaplar');
+
+            // ===== STRAPI'DEN KAMP VERİLERİNİ ÇEK =====
+            async function loadCampFromStrapi() {
+                try {
+                    var queryVariants = [
+                        [
+                            'populate[lessons][fields][0]=title',
+                            'populate[lessons][fields][1]=day',
+                            'populate[lessons][fields][2]=youtube',
+                            'populate[lessons][fields][3]=notes_link',
+                            'populate[books][populate][cover][fields][0]=url',
+                            'populate[books][populate][cover][fields][1]=formats',
+                            'populate[books][populate][cover][fields][2]=alternativeText',
+                            'populate[books][fields][0]=title',
+                            'populate[books][fields][1]=buy_link',
+                            'populate[books][fields][2]=solution_link',
+                            'populate[books][fields][3]=documentId',
+                            'populate[subject][fields][0]=name',
+                            'populate[subject][fields][1]=documentId',
+                            'populate[instructors][populate][photo][fields][0]=url',
+                            'populate[instructors][populate][photo][fields][1]=formats',
+                            'populate[instructors][fields][0]=name',
+                            'populate[instructors][fields][1]=youtube',
+                            'populate[instructors][fields][2]=instagram',
+                            'populate[cover][fields][0]=url',
+                            'populate[cover][fields][1]=formats',
+                            'fields[0]=title',
+                            'fields[1]=introVideo',
+                            'fields[2]=playlist',
+                            'fields[3]=slug',
+                            'pagination[pageSize]=100'
+                        ].join('&'),
+                        [
+                            'populate[lessons][fields][0]=title',
+                            'populate[lessons][fields][1]=day',
+                            'populate[lessons][fields][2]=youtube',
+                            'populate[lessons][fields][3]=notes_link',
+                            'populate[books][populate][cover][fields][0]=url',
+                            'populate[books][populate][cover][fields][1]=formats',
+                            'populate[books][populate][cover][fields][2]=alternativeText',
+                            'populate[books][fields][0]=title',
+                            'populate[books][fields][1]=buy_link',
+                            'populate[books][fields][2]=solution_link',
+                            'populate[books][fields][3]=documentId',
+                            'populate[subject][fields][0]=name',
+                            'populate[subject][fields][1]=documentId',
+                            'populate[instructors][populate][photo][fields][0]=url',
+                            'populate[instructors][populate][photo][fields][1]=formats',
+                            'populate[instructors][fields][0]=name',
+                            'populate[instructors][fields][1]=youtube',
+                            'populate[instructors][fields][2]=instagram',
+                            'fields[0]=title',
+                            'fields[1]=introVideo',
+                            'fields[2]=playlist',
+                            'fields[3]=slug',
+                            'pagination[pageSize]=100'
+                        ].join('&'),
+                        [
+                            'populate[lessons][fields][0]=title',
+                            'populate[lessons][fields][1]=day',
+                            'populate[lessons][fields][2]=youtube',
+                            'populate[lessons][fields][3]=notes_link',
+                            'populate[books][populate][cover][fields][0]=url',
+                            'populate[books][populate][cover][fields][1]=formats',
+                            'populate[books][populate][cover][fields][2]=alternativeText',
+                            'populate[books][fields][0]=title',
+                            'populate[books][fields][1]=buy_link',
+                            'populate[books][fields][2]=solution_link',
+                            'populate[subject][fields][0]=name',
+                            'populate[instructors][populate][photo][fields][0]=url',
+                            'populate[instructors][populate][photo][fields][1]=formats',
+                            'populate[instructors][fields][0]=name',
+                            'populate[instructors][fields][1]=youtube',
+                            'populate[instructors][fields][2]=instagram',
+                            'fields[0]=title',
+                            'fields[1]=introVideo',
+                            'fields[2]=playlist',
+                            'fields[3]=slug',
+                            'pagination[pageSize]=100'
+                        ].join('&'),
+                        [
+                            'populate[lessons]=*',
+                            'populate[books]=*',
+                            'populate[subject]=*',
+                            'populate[instructors][populate][photo]=*',
+                            'fields[0]=title',
+                            'fields[1]=introVideo',
+                            'fields[2]=playlist',
+                            'fields[3]=slug',
+                            'pagination[pageSize]=100'
+                        ].join('&')
+                    ];
+
+                    var camps = [];
+                    for (var qi = 0; qi < queryVariants.length; qi++) {
+                        var res = await fetch(STRAPI_URL + '/camps?' + queryVariants[qi], { headers: strapiHeaders });
+                        var data = await res.json();
+                        if (res.ok && !data?.error) {
+                            camps = data.data || [];
+                            break;
+                        }
+                        dpWarn('⚠️ Kamp sorgusu fallback denenecek:', data?.error?.message || ('HTTP ' + res.status));
+                    }
+                    if (!Array.isArray(camps) || camps.length === 0) {
+                        dpWarn('⚠️ Kamp listesi bos veya sorgu basarisiz.');
+                        return null;
+                    }
+
+                    dpLog('🔍 Strapi kamplar yüklendi:', camps.length, 'adet');
+
+                    // Önce slug ile eşleştir (en doğru yöntem)
+                    var matchedCamp = null;
+                    if (campSlug) {
+                        for (var i = 0; i < camps.length; i++) {
+                            var c = camps[i].attributes || camps[i];
+                            var strapiSlug = c.slug || slugify(c.title || '');
+                            if (strapiSlug === campSlug) {
+                                matchedCamp = camps[i].attributes ? c : camps[i];
+                                matchedCamp._id = camps[i].id;
+                                dpLog('✅ slug ile eşleşti:', c.title);
+                                break;
+                            }
+                        }
+                    }
+                    for (var i = 0; i < camps.length; i++) {
+                        var c = camps[i].attributes || camps[i];
+                        // introVideo: hem "https://youtu.be/XXX" hem de "XXX" formatını destekle
+                        var cVideoId = c.introVideo ? extractYouTubeId(c.introVideo) : '';
+                        var cPlaylist = c.playlist ? extractPlaylistId(c.playlist) : '';
+
+                        dpLog('🔎 Kamp:', c.title, '| videoId:', cVideoId, '| playlist:', cPlaylist);
+
+                        if (videoId && cVideoId && cVideoId === videoId) {
+                            matchedCamp = camps[i].attributes ? c : camps[i];
+                            matchedCamp._id = camps[i].id;
+                            dpLog('✅ videoId ile eşleşti:', c.title);
+                            break;
+                        }
+                        if (listId && cPlaylist && cPlaylist === listId) {
+                            matchedCamp = camps[i].attributes ? c : camps[i];
+                            matchedCamp._id = camps[i].id;
+                            dpLog('✅ listId ile eşleşti:', c.title);
+                            break;
+                        }
+                    }
+
+                    // URL parametresindeki camp title ile fallback eşleştirme
+                    if (!matchedCamp) {
+                        var campTitleParam = decodeURIComponent(params.get('title') || '').toLowerCase().trim();
+                        if (campTitleParam) {
+                            for (var i = 0; i < camps.length; i++) {
+                                var c2 = camps[i].attributes || camps[i];
+                                if ((c2.title || '').toLowerCase().includes(campTitleParam) ||
+                                    campTitleParam.includes((c2.title || '').toLowerCase())) {
+                                    matchedCamp = camps[i].attributes ? c2 : camps[i];
+                                    matchedCamp._id = camps[i].id;
+                                    dpLog('✅ title ile eşleşti:', c2.title);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!matchedCamp) {
+                        dpLog('⚠️ Strapi\'de eşleşen kamp bulunamadı, hardcoded fallback...');
+                        return null;
+                    }
+
+                    dpLog('✅ Kamp bulundu:', matchedCamp.title);
+
+                    // Canonical URL'yi kamp slug'u ile güncelle
+                    var campCleanSlug = matchedCamp.slug || slugify(matchedCamp.title || '');
+                    if (campCleanSlug) {
+                        var campUrl = 'https://dersplatosu.com/egitim/' + campCleanSlug;
+                        var canonical = document.getElementById('pageCanonical') || document.querySelector('link[rel="canonical"]');
+                        var ogUrl = document.getElementById('pageOgUrl');
+                        var twUrl = document.getElementById('pageTwUrl');
+                        if (canonical) canonical.href = campUrl;
+                        if (ogUrl) ogUrl.content = campUrl;
+                        if (twUrl) twUrl.content = campUrl;
+                        // Eski ?v=... URL'sini temiz URL'ye yönlendir
+                        if (!pathMatch && (window.location.search.includes('v=') || window.location.search.includes('list='))) {
+                            history.replaceState(null, '', '/egitim/' + campCleanSlug);
+                        }
+                    }
+
+                    // Kampın kendi instructors ilişkisini kullan (subject bazlı değil)
+                    var campInstructors = matchedCamp.instructors?.data || matchedCamp.instructors || [];
+                    matchedCamp._instructors = Array.isArray(campInstructors) ? campInstructors : [];
+                    dpLog('👨‍🏫 Kamp instructors:', matchedCamp._instructors.length, 'adet');
+
+                    return matchedCamp;
+                } catch (err) {
+                    dpError('❌ Strapi kamp çekme hatası:', err);
+                    return null;
+                }
+            }
+
+            function renderStrapiLessons(camp) {
+                var lessons = camp.lessons?.data || camp.lessons || [];
+                if (!Array.isArray(lessons) || lessons.length === 0) return false;
+
+                // day'e göre sırala
+                var sortedLessons = lessons.map(function (l) {
+                    var attr = l.attributes || l;
+                    return {
+                        title: attr.title || '',
+                        day: attr.day || 0,
+                        vid: extractYouTubeId(attr.youtube || ''),
+                        notesLink: attr.notes_link || ''
+                    };
+                }).sort(function (a, b) { return a.day - b.day; });
+
+                renderList(sortedLessons);
+                return true;
+            }
+
+            function renderStrapiBooks(camp) {
+                // Strapi v5 flat: camp.books = [...] veya v4 nested: camp.books.data = [...]
+                var books = camp.books?.data || camp.books || [];
+                dpLog('📚 Books RAW:', JSON.stringify(camp.books));
+                dpLog('📚 Books parsed:', books.length, 'adet');
+                if (!Array.isArray(books) || books.length === 0) {
+                    tabKitaplar.innerHTML = '<p style="color:var(--text-muted);padding:20px 0">Bu kampa ait kitaplar yakında eklenecek.</p>';
+                    return;
+                }
+
+                var booksHtml = books.map(function (book) {
+                    var b = book.attributes || book;
+                    var cover = b.cover?.data?.attributes || b.cover;
+                    var coverUrl = null;
+                    if (cover?.formats?.small?.url) coverUrl = '' + cover.formats.small.url;
+                    else if (cover?.formats?.thumbnail?.url) coverUrl = '' + cover.formats.thumbnail.url;
+                    else if (cover?.url) coverUrl = '' + cover.url;
+                    else coverUrl = 'https://via.placeholder.com/120x170?text=Kitap';
+
+                    var buyLink = b.buy_link || "/kitaplar";
+                    var demoLink = b.solution_link || '';
+                    // Kitap ID'si: Strapi v5 documentId veya numeric id
+                    var bookId = book.documentId || b.documentId || book.id || b.id || '';
+                    // Soru çözümleri sayfasına bağla (solution_link varsa external, yoksa iç sayfa)
+                    var demoBtn = demoLink
+                        ? '<a href="' + demoLink + '" class="btn-demo-book" target="_blank" rel="noopener">🔎 Kitabı İncele</a>'
+                        : '';
+                    return '<div class="book-item"><div class="book-cover-wrap"><img src="' + coverUrl + '" alt="' + escHtml(b.title || '') + '" loading="lazy"></div><div class="book-details"><h4>' + escHtml(b.title || 'Kitap') + '</h4><a href="' + buyLink + '" class="btn-buy-book" target="_blank" rel="noopener">📦 Satın Al ↗</a>' + demoBtn + '</div></div>';
+                }).join('');
+
+                tabKitaplar.innerHTML = '<div class="egitim-books-grid" style="margin-top:10px;">' + booksHtml + '</div>';
+            }
+
+            function renderStrapiInstructor(camp) {
+                var instructors = camp._instructors || [];
+                if (!Array.isArray(instructors) || instructors.length === 0) return;
+
+                var card = document.getElementById('instructorSidebarCard');
+                var body = document.getElementById('instructorSidebarBody');
+                if (!card || !body) return;
+
+                var rowsHtml = instructors.map(function (item, idx) {
+                    var inst = item.attributes || item;
+                    var name = inst.name || '';
+                    if (!name) return '';
+                    var photo = inst.photo?.data?.attributes || inst.photo;
+                    var photoUrl = null;
+                    if (photo?.formats?.thumbnail?.url) photoUrl = '' + photo.formats.thumbnail.url;
+                    else if (photo?.url) photoUrl = '' + photo.url;
+                    var ytUrl = inst.youtube || '';
+                    var igUrl = inst.instagram || '';
+                    var isLast = idx === instructors.length - 1;
+                    return buildInstructorCardHtml(name, photoUrl, ytUrl, igUrl, isLast);
+                }).join('');
+
+                if (!rowsHtml.trim()) return;
+
+                body.innerHTML = rowsHtml;
+                card.style.display = 'block';
+            }
+
+            function buildInstructorCardHtml(name, photoUrl, ytUrl, igUrl, isLast) {
+                var photoHtml = photoUrl
+                    ? '<img src="' + escHtml(photoUrl) + '" alt="' + escHtml(name) + '" style="width:64px;height:64px;border-radius:50%;object-fit:cover;flex-shrink:0;border:3px solid var(--primary);box-shadow:0 4px 16px rgba(37,99,235,0.18);">'
+                    : '<div style="width:64px;height:64px;border-radius:50%;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;">👨‍🏫</div>';
+
+                var ytBtn = ytUrl
+                    ? '<a href="' + escHtml(ytUrl) + '" target="_blank" rel="noopener" class="exp-btn exp-btn-yt" style="font-size:0.75rem;padding:6px 12px;">' +
+                    '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.8 15.5V8.5l6.2 3.5-6.2 3.5z"/></svg>' +
+                    'YouTube Kanalı</a>'
+                    : '';
+
+                var igBtn = igUrl
+                    ? '<a href="' + escHtml(igUrl) + '" target="_blank" rel="noopener" class="exp-btn exp-btn-ig" style="font-size:0.75rem;padding:6px 12px;">' +
+                    '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.2 4.8 1.7 5 5 .1 1.3.1 1.6.1 4.7s0 3.4-.1 4.7c-.2 3.3-1.7 4.8-5 5-1.3.1-1.6.1-4.9.1s-3.6 0-4.9-.1c-3.3-.2-4.8-1.7-5-5C2 15.6 2 15.3 2 12s0-3.4.1-4.7c.2-3.3 1.7-4.8 5-5C8.4 2.2 8.8 2.2 12 2.2zM12 0C8.7 0 8.3 0 7 .1 2.7.3.3 2.7.1 7 0 8.3 0 8.7 0 12s0 3.7.1 5c.2 4.3 2.6 6.7 7 6.9 1.3.1 1.7.1 5 .1s3.7 0 5-.1c4.3-.2 6.7-2.6 6.9-7C24 15.7 24 15.3 24 12s0-3.7-.1-5c-.2-4.3-2.6-6.7-7-6.9C15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4A6.2 6.2 0 0 0 12 5.8zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8z"/></svg>' +
+                    'Instagram</a>'
+                    : '';
+
+                var socials = (ytBtn || igBtn)
+                    ? '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">' + ytBtn + igBtn + '</div>'
+                    : '';
+
+                var border = isLast ? '' : 'border-bottom:1px solid rgba(255,255,255,0.07);padding-bottom:14px;margin-bottom:14px;';
+
+                return '<div style="' + border + '">' +
+                    '<div style="display:flex;align-items:center;gap:12px;">' +
+                    photoHtml +
+                    '<div style="font-size:0.95rem;font-weight:700;color:var(--text);line-height:1.3;">' + escHtml(name) + '</div>' +
+                    '</div>' + socials +
+                    '</div>';
+            }
+
+            // ===== ANA YÜKLEME AKIŞI =====
+            async function initPage() {
+                // 1) Strapi'den kampı çek
+                var strapiCamp = await loadCampFromStrapi();
+
+                if (strapiCamp) {
+                    // Kapak varsa her zaman once kapak kullan.
+                    var coverObj = strapiCamp.cover?.data?.attributes || strapiCamp.cover;
+                    if (coverObj?.formats?.large?.url) campCoverUrl = fixImgUrl(coverObj.formats.large.url);
+                    else if (coverObj?.formats?.medium?.url) campCoverUrl = fixImgUrl(coverObj.formats.medium.url);
+                    else if (coverObj?.formats?.small?.url) campCoverUrl = fixImgUrl(coverObj.formats.small.url);
+                    else if (coverObj?.formats?.thumbnail?.url) campCoverUrl = fixImgUrl(coverObj.formats.thumbnail.url);
+                    else if (coverObj?.url) campCoverUrl = fixImgUrl(coverObj.url);
+
+                    // Slug URL'den gelince videoId/listId boş olur → Strapi'deki veriden doldur
+                    if (!videoId && strapiCamp.introVideo) {
+                        videoId = extractYouTubeId(strapiCamp.introVideo);
+                    }
+
+                    if (campCoverUrl) applyCoverThumb(campCoverUrl);
+                    else if (videoId) applyYoutubeThumb(videoId);
+                    syncHeroVideoState();
+
+                    if (!listId && strapiCamp.playlist) {
+                        listId = extractPlaylistId(strapiCamp.playlist);
+                        var ytLink2 = document.getElementById('ytPlaylistLink');
+                        if (listId && ytLink2) ytLink2.href = 'https://www.youtube.com/playlist?list=' + listId;
+                    }
+
+                    // Strapi'den başlığı güncelle
+                    if (strapiCamp.title) {
+                        document.getElementById('heroTitle').textContent = strapiCamp.title;
+                        document.title = strapiCamp.title + ' - Ders Platosu';
+                        var heroBadgeSubjectEl2 = document.getElementById('heroBadgeSubject');
+                        if (heroBadgeSubjectEl2) heroBadgeSubjectEl2.textContent = strapiCamp.title.split(' ')[0] || 'Kamp';
+                    }
+                    // Strapi'den dersler
+                    var lessonsRendered = renderStrapiLessons(strapiCamp);
+                    if (!lessonsRendered) {
+                        // Strapi'de ders yoksa hardcoded fallback
+                        loadPlaylistDirectly();
+                    }
+                    // Strapi'den kitaplar
+                    renderStrapiBooks(strapiCamp);
+                    // Strapi'den hoca
+                    renderStrapiInstructor(strapiCamp);
+
+                    // Instructor kartı hâlâ gizliyse → instructorData'dan fallback göster
+                    if (document.getElementById('instructorSidebarCard').style.display === 'none') {
+                        loadHardcodedInstructor();
+                    }
+                } else {
+                    // Hardcoded fallback: eski instructorData üzerinden kitapları ve hocayı yükle
+                    loadHardcodedBooks();
+                    // Hardcoded playlists
+                    loadPlaylistDirectly();
+                }
+            }
+
+            // instructorData'dan video/list ile eşleşen hocayı bulup kartı göster
+            function loadHardcodedInstructor() {
+                if (typeof instructorData === 'undefined') return;
+                var foundHost = null;
+                for (var i = 0; i < instructorData.length; i++) {
+                    var d = instructorData[i];
+                    if (!d.camps) continue;
+                    for (var j = 0; j < d.camps.length; j++) {
+                        var c = d.camps[j];
+                        if ((listId && c.list === listId) || (videoId && c.video === videoId)) {
+                            foundHost = d; break;
+                        }
+                    }
+                    if (foundHost) break;
+                }
+                if (!foundHost) return;
+
+                var card = document.getElementById('instructorSidebarCard');
+                var body = document.getElementById('instructorSidebarBody');
+                if (!card || !body) return;
+
+                body.innerHTML = buildInstructorCardHtml(
+                    foundHost.name,
+                    foundHost.photo || null,
+                    foundHost.youtube || '',
+                    foundHost.instagram || ''
+                );
+                card.style.display = 'block';
+            }
+
+
+            function loadHardcodedBooks() {
+                var foundHost = null;
+                if (typeof instructorData !== 'undefined') {
+                    for (var i = 0; i < instructorData.length; i++) {
+                        var d = instructorData[i];
+                        var hasCamp = false;
+                        if (d.camps) {
+                            for (var j = 0; j < d.camps.length; j++) {
+                                if ((listId && d.camps[j].list === listId) || (videoId && d.camps[j].video === videoId)) {
+                                    hasCamp = true; break;
+                                }
+                            }
+                        }
+                        if (hasCamp) { foundHost = d; break; }
+                    }
+                }
+
+                // Hoca kartını sidebar'da göster (hardcoded fallback)
+                if (foundHost) {
+                    var card = document.getElementById('instructorSidebarCard');
+                    var body = document.getElementById('instructorSidebarBody');
+                    if (card && body) {
+                        body.innerHTML = buildInstructorCardHtml(
+                            foundHost.name,
+                            foundHost.photo || null,
+                            foundHost.youtube || '',
+                            foundHost.instagram || ''
+                        );
+                        card.style.display = 'block';
+                    }
+                }
+                if (foundHost && foundHost.books && foundHost.books.length > 0) {
+                    var booksHtml = foundHost.books.map(function (b) {
+                        return '<div class="book-item"><div class="book-cover-wrap"><img src="' + b.cover + '" alt="' + b.title + '" loading="lazy"></div><div class="book-details"><h4>' + b.title + '</h4><a href="/kitaplar" class="btn-buy-book">📦 Satın Al ↗</a></div></div>';
+                    }).join('');
+                    tabKitaplar.innerHTML = '<div class="egitim-books-grid" style="margin-top:10px;">' + booksHtml + '</div>';
+                } else {
+                    tabKitaplar.innerHTML = '<p style="color:var(--text-muted);padding:20px 0">Bu kampa ait kitaplar yakında eklenecek.</p>';
+                }
+            }
+
+            if (!campSlug && !listId) { fallbackSingle(); return; }
+
+            // Hardcoded Playlist Data requested by user (Manual entries)
+            var hardcodedPlaylists = {
+                'PLl3N8OcwtLscmNR_Lyass5KQfzKKhcxer': [ // Coğrafya
+                    { vid: 'RaqpxUwsl0g', title: '0. Gün - Kamp Tanıtım Videosu' },
+                    { vid: '_a9HW8h80qs', title: '1. Gün' },
+                    { vid: 'etJ8JoFnq_A', title: '2. Gün' },
+                    { vid: 'LS4o5k65ip8', title: '3. Gün' },
+                    { vid: 'b62VyHIIIAY', title: '4. Gün' },
+                    { vid: '7ABcp4x8dRE', title: '5. Gün' }
+                ],
+                'PLZ7_47RJwDLcYKPqv41hHkNFk-V7rsmVG': [ // Türkçe
+                    { vid: 'XhtG-pDErkA', title: '0. Gün - Kamp Tanıtım Videosu' },
+                    { vid: 'xW9_uVHTF5I', title: '1. Gün' },
+                    { vid: 'spp8ixXplGo', title: '2. Gün' },
+                    { vid: 'TizjHBJnpSM', title: '3. Gün' },
+                    { vid: 'UBcW3gAJkW0', title: '4. Gün' }
+                ],
+                'PL5kGMSi3iohUiHSe1soCf1zdkNbzliIw9': [ // Geometri
+                    { vid: 'Uvi1ESIFeB8', title: '0. Gün - Kamp Tanıtım Videosu' },
+                    { vid: 'i-rnenK0ASQ', title: '1. Gün' },
+                    { vid: 'IfKi3UjattA', title: '2. Gün' },
+                    { vid: 'CvpIC4DloCA', title: '3. Gün' }
+                ],
+                'PLefw8S-Npezs3lbuau4HsGclEg2dQQbpw': [ // Matematik
+                    { vid: '_icV28iOnKc', title: '0. Gün - Kamp Tanıtım Videosu' },
+                    { vid: 'eQWO7JJzc1M', title: '1. Gün' },
+                    { vid: 'izgp6d0V5R0', title: '2. Gün' },
+                    { vid: 'J6EQgE_S1KQ', title: '3. Gün' }
+                ],
+                'PLdw-ymGLKCu4tVtfI1bCKHvbXQ1nWbOTy': [ // Felsefe
+                    { vid: '8lPv4o5agbw', title: '0. Gün - Kamp Tanıtım Videosu' },
+                    { vid: 'pUgn6_N76OI', title: '1. Gün' },
+                    { vid: '1l62-XLtllk', title: '2. Gün' },
+                    { vid: 'jTdWe82pqDk', title: '3. Gün' },
+                    { vid: '2SKhXHWsucQ', title: '4. Gün' },
+                    { vid: 'WDGOplXI3YI', title: '5. Gün' },
+                    { vid: 'XsaO2n7m4hM', title: '6. Gün' },
+                    { vid: 'Tni_w4vEMzM', title: '7. Gün' }
+                ],
+                'PL-3G5m_s7HYhvjJKr52cyDDsYGS6o5ohE': [ // Din Kültürü
+                    { vid: 'Hmna4O-YScY', title: '0. Gün - Kamp Tanıtım Videosu' },
+                    { vid: 'Jwf0hMMQnHE', title: '1. Gün' },
+                    { vid: 'X-5dqbeq_qc', title: '2. Gün' },
+                    { vid: 'hmFRn2EShUE', title: '3. Gün' }
+                ],
+                'PLD2wXaX0vBHEkp0-OLnjqAIrxGx8DLBj_': [ // Tarih
+                    { vid: 'pDtIVXOOl5w', title: '0. Gün - Kamp Tanıtım Videosu' },
+                    { vid: '9Re7prRXMgU', title: '1. Gün' },
+                    { vid: 'Tsipx4Gap60', title: '2. Gün' },
+                    { vid: 'sxaeKJInHg0', title: '3. Gün' }
+                ],
+                'PL8JbgP94pvnwUYVzf6qW2_4kQCjIrXcro': [ // Kimya
+                    { vid: 'YFpJWzXASUI', title: '0. Gün - Kamp Tanıtım Videosu' },
+                    { vid: 'cmYLUgxp41s', title: '1. Gün' },
+                    { vid: 'ktGlfusB3PE', title: '2. Gün' },
+                    { vid: 'ICDO_b78vPs', title: '3. Gün' },
+                    { vid: 'oZeHEh1rVUw', title: '4. Gün' }
+                ],
+                'PLNKDbyBaT6-GZXwasuTO4Yqn1G1dnL1Y4': [ // Fizik
+                    { vid: 'kWnG1ipk59Y', title: '0. Gün - Kamp Tanıtım Videosu' },
+                    { vid: 'MMfyQsrwQrs', title: '1. Gün' },
+                    { vid: 'c4wgweKougI', title: '2. Gün' },
+                    { vid: 'UNlrg2dLBR8', title: '3. Gün' },
+                    { vid: 'ikriEmzjDMo', title: '4. Gün' }
+                ]
+            };
+
+            function loadPlaylistDirectly() {
+                if (hardcodedPlaylists[listId]) {
+                    renderList(hardcodedPlaylists[listId]);
+                } else {
+                    fallbackSingle();
+                }
+            }
+
+            function renderList(items) {
+                var list = document.getElementById('lessonListDyn');
+                document.getElementById('lessonsLoading').style.display = 'none';
+                list.style.display = '';
+                list.innerHTML = '';
+                var num = 0;
+                items.forEach(function (item) {
+                    if (!item.vid) return;
+                    num++;
+                    var el = document.createElement('div');
+                    el.className = 'lesson-item';
+                    el.dataset.vid = item.vid;
+                    var notesBtn = item.notesLink
+                        ? '<a href="' + item.notesLink + '" target="_blank" rel="noopener" class="lesson-notes-btn" onclick="event.stopPropagation()"><span class="ln-icon">📄</span><span class="ln-text">Ders Notu</span></a>'
+                        : '';
+                    el.innerHTML =
+                        '<div class="lesson-row">' +
+                        '<span class="lesson-num">' + num + '</span>' +
+                        '<img class="lesson-thumb-sm" src="https://img.youtube.com/vi/' + item.vid + '/mqdefault.jpg" alt="" loading="lazy"/>' +
+                        '<div class="lesson-info-dyn"><h4>' + escHtml(item.title || ('Ders ' + num)) + '</h4></div>' +
+                        notesBtn +
+                        '</div>';
+                    if (item.notesLink) el.dataset.notes = item.notesLink;
+                    el.addEventListener('click', function () { playVideo(item.vid, item.title, el); });
+                    list.appendChild(el);
+                });
+                var heroCount = document.getElementById('heroLessonCount');
+                if (heroCount) heroCount.textContent = num;
+                var sidebarTot = document.getElementById('sidebarTotal');
+                if (sidebarTot) sidebarTot.textContent = num;
+            }
+
+            function fallbackSingle() {
+                document.getElementById('lessonsLoading').style.display = 'none';
+                document.getElementById('lessonListDyn').style.display = '';
+                var el = document.createElement('div');
+                el.className = 'lesson-item';
+                el.dataset.vid = videoId;
+                el.innerHTML = '<div class="lesson-row"><span class="lesson-num">1</span><img class="lesson-thumb-sm" src="https://img.youtube.com/vi/' + videoId + '/mqdefault.jpg" alt=""/><div class="lesson-info-dyn"><h4>' + escHtml(campTitle) + '</h4></div></div>';
+                el.addEventListener('click', function () { playVideo(videoId, campTitle, el); });
+                document.getElementById('lessonListDyn').appendChild(el);
+                var heroCount2 = document.getElementById('heroLessonCount');
+                if (heroCount2) heroCount2.textContent = '1';
+                var sidebarTot2 = document.getElementById('sidebarTotal');
+                if (sidebarTot2) sidebarTot2.textContent = '1';
+            }
+
+            function escHtml(s) { return (s + '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+            // Sayfa başlat: önce Strapi, olmazsa hardcoded
+            initPage();
+        })();
+    </script>
+
+
+
+
+</body>
+
+</html>

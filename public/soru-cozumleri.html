@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <!-- dp-seo-injector -->
+    <script>
+        (function () {
+            try {
+                var s = JSON.parse(localStorage.getItem('dp_seo_settings') || '{}');
+                if (!s || !Object.keys(s).length) return;
+                var h = document.head;
+
+                // Mevcut meta etiketini bulup günceller, yoksa yenisini oluşturur
+                function up(n, c, isProp) {
+                    if (!c) return;
+                    var sel = isProp ? 'meta[property="' + n + '"]' : 'meta[name="' + n + '"]';
+                    var el = document.querySelector(sel);
+                    if (el) { el.content = c; }
+                    else {
+                        var m = document.createElement('meta');
+                        isProp ? m.setAttribute('property', n) : m.name = n;
+                        m.content = c;
+                        h.appendChild(m);
+                    }
+                }
+
+                function addScript(code) { var t = document.createElement('script'); t.textContent = code; h.appendChild(t); }
+                function addSrcScript(src) { var t = document.createElement('script'); t.async = true; t.src = src; h.appendChild(t); }
+                function upFavicon(url) {
+                    if (!url) return;
+                    ['icon', 'shortcut icon', 'apple-touch-icon'].forEach(function (rel) {
+                        var el = document.querySelector('link[rel="' + rel + '"]');
+                        if (!el) {
+                            el = document.createElement('link');
+                            el.setAttribute('rel', rel);
+                            h.appendChild(el);
+                        }
+                        el.setAttribute('href', url);
+                    });
+                }
+
+                // Temel SEO & Open Graph
+                if (s.title) document.title = s.title;
+                up('description', s.desc, false);
+                up('keywords', s.keywords, false);
+                up('author', s.author, false);
+                up('og:site_name', s.siteName, true);
+                up('og:title', s.ogTitle, true);
+                up('og:description', s.ogDesc, true);
+                up('og:image', s.ogImage, true);
+                upFavicon(s.faviconUrl || s.iconUrl);
+
+                // Doğrulama & Analitik
+                if (s.googleVerify) up('google-site-verification', s.googleVerify, false);
+                if (s.bingVerify) up('msvalidate.01', s.bingVerify, false);
+                if (s.yandexVerify) up('yandex-verification', s.yandexVerify, false);
+
+                if (s.ga4Id) { addSrcScript('https://www.googletagmanager.com/gtag/js?id=' + s.ga4Id); addScript('window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","' + s.ga4Id + '");'); }
+                if (s.gtmId) { addScript('(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src="https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);})(window,document,"script","dataLayer","' + s.gtmId + '");'); }
+                if (s.fbPixelId) { addScript('!function(f,b,e,v,n,t,s2){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s2=b.getElementsByTagName(e)[0];s2.parentNode.insertBefore(t,s2)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","' + s.fbPixelId + '");fbq("track","PageView");'); }
+
+                // Özel Kodlar
+            } catch (e) { }
+        })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="pageTitle">Soru Çözümleri – Ders Platosu</title>
+    <meta name="description"
+        content="Ders Platosu ile YKS, TYT ve AYT'ye en iyi şekilde hazırlanın. Uzman eğitmenlerden konu anlatım kampları, yeni nesil soru çözümleri ve kitaplar burada!" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://dersplatosu.com/soru-cozumleri" />
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://dersplatosu.com/soru-cozumleri" />
+    <meta property="og:title" content="Soru Çözümleri – Ders Platosu" />
+    <meta property="og:description" content="Ders Platosu ile YKS, TYT ve AYT'ye en iyi şekilde hazırlanın. Uzman eğitmenlerden konu anlatım kampları, yeni nesil soru çözümleri ve kitaplar burada!" />
+    <meta property="og:image" content="https://i.hizliresim.com/ag3gf4d.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:site_name" content="Ders Platosu" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Soru Çözümleri – Ders Platosu" />
+    <meta name="twitter:description" content="Ders Platosu ile YKS, TYT ve AYT'ye en iyi şekilde hazırlanın. Uzman eğitmenlerden konu anlatım kampları, yeni nesil soru çözümleri ve kitaplar burada!" />
+    <meta name="twitter:image" content="https://i.hizliresim.com/ag3gf4d.png" />
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        /* ══ Page ══ */
+        .sc-page {
+            padding-top: var(--nav-h);
+            min-height: 100vh;
+            background: #f7f9fc;
+        }
+
+        /* ══ Hero ══ */
+        .sc-hero {
+            background: linear-gradient(135deg, #060d1f 0%, #0f2454 50%, #060d1f 100%);
+            padding: 48px 0 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Light mode hero */
+        [data-theme="light"] .sc-hero {
+            background: linear-gradient(135deg, #e8f0fe 0%, #dbeafe 50%, #e0e7ff 100%);
+        }
+
+        [data-theme="light"] .sc-hero::before {
+            background:
+                radial-gradient(ellipse at 80% 40%, rgba(59, 130, 246, .1) 0%, transparent 55%),
+                radial-gradient(ellipse at 20% 80%, rgba(99, 66, 246, .08) 0%, transparent 50%);
+        }
+
+        [data-theme="light"] .sc-hero-title {
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .sc-hero-sub {
+            color: #334155;
+        }
+
+        [data-theme="light"] .sc-hero-back {
+            color: #475569;
+        }
+
+        [data-theme="light"] .sc-hero-back:hover {
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .sc-hero-badge {
+            background: rgba(15, 23, 42, .07);
+            color: #1e40af;
+            border-color: rgba(59, 130, 246, .2);
+        }
+
+        [data-theme="light"] .sc-hero-badge.green {
+            background: rgba(22, 163, 74, .1);
+            color: #15803d;
+            border-color: rgba(22, 163, 74, .2);
+        }
+
+        [data-theme="light"] .sc-stat-pill {
+            background: rgba(15, 23, 42, .06);
+            border-color: rgba(15, 23, 42, .1);
+        }
+
+        [data-theme="light"] .sc-stat-text {
+            color: #475569;
+        }
+
+        [data-theme="light"] .sc-stat-text strong {
+            color: #0f172a;
+        }
+
+        .sc-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 80% 40%, rgba(59, 130, 246, .2) 0%, transparent 55%),
+                radial-gradient(ellipse at 20% 80%, rgba(99, 66, 246, .15) 0%, transparent 50%);
+        }
+
+        .sc-hero-inner {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .sc-book-cover-wrap {
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .sc-book-cover-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -12px;
+            background: radial-gradient(circle, rgba(59, 130, 246, .35) 0%, transparent 70%);
+            border-radius: 16px;
+            filter: blur(10px);
+        }
+
+        .sc-book-cover {
+            width: 90px;
+            height: 126px;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, .6);
+            position: relative;
+            z-index: 1;
+            background: #1e293b;
+        }
+
+        .sc-hero-text {
+            flex: 1;
+        }
+
+        .sc-hero-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .sc-hero-badge {
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .02em;
+            background: rgba(255, 255, 255, .08);
+            color: #c7d6f7;
+            border: 1px solid rgba(255, 255, 255, .12);
+        }
+
+        .sc-hero-badge.green {
+            background: rgba(22, 163, 74, .18);
+            color: #86efac;
+            border-color: rgba(22, 163, 74, .28);
+        }
+
+        .sc-hero-badge.blue {
+            background: rgba(59, 130, 246, .18);
+            color: #93c5fd;
+            border-color: rgba(59, 130, 246, .28);
+        }
+
+        .sc-hero-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+            margin-bottom: 8px;
+            letter-spacing: -.02em;
+        }
+
+        .sc-hero-sub {
+            color: #7da4cf;
+            font-size: .86rem;
+            line-height: 1.6;
+        }
+
+        .sc-hero-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #7da4cf;
+            font-size: .82rem;
+            font-weight: 500;
+            text-decoration: none;
+            margin-top: 14px;
+            transition: color .2s;
+        }
+
+        .sc-hero-back:hover {
+            color: #fff;
+        }
+
+        /* Stats pills */
+        .sc-stats-bar {
+            max-width: 860px;
+            margin: 24px auto 0;
+            padding: 0 24px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .sc-stat-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 16px;
+            background: rgba(255, 255, 255, .07);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 50px;
+            backdrop-filter: blur(6px);
+        }
+
+        .sc-stat-icon {
+            font-size: .95rem;
+        }
+
+        .sc-stat-text {
+            font-size: .78rem;
+            color: #94a3b8;
+        }
+
+        .sc-stat-text strong {
+            color: #fff;
+            font-weight: 700;
+            margin-right: 3px;
+        }
+
+        /* ══ Body (single column) ══ */
+        .sc-body {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 32px 24px 80px;
+        }
+
+        .sc-section-label {
+            font-size: .7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #6b7280;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sc-section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .sc-chapter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* ══ Level 1: Chapter ══ */
+        .sc-chapter {
+            background: #fff;
+            border: 1.5px solid #e5e9f0;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .sc-chapter:hover {
+            border-color: #c3d0e6;
+        }
+
+        .sc-chapter.open {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, .1);
+        }
+
+        .sc-chapter-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 17px 20px;
+            cursor: pointer;
+            user-select: none;
+            transition: background .18s;
+        }
+
+        .sc-chapter-header:hover {
+            background: #f6f9ff;
+        }
+
+        .sc-chapter.open .sc-chapter-header {
+            background: #f0f6ff;
+        }
+
+        .sc-chapter-num {
+            font-size: .82rem;
+            font-weight: 800;
+            color: #3b82f6;
+            min-width: 24px;
+            flex-shrink: 0;
+        }
+
+        .sc-chapter-name {
+            flex: 1;
+            font-size: .95rem;
+            font-weight: 600;
+            color: #111827;
+            line-height: 1.35;
+        }
+
+        .sc-chapter.open .sc-chapter-name {
+            color: #2563eb;
+        }
+
+        .sc-chapter-meta {
+            font-size: .75rem;
+            color: #9ca3af;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .sc-chapter-arrow {
+            width: 16px;
+            height: 16px;
+            color: #9ca3af;
+            flex-shrink: 0;
+            transition: transform .28s cubic-bezier(.4, 0, .2, 1), color .2s;
+        }
+
+        .sc-chapter.open .sc-chapter-arrow {
+            transform: rotate(90deg);
+            color: #3b82f6;
+        }
+
+        /* ══ Level 2: Tests container ══ */
+        .sc-tests {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .4s cubic-bezier(.4, 0, .2, 1);
+            border-top: 0 solid transparent;
+        }
+
+        .sc-chapter.open .sc-tests {
+            max-height: 99999px;
+            border-top: 1px solid #e9eef5;
+        }
+
+        /* ══ Level 2: Test item ══ */
+        .sc-test {
+            border-top: 1px solid #f1f5f9;
+            transition: background .15s;
+        }
+
+        .sc-test:first-child {
+            border-top: none;
+        }
+
+        .sc-test-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 20px 13px 48px;
+            cursor: pointer;
+            user-select: none;
+            transition: background .15s;
+        }
+
+        .sc-test-header:hover {
+            background: #f4f8ff;
+        }
+
+        .sc-test.open .sc-test-header {
+            background: #ebf3ff;
+        }
+
+        .sc-test-play-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            border: 1.5px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: .52rem;
+            padding-left: 2px;
+            flex-shrink: 0;
+            transition: all .2s;
+        }
+
+        .sc-test-header:hover:not(.playing) .sc-test-play-btn {
+            background: #dbeafe;
+            border-color: #93c5fd;
+            color: #2563eb;
+        }
+
+        .sc-test.open .sc-test-play-btn {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: #fff;
+            box-shadow: 0 3px 10px rgba(37, 99, 235, .4);
+        }
+
+        .sc-test-title {
+            flex: 1;
+            font-size: .87rem;
+            font-weight: 500;
+            color: #374151;
+            line-height: 1.4;
+        }
+
+        .sc-test.open .sc-test-title {
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+
+        .sc-test-arrow {
+            width: 14px;
+            height: 14px;
+            color: #d1d5db;
+            flex-shrink: 0;
+            transition: transform .25s cubic-bezier(.4, 0, .2, 1), color .2s;
+        }
+
+        .sc-test.open .sc-test-arrow {
+            transform: rotate(90deg);
+            color: #6b9cf7;
+        }
+
+        /* ══ Level 3: Video embed ══ */
+        .sc-video-wrap {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .4s cubic-bezier(.4, 0, .2, 1);
+            background: #0f172a;
+        }
+
+        .sc-test.open .sc-video-wrap {
+            max-height: 800px;
+        }
+
+        .sc-video-inner {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+        }
+
+        .sc-video-inner iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* ══ Skeleton ══ */
+        .sc-skel-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sc-skel-item {
+            height: 58px;
+            border-radius: 16px;
+            background: #e5e7eb;
+            animation: skelPulse 1.4s ease-in-out infinite;
+        }
+
+        .sc-skel-item:nth-child(2) {
+            animation-delay: .1s;
+        }
+
+        .sc-skel-item:nth-child(3) {
+            animation-delay: .2s;
+        }
+
+        .sc-skel-item:nth-child(4) {
+            animation-delay: .3s;
+        }
+
+        .sc-skel-item:nth-child(5) {
+            animation-delay: .4s;
+        }
+
+        @keyframes skelPulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .4;
+            }
+        }
+
+        /* Empty state */
+        .sc-empty {
+            text-align: center;
+            padding: 60px 24px;
+            border: 1.5px dashed #e5e7eb;
+            border-radius: 16px;
+            background: #fff;
+        }
+
+        .sc-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 14px;
+        }
+
+        .sc-empty h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 6px;
+        }
+
+        .sc-empty p {
+            font-size: .85rem;
+            color: #6b7280;
+        }
+
+        /* ══ Back btn ══ */
+        .sc-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 28px;
+            padding: 10px 20px;
+            background: #fff;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: .86rem;
+            font-weight: 600;
+            color: #374151;
+            text-decoration: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .sc-back-btn:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, .12);
+            color: #2563eb;
+        }
+
+        @media (max-width: 600px) {
+            .sc-hero-title {
+                font-size: 1.4rem;
+            }
+
+            .sc-chapter-header {
+                padding: 14px 16px;
+            }
+
+            .sc-test-header {
+                padding: 12px 16px 12px 36px;
+            }
+        }
+
+        /* ══ Dark Mode ══ */
+        [data-theme="dark"] .sc-page {
+            background: #0b1221;
+        }
+
+        [data-theme="dark"] .sc-section-label {
+            color: #64748b;
+        }
+
+        [data-theme="dark"] .sc-section-label::after {
+            background: #1e293b;
+        }
+
+        [data-theme="dark"] .sc-chapter {
+            background: #111827;
+            border-color: #1e293b;
+        }
+
+        [data-theme="dark"] .sc-chapter:hover {
+            border-color: #2d3f5e;
+        }
+
+        [data-theme="dark"] .sc-chapter.open {
+            border-color: #3b82f6;
+        }
+
+        [data-theme="dark"] .sc-chapter-header:hover {
+            background: #162032;
+        }
+
+        [data-theme="dark"] .sc-chapter.open .sc-chapter-header {
+            background: #162032;
+        }
+
+        [data-theme="dark"] .sc-chapter-name {
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .sc-chapter.open .sc-chapter-name {
+            color: #60a5fa;
+        }
+
+        [data-theme="dark"] .sc-chapter-meta {
+            color: #475569;
+        }
+
+        [data-theme="dark"] .sc-chapter-arrow {
+            color: #475569;
+        }
+
+        [data-theme="dark"] .sc-chapter.open .sc-tests {
+            border-top-color: #1e293b;
+        }
+
+        [data-theme="dark"] .sc-test {
+            border-top-color: #1a2840;
+        }
+
+        [data-theme="dark"] .sc-test-header:hover {
+            background: #162032;
+        }
+
+        [data-theme="dark"] .sc-test.open .sc-test-header {
+            background: #1a2a45;
+        }
+
+        [data-theme="dark"] .sc-test-play-btn {
+            background: #1e293b;
+            border-color: #334155;
+            color: #64748b;
+        }
+
+        [data-theme="dark"] .sc-test-header:hover:not(.playing) .sc-test-play-btn {
+            background: #1d3a6e;
+            border-color: #3b82f6;
+            color: #60a5fa;
+        }
+
+        [data-theme="dark"] .sc-test-title {
+            color: #94a3b8;
+        }
+
+        [data-theme="dark"] .sc-test.open .sc-test-title {
+            color: #93c5fd;
+        }
+
+        [data-theme="dark"] .sc-test-arrow {
+            color: #334155;
+        }
+
+        [data-theme="dark"] .sc-skel-item {
+            background: #1e293b;
+        }
+
+        [data-theme="dark"] .sc-empty {
+            background: #111827;
+            border-color: #1e293b;
+        }
+
+        [data-theme="dark"] .sc-empty h3 {
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .sc-empty p {
+            color: #64748b;
+        }
+
+        [data-theme="dark"] .sc-back-btn {
+            background: #111827;
+            border-color: #1e293b;
+            color: #94a3b8;
+        }
+
+        [data-theme="dark"] .sc-back-btn:hover {
+            border-color: #3b82f6;
+            color: #60a5fa;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="https://i.hizliresim.com/ag3gf4d.png" class="logo-img" alt="Ders Platosu">
+                <span class="logo-text">Ders Platosu</span>
+            </a>
+            <ul class="nav-links">
+                <!-- Navigasyon linkleri main.js ile dinamik olarak yüklenecek -->
+            </ul>
+            <div class="nav-actions">
+                <button class="btn-icon" id="themeToggle" title="Tema değiştir">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="5" />
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                        <line x1="1" y1="12" x2="3" y2="12" />
+                        <line x1="21" y1="12" x2="23" y2="12" />
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                    </svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" style="display:none">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                    </svg>
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <!-- Mobil menü linkleri main.js ile dinamik olarak yüklenecek -->
+        </div>
+    </nav>
+
+    <div class="sc-page">
+
+        <!-- HERO -->
+        <section class="sc-hero">
+            <div class="sc-hero-inner">
+                <div class="sc-book-cover-wrap">
+                    <img id="scBookCover" src="" alt="Kitap Kapağı" class="sc-book-cover"
+                        onerror="this.closest('.sc-book-cover-wrap').style.display='none'">
+                </div>
+                <div class="sc-hero-text">
+                    <div class="sc-hero-badges">
+                        <span class="sc-hero-badge green">✓ Ücretsiz</span>
+                    </div>
+                    <h1 class="sc-hero-title" id="scBookTitle">Yükleniyor…</h1>
+                    <p class="sc-hero-sub">Bölüme bas → testler açılır → teste bas → video izle.</p>
+                    <a href="javascript:history.back()" class="sc-hero-back">← Geri Dön</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- BODY -->
+        <div class="sc-body">
+            <div class="sc-section-label">Bölümler ve Testler</div>
+            <div class="sc-chapter-list" id="scChapterList">
+                <!-- skeleton -->
+                <div class="sc-skel-list" id="scLoading">
+                    <div class="sc-skel-item"></div>
+                    <div class="sc-skel-item"></div>
+                    <div class="sc-skel-item"></div>
+                    <div class="sc-skel-item"></div>
+                    <div class="sc-skel-item"></div>
+                </div>
+            </div>
+            <a href="javascript:history.back()" class="sc-back-btn">← Tüm Kitaplara Geri Dön</a>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Footer alanı main.js ile dinamik olarak yüklenecek -->
+            </div>
+            <div class="footer-bottom">
+                <p>© Tüm hakları saklıdır. <a href="https://kvl.com.tr/" target="_blank" rel="noopener">KVL Digital</a> Tarafından Geliştirilmiştir.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js?v=999"></script>
+    <script>
+        (function () {
+            /* ── URL Params ── */
+            var params = new URLSearchParams(window.location.search);
+            var bookId = params.get('book') || '';
+            var bookTitle = decodeURIComponent(params.get('title') || 'Kitap Soru Çözümleri');
+            var bookCover = decodeURIComponent(params.get('cover') || '');
+
+            // book yoksa yardimci/hatali gorunum: noindex; book varsa index.
+            var robotsEl = document.querySelector('meta[name="robots"]');
+            var canonicalEl = document.querySelector('link[rel="canonical"]');
+            if (robotsEl) {
+                robotsEl.setAttribute('content', bookId ? 'index, follow' : 'noindex, follow');
+            }
+            if (canonicalEl) {
+                canonicalEl.setAttribute('href', bookId
+                    ? window.location.href.split('#')[0]
+                    : 'https://dersplatosu.com/soru-cozumleri');
+            }
+
+            /* ── Page Meta ── */
+            document.getElementById('scBookTitle').textContent = bookTitle;
+            document.title = bookTitle + ' Soru Çözümleri – Ders Platosu';
+
+            var coverEl = document.getElementById('scBookCover');
+            if (bookCover) {
+                coverEl.src = bookCover;
+            } else {
+                coverEl.closest('.sc-book-cover-wrap').style.display = 'none';
+            }
+
+            /* ── Eğer title/cover URL'de yoksa Strapi'den kitap bilgisini çek ── */
+            if (bookId && !params.get('title')) {
+                (async function fetchBookMeta() {
+                    try {
+                        var isNum = /^\d+$/.test(bookId);
+                        var filter = isNum
+                            ? 'filters[id][$eq]=' + bookId
+                            : 'filters[documentId][$eq]=' + bookId;
+                        var res = await fetch(STRAPI_URL + '/books?' + filter + '&populate[cover][fields][0]=url&fields[0]=title&pagination[pageSize]=1', { headers: strapiHeaders });
+                        var json = await res.json();
+                        var book = (json.data || [])[0];
+                        if (!book) return;
+                        var b = book.attributes || book;
+                        var title = b.title || '';
+                        var cover = b.cover?.url || b.cover?.data?.attributes?.url || '';
+                        if (title) {
+                            document.getElementById('scBookTitle').textContent = title;
+                            document.title = title + ' Soru Çözümleri – Ders Platosu';
+                        }
+                        if (cover) {
+                            var wrap = coverEl.closest('.sc-book-cover-wrap');
+                            coverEl.src = (cover.startsWith('http') ? cover : (cover));
+                            if (wrap) wrap.style.display = '';
+                        }
+                    } catch (e) { /* sessizce başarısız ol */ }
+                })();
+            }
+
+            /* ── Helpers ── */
+            function escHtml(s) {
+                return String(s || '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;');
+            }
+
+            var arrowSvg = '<svg class="sc-chapter-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>';
+            var testArrowSvg = '<svg class="sc-test-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>';
+
+            /* ── Fetch & Render ── */
+            async function loadSolutionVideos() {
+                var list = document.getElementById('scChapterList');
+
+                if (!bookId) {
+                    list.innerHTML = '<div class="sc-empty"><div class="sc-empty-icon">⚠️</div><h3>Kitap bulunamadı</h3><p>URL\'de book parametresi eksik.</p></div>';
+                    return;
+                }
+
+                try {
+                    // bookId sayısal mı (numeric id) yoksa documentId (string) mi?
+                    var isNumericId = /^\d+$/.test(bookId);
+                    var bookFilter = isNumericId
+                        ? 'filters[book][id][$eq]=' + encodeURIComponent(bookId)
+                        : 'filters[book][documentId][$eq]=' + encodeURIComponent(bookId);
+
+                    var qs = [
+                        bookFilter,
+                        'sort[0]=bolum_no:asc',
+                        'sort[1]=sira:asc',
+                        'pagination[pageSize]=200',
+                        'fields[0]=bolum_adi',
+                        'fields[1]=bolum_no',
+                        'fields[2]=sira',
+                        'fields[3]=baslik',
+                        'fields[4]=youtube_id'
+                    ].join('&');
+
+                    var res = await fetch(STRAPI_URL + '/solution-videos?' + qs, { headers: strapiHeaders });
+                    var json = await res.json();
+                    var items = json.data || [];
+
+                    list.innerHTML = '';
+
+                    if (!items.length) {
+                        list.innerHTML =
+                            '<div class="sc-empty">' +
+                            '<div class="sc-empty-icon">📂</div>' +
+                            '<h3>Henüz soru çözümü eklenmemiş</h3>' +
+                            '<p>Videolar yakında eklenecek, takipte kal!</p>' +
+                            '</div>';
+                        return;
+                    }
+
+                    /* Group by chapter */
+                    var chapters = [];
+                    var chMap = {};
+                    items.forEach(function (item) {
+                        var a = item.attributes || item;
+                        var chName = a.bolum_adi || 'Bölüm';
+                        var chNo = a.bolum_no || 0;
+                        if (!chMap[chName]) {
+                            chMap[chName] = { name: chName, no: chNo, tests: [] };
+                            chapters.push(chMap[chName]);
+                        }
+                        chMap[chName].tests.push({
+                            title: a.baslik || a.bolum_adi || 'Test',
+                            youtube_id: a.youtube_id || '',
+                            sira: a.sira || 0
+                        });
+                    });
+
+                    /* Stats (opsiyonel – elementler yoksa atla) */
+                    var totalVideos = items.length;
+                    var stCh = document.getElementById('statChapters');
+                    var stVi = document.getElementById('statVideos');
+                    if (stCh) stCh.textContent = chapters.length;
+                    if (stVi) stVi.textContent = totalVideos;
+
+
+                    /* Render */
+                    var html = '';
+                    chapters.forEach(function (ch, ci) {
+                        var testsHtml = '';
+                        ch.tests.forEach(function (test, ti) {
+                            var youtubeEmbed = test.youtube_id
+                                ? '<div class="sc-video-wrap">' +
+                                '<div class="sc-video-inner">' +
+                                '<iframe data-src="https://www.youtube-nocookie.com/embed/' + escHtml(test.youtube_id) + '?autoplay=1&rel=0&modestbranding=1" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>' +
+                                '</div></div>'
+                                : '<div class="sc-video-wrap"><p style="padding:16px 20px;font-size:.84rem;color:#6b7280;">Video bulunamadı.</p></div>';
+
+                            testsHtml +=
+                                '<div class="sc-test" data-ti="' + ti + '">' +
+                                '<div class="sc-test-header">' +
+                                '<div class="sc-test-play-btn">▶</div>' +
+                                '<div class="sc-test-title">' + escHtml(test.title) + '</div>' +
+                                testArrowSvg +
+                                '</div>' +
+                                youtubeEmbed +
+                                '</div>';
+                        });
+
+                        html +=
+                            '<div class="sc-chapter" data-ci="' + ci + '">' +
+                            '<div class="sc-chapter-header">' +
+                            '<span class="sc-chapter-num">' + (ci + 1) + '.</span>' +
+                            '<span class="sc-chapter-name">' + escHtml(ch.name) + '</span>' +
+                            '<span class="sc-chapter-meta">' + ch.tests.length + ' test</span>' +
+                            arrowSvg +
+                            '</div>' +
+                            '<div class="sc-tests">' + testsHtml + '</div>' +
+                            '</div>';
+                    });
+
+                    list.innerHTML = html;
+                    bindEvents();
+
+                } catch (err) {
+                    // Sessiz fallback: production'da detay log basma.
+                    var isConn = err instanceof TypeError && err.message.includes('fetch');
+                    list.innerHTML =
+                        '<div class="sc-empty">' +
+                        '<div class="sc-empty-icon">⚠️</div>' +
+                        '<h3>' + (isConn ? 'Bağlantı hatası' : 'Yükleme hatası') + '</h3>' +
+                        '<p>' + (isConn ? 'Strapi sunucusuna ulaşılamıyor. Strapi\'nin çalıştığından emin olun.' : 'Hata: ' + err.message) + '</p>' +
+                        '<button onclick="loadSolutionVideos()" style="margin-top:12px;padding:8px 20px;background:#3b82f6;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.85rem">🔄 Yeniden Dene</button>' +
+                        '</div>';
+                }
+
+            }
+
+            /* ── Event Delegation ── */
+            function bindEvents() {
+                var list = document.getElementById('scChapterList');
+
+                /* Chapter toggle */
+                list.querySelectorAll('.sc-chapter-header').forEach(function (hdr) {
+                    hdr.addEventListener('click', function () {
+                        var ch = hdr.closest('.sc-chapter');
+                        ch.classList.toggle('open');
+                    });
+                });
+
+                /* Test toggle + lazy-load video */
+                list.querySelectorAll('.sc-test-header').forEach(function (hdr) {
+                    hdr.addEventListener('click', function () {
+                        var test = hdr.closest('.sc-test');
+                        var isOpen = test.classList.contains('open');
+
+                        /* Close sibling tests + stop their videos */
+                        var siblings = test.closest('.sc-tests').querySelectorAll('.sc-test');
+                        siblings.forEach(function (s) {
+                            s.classList.remove('open');
+                            /* Stop any playing iframe */
+                            var activeIframe = s.querySelector('iframe[src]');
+                            if (activeIframe) {
+                                activeIframe.dataset.src = activeIframe.src;
+                                activeIframe.removeAttribute('src');
+                            }
+                        });
+
+                        if (!isOpen) {
+                            test.classList.add('open');
+
+                            /* Lazy load iframe */
+                            var iframe = test.querySelector('iframe[data-src]');
+                            if (iframe) {
+                                iframe.src = iframe.dataset.src;
+                                iframe.removeAttribute('data-src');
+                            }
+                        }
+                    });
+                });
+            }
+
+            loadSolutionVideos();
+        })();
+    </script>
+</body>
+
+</html>

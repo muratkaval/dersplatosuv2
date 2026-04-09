@@ -1,0 +1,32 @@
+Options -Indexes
+RewriteEngine On
+RewriteBase /
+
+# Tek URL standardi: http/www -> https://dersplatosu.com
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} ^www\.dersplatosu\.com$ [NC]
+RewriteRule ^ https://dersplatosu.com%{REQUEST_URI} [R=301,L]
+
+<IfModule mod_headers.c>
+    Header always set Strict-Transport-Security "max-age=31536000"
+	Header always set X-Content-Type-Options "nosniff"
+	Header always set X-Frame-Options "SAMEORIGIN"
+	Header always set Referrer-Policy "strict-origin-when-cross-origin"
+	Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+	Header always set Content-Security-Policy "default-src 'self'; img-src 'self' https: data:; script-src 'self' https://cdn.jsdelivr.net https://www.googletagmanager.com https://connect.facebook.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https:; frame-src https://www.youtube.com https://www.youtube-nocookie.com; base-uri 'self'; form-action 'self';"
+</IfModule>
+
+# Mevcut dosyaları ve klasörleri direkt sun
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# /sayfa/slug → sayfa.html?slug=slug
+RewriteRule ^sayfa/([^/]+)/?$ /sayfa.html?slug=$1 [L,QSA]
+
+# Temiz URL'ler → ilgili .html dosyaları
+RewriteRule ^(egitim|youtuber-hocalar|kitaplar|kitap-listesi|soru-cozumleri|video-soru-cozumleri|admin)/?$ /$1.html [L,QSA]
+
+# Slug tabanli sayfalar
+RewriteRule ^hoca/([^/]+)/?$ /hoca.html?slug=$1 [L,QSA]
+RewriteRule ^egitim/([^/]+)/?$ /egitim.html?slug=$1 [L,QSA]

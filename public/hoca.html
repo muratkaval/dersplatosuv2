@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <!-- dp-seo-injector -->
+    <script>
+        (function () {
+            try {
+                var s = JSON.parse(localStorage.getItem('dp_seo_settings') || '{}');
+                if (!s || !Object.keys(s).length) return;
+                var h = document.head;
+                function up(n, c, isProp) {
+                    if (!c) return;
+                    var sel = isProp ? 'meta[property="' + n + '"]' : 'meta[name="' + n + '"]';
+                    var el = document.querySelector(sel);
+                    if (el) { el.content = c; }
+                    else { var m = document.createElement('meta'); isProp ? m.setAttribute('property', n) : m.name = n; m.content = c; h.appendChild(m); }
+                }
+                function addScript(code) { var t = document.createElement('script'); t.textContent = code; h.appendChild(t); }
+                function addSrcScript(src) { var t = document.createElement('script'); t.async = true; t.src = src; h.appendChild(t); }
+                function upFavicon(url) {
+                    if (!url) return;
+                    ['icon', 'shortcut icon', 'apple-touch-icon'].forEach(function (rel) {
+                        var el = document.querySelector('link[rel="' + rel + '"]');
+                        if (!el) { el = document.createElement('link'); el.setAttribute('rel', rel); h.appendChild(el); }
+                        el.setAttribute('href', url);
+                    });
+                }
+                if (s.title) document.title = s.title;
+                up('description', s.desc, false); up('keywords', s.keywords, false);
+                up('og:site_name', s.siteName, true); up('og:title', s.ogTitle, true);
+                up('og:description', s.ogDesc, true); up('og:image', s.ogImage, true);
+                upFavicon(s.faviconUrl || s.iconUrl);
+                if (s.googleVerify) up('google-site-verification', s.googleVerify, false);
+                if (s.ga4Id) { addSrcScript('https://www.googletagmanager.com/gtag/js?id=' + s.ga4Id); addScript('window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","' + s.ga4Id + '");'); }
+                if (s.gtmId) { addScript('(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src="https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);})(window,document,"script","dataLayer","' + s.gtmId + '");'); }
+                if (s.fbPixelId) { addScript('!function(f,b,e,v,n,t,s2){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s2=b.getElementsByTagName(e)[0];s2.parentNode.insertBefore(t,s2)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","' + s.fbPixelId + '");fbq("track","PageView");'); }
+            } catch (e) { }
+        })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <title id="pageTitle">Youtuber Hoca – Ders Platosu</title>
+    <meta name="description" id="pageDesc" content="Ders Platosu youtuber hoca sayfası – kamplar, kitaplar ve daha fazlası." />
+    <meta name="keywords" content="ders platosu, youtuber hoca, tyt kampı, ayt kampı, online ders, yks hazırlık" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" id="pageCanonical" />
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content="Ders Platosu" />
+    <meta property="og:image" id="pageOgImage" content="https://i.hizliresim.com/ag3gf4d.png" />
+    <meta property="og:title" id="pageOgTitle" content="Youtuber Hoca – Ders Platosu" />
+    <meta property="og:description" id="pageOgDesc" content="Ders Platosu youtuber hoca sayfası – kamplar, kitaplar ve daha fazlası." />
+    <meta property="og:url" id="pageOgUrl" content="" />
+    <meta property="og:locale" content="tr_TR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" id="pageTwUrl" content="" />
+    <meta name="twitter:title" id="pageTwTitle" content="Youtuber Hoca – Ders Platosu" />
+    <meta name="twitter:description" id="pageTwDesc" content="Ders Platosu youtuber hoca sayfası." />
+    <meta name="twitter:image" id="pageTwImage" content="https://i.hizliresim.com/ag3gf4d.png" />
+    <script>
+        (async function () {
+            var path = window.location.pathname.replace(/\/+$/, '') || '/';
+            var pageUrl = 'https://dersplatosu.com' + path;
+            var c = document.getElementById('pageCanonical');
+            var ogu = document.getElementById('pageOgUrl');
+            var twu = document.getElementById('pageTwUrl');
+            if (c) c.setAttribute('href', pageUrl);
+            if (ogu) ogu.setAttribute('content', pageUrl);
+            if (twu) twu.setAttribute('content', pageUrl);
+
+            // Hoca SEO alanlarını doldur
+            try {
+                var slug = path.split('/').pop();
+                var res = await fetch('/api/instructors?filters[slug][$eq]=' + encodeURIComponent(slug) + '&populate=photo,subjects');
+                var data = await res.json();
+                var hoca = data?.data?.[0]?.attributes;
+                if (hoca) {
+                    var seoTitle = hoca.seoTitle || (hoca.name ? hoca.name + ' – Ders Platosu' : 'Youtuber Hoca – Ders Platosu');
+                    var seoDesc = hoca.seoDescription || (hoca.name ? (hoca.name + ' youtuber hoca sayfası – kamplar, kitaplar ve daha fazlası.') : 'Ders Platosu youtuber hoca sayfası.');
+                    var seoKeywords = hoca.seoKeywords || 'ders platosu, youtuber hoca, tyt kampı, ayt kampı, online ders, yks hazırlık';
+                    var ogTitle = seoTitle;
+                    var ogDesc = seoDesc;
+                    var ogImage = hoca.photo?.data?.attributes?.url ? hoca.photo.data.attributes.url : 'https://i.hizliresim.com/ag3gf4d.png';
+                    document.title = seoTitle;
+                    document.getElementById('pageTitle').textContent = seoTitle;
+                    document.getElementById('pageDesc').setAttribute('content', seoDesc);
+                    document.querySelector('meta[name="keywords"]').setAttribute('content', seoKeywords);
+                    document.getElementById('pageOgTitle').setAttribute('content', ogTitle);
+                    document.getElementById('pageOgDesc').setAttribute('content', ogDesc);
+                    document.getElementById('pageOgImage').setAttribute('content', ogImage);
+                    document.getElementById('pageTwTitle').setAttribute('content', ogTitle);
+                    document.getElementById('pageTwDesc').setAttribute('content', ogDesc);
+                    document.getElementById('pageTwImage').setAttribute('content', ogImage);
+                }
+            } catch (e) { /* ignore */ }
+        })();
+    </script>
+    <!-- JSON-LD Structured Data (JS tarafından doldurulur) -->
+    <script type="application/ld+json" id="jsonLd">{}</script>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        /* ── Hoca Hero ── */
+        .hoca-hero {
+            background: linear-gradient(135deg, #0b1629 0%, #1e3a8a 60%, #0b1629 100%);
+            padding: calc(var(--nav-h, 64px) + 48px) 0 48px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hoca-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 50%, rgba(37,99,235,.22) 0%, transparent 65%);
+        }
+        .hoca-hero-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        .hoca-photos-group {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+        .hoca-photo-wrap {
+            flex-shrink: 0;
+            position: relative;
+        }
+        .hoca-logo-circle {
+            flex-shrink: 0;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: #fff;
+            border: 4px solid rgba(255,255,255,.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,.4);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hoca-logo-circle img {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            border-radius: 0;
+            border: none;
+            box-shadow: none;
+        }
+        @media (max-width: 640px) {
+            .hoca-logo-circle { width: 72px; height: 72px; }
+            .hoca-logo-circle img { width: 48px; height: 48px; }
+        }
+        .hoca-photo-wrap img {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255,255,255,.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,.4);
+        }
+        .hoca-photo-fallback {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.1);
+            border: 4px solid rgba(255,255,255,.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+        }
+        .hoca-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .hoca-subject-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 50px;
+            background: rgba(59,130,246,.18);
+            border: 1px solid rgba(59,130,246,.3);
+            color: #93c5fd;
+            font-size: .75rem;
+            font-weight: 700;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .hoca-hero h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+            margin-bottom: 18px;
+            letter-spacing: -.02em;
+        }
+        .hoca-socials {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .hoca-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: .85rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: opacity .2s, transform .15s;
+        }
+        .hoca-btn:hover { opacity: .88; transform: translateY(-1px); }
+        .hoca-btn-yt { background: #ff0000; color: #fff; }
+        .hoca-btn-ig { background: radial-gradient(circle at 30% 110%, #f09433, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888); color: #fff; }
+        @media (max-width: 640px) {
+            .hoca-hero-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .hoca-photo-wrap img, .hoca-photo-fallback { width: 96px; height: 96px; font-size: 2.4rem; }
+            .hoca-logo-circle { width: 96px; height: 96px; }
+            .hoca-logo-circle img { width: 60px; height: 60px; }
+            .hoca-hero h1 { font-size: 1.5rem; }
+        }
+
+        /* ── Hoca Gövde ── */
+        .hoca-body {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 48px 24px 64px;
+        }
+        .hoca-section-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hoca-section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: var(--border);
+            border-radius: 2px;
+        }
+        .hoca-section { margin-bottom: 56px; }
+
+        /* Camp cards reuse from main site */
+        .hoca-camps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 20px;
+        }
+        @media (max-width: 600px) {
+            .hoca-camps-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+        }
+
+        /* Book cards reuse */
+        .hoca-books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        @media (max-width: 600px) {
+            .hoca-books-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+        }
+        .hoca-book-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: transform .2s, box-shadow .2s;
+        }
+        .hoca-book-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+        .hoca-book-cover {
+            width: 100%;
+            aspect-ratio: 3/4;
+            object-fit: cover;
+            display: block;
+            background: var(--bg-secondary);
+        }
+        .hoca-book-body {
+            padding: 14px 14px 16px;
+        }
+        .hoca-book-body h4 {
+            font-size: .9rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .hoca-book-btns { display: flex; flex-direction: column; gap: 7px; }
+        .hoca-book-btns a {
+            display: block;
+            text-align: center;
+            padding: 8px 12px;
+            border-radius: 7px;
+            font-size: .8rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: opacity .2s;
+        }
+        .hoca-book-btns a:hover { opacity: .85; }
+        .btn-buy { background: #16a34a; color: #fff; }
+        .btn-demo { background: rgba(37,99,235,.12); color: #3b82f6; border: 1px solid rgba(37,99,235,.25); }
+
+        /* Loading skeleton */
+        .hoca-skeleton {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 20px;
+        }
+        .hoca-skel-card {
+            border-radius: 14px;
+            overflow: hidden;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+        }
+        .hoca-skel-thumb { width: 100%; aspect-ratio: 16/9; background: var(--border); animation: skelPulse 1.4s ease-in-out infinite; }
+        .hoca-skel-body { padding: 14px; }
+        .hoca-skel-line { height: 12px; border-radius: 6px; background: var(--border); animation: skelPulse 1.4s ease-in-out infinite; margin-bottom: 8px; }
+        .hoca-skel-line.short { width: 60%; }
+        @keyframes skelPulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+        /* Not-found */
+        .hoca-not-found {
+            text-align: center;
+            padding: 80px 24px;
+            color: var(--text-muted);
+        }
+        .hoca-not-found h2 { font-size: 1.5rem; margin-bottom: 12px; color: var(--text); }
+        .hoca-not-found a { color: var(--primary); text-decoration: none; }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="https://i.hizliresim.com/ag3gf4d.png" class="logo-img" alt="Ders Platosu">
+                <span class="logo-text">Ders Platosu</span>
+            </a>
+            <ul class="nav-links"></ul>
+            <div class="nav-actions">
+                <button class="btn-icon" id="themeToggle" title="Tema değiştir">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                    </svg>
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu"></div>
+    </nav>
+
+    <!-- HERO (dinamik olarak doldurulur) -->
+    <section class="hoca-hero" id="hocaHero" style="display:none">
+        <div class="hoca-hero-inner">
+            <div class="hoca-photos-group">
+                <div class="hoca-photo-wrap" id="hocaPhotoWrap">
+                    <div class="hoca-photo-fallback">👨‍🏫</div>
+                </div>
+                <div class="hoca-logo-circle">
+                    <img src="https://i.hizliresim.com/ag3gf4d.png" alt="Ders Platosu">
+                </div>
+            </div>
+            <div class="hoca-info">
+                <div class="hoca-subject-badge" id="hocaSubjectBadge" style="display:none"></div>
+                <h1 id="hocaName">Yükleniyor…</h1>
+                <div class="hoca-socials" id="hocaSocials"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LOADING STATE (hero placeholder) -->
+    <div id="hocaHeroLoading" style="min-height:280px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0b1629 0%,#1e3a8a 60%,#0b1629 100%);padding-top:var(--nav-h,64px)">
+        <div style="color:#94a3b8;font-size:.95rem">Hoca bilgileri yükleniyor…</div>
+    </div>
+
+    <!-- BODY -->
+    <div class="hoca-body" id="hocaBody">
+        <!-- Camps loading skeleton -->
+        <div id="hocaLoading">
+            <div class="hoca-section-title">🎬 Kamplar</div>
+            <div class="hoca-skeleton">
+                <div class="hoca-skel-card"><div class="hoca-skel-thumb"></div><div class="hoca-skel-body"><div class="hoca-skel-line"></div><div class="hoca-skel-line short"></div></div></div>
+                <div class="hoca-skel-card"><div class="hoca-skel-thumb"></div><div class="hoca-skel-body"><div class="hoca-skel-line"></div><div class="hoca-skel-line short"></div></div></div>
+                <div class="hoca-skel-card"><div class="hoca-skel-thumb"></div><div class="hoca-skel-body"><div class="hoca-skel-line"></div><div class="hoca-skel-line short"></div></div></div>
+            </div>
+        </div>
+
+        <!-- Actual content (hidden until loaded) -->
+        <div id="hocaContent" style="display:none">
+            <div class="hoca-section" id="hocaCampsSection" style="display:none">
+                <div class="hoca-section-title">🎬 Kamplar</div>
+                <div class="hoca-camps-grid" id="hocaCampsGrid"></div>
+            </div>
+            <div class="hoca-section" id="hocaBooksSection" style="display:none">
+                <div class="hoca-section-title">📚 Kitaplar</div>
+                <div class="hoca-books-grid" id="hocaBooksGrid"></div>
+            </div>
+            <div id="hocaEmpty" style="display:none;color:var(--text-muted);padding:20px 0">Bu hocaya ait içerik henüz eklenmemiş.</div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid"></div>
+            <div class="footer-bottom">
+                <p>© Tüm hakları saklıdır. <a href="https://kvl.com.tr/" target="_blank" rel="noopener">KVL Digital</a> Tarafından Geliştirilmiştir.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js?v=999"></script>
+    <script>
+    (function () {
+        // ── Slug okuma ──
+        var pathMatch = window.location.pathname.match(/^\/hoca\/([^/]+)$/);
+        var hocaSlug = pathMatch ? decodeURIComponent(pathMatch[1]) : '';
+        if (!hocaSlug) {
+            var p = new URLSearchParams(window.location.search);
+            hocaSlug = p.get('slug') || '';
+        }
+
+        if (!hocaSlug) {
+            showNotFound('Hoca slug\'u belirtilmemiş.');
+            return;
+        }
+
+        // ── Strapi config (main.js'ten miras) ──
+        // STRAPI_URL, strapiHeaders, fixImgUrl, escHtml, slugify, safeHref, extractYouTubeId, extractPlaylistId, slugify
+        // hepsi main.js tarafından global olarak tanımlı
+
+        async function loadHoca() {
+            try {
+                var queryNoCampCover = [
+                    'fields[0]=name',
+                    'fields[1]=youtube',
+                    'fields[2]=instagram',
+                    'populate[photo][fields][0]=url',
+                    'populate[photo][fields][1]=formats',
+                    'populate[subjects][fields][0]=name',
+                    'populate[books][populate][cover][fields][0]=url',
+                    'populate[books][populate][cover][fields][1]=formats',
+                    'populate[books][fields][0]=title',
+                    'populate[books][fields][1]=buy_link',
+                    'populate[books][fields][2]=solution_link',
+                    'populate[camps][fields][0]=title',
+                    'populate[camps][fields][1]=introVideo',
+                    'populate[camps][fields][2]=playlist',
+                    'populate[camps][fields][3]=slug',
+                    'populate[camps][populate][books][populate][cover][fields][0]=url',
+                    'populate[camps][populate][books][populate][cover][fields][1]=formats',
+                    'populate[camps][populate][books][fields][0]=title',
+                    'populate[camps][populate][books][fields][1]=buy_link',
+                    'populate[camps][populate][books][fields][2]=solution_link',
+                    'pagination[pageSize]=100'
+                ].join('&');
+
+                var queryLegacy = [
+                    'fields[0]=name',
+                    'fields[1]=youtube',
+                    'fields[2]=instagram',
+                    'populate[photo][fields][0]=url',
+                    'populate[subjects][fields][0]=name',
+                    'populate[camps][fields][0]=title',
+                    'populate[camps][fields][1]=introVideo',
+                    'populate[camps][fields][2]=playlist',
+                    'populate[camps][fields][3]=slug',
+                    'pagination[pageSize]=100'
+                ].join('&');
+
+                var queryPlan = [queryNoCampCover, queryLegacy];
+                var instructors = [];
+
+                for (var qi = 0; qi < queryPlan.length; qi++) {
+                    var res = await fetch(STRAPI_URL + '/instructors?' + queryPlan[qi], { headers: strapiHeaders });
+                    var data = {};
+                    try { data = await res.json(); } catch (e) { data = {}; }
+                    if (res.ok && !data.error) {
+                        instructors = data.data || [];
+                        break;
+                    }
+                }
+
+                if (!Array.isArray(instructors) || instructors.length === 0) {
+                    showNotFound('Hoca verileri yüklenemedi. Lütfen tekrar deneyin.');
+                    return;
+                }
+
+                function normSlug(v) {
+                    return slugify(String(v || ''))
+                        .replace(/^-+|-+$/g, '')
+                        .replace(/-+/g, '-');
+                }
+
+                var targetSlug = normSlug(hocaSlug);
+
+                // slug ile eşleştir
+                var matched = null;
+                for (var i = 0; i < instructors.length; i++) {
+                    var inst = instructors[i].attributes || instructors[i];
+                    var instSlug = normSlug(inst.slug || inst.name || '');
+                    if (instSlug && instSlug === targetSlug) {
+                        matched = inst;
+                        break;
+                    }
+                }
+
+                // Eski URL'ler veya ad degisikligi icin toleransli fallback
+                if (!matched && targetSlug) {
+                    for (var j = 0; j < instructors.length; j++) {
+                        var inst2 = instructors[j].attributes || instructors[j];
+                        var instSlug2 = normSlug(inst2.slug || inst2.name || '');
+                        if (!instSlug2) continue;
+                        if (targetSlug.indexOf(instSlug2) === 0 || instSlug2.indexOf(targetSlug) === 0) {
+                            matched = inst2;
+                            break;
+                        }
+                    }
+                }
+
+                if (!matched) {
+                    showNotFound('Bu hoca bulunamadı.');
+                    return;
+                }
+
+                renderHoca(matched);
+            } catch (err) {
+                showNotFound('Veriler yüklenemedi. Lütfen sayfayı yenileyin.');
+            }
+        }
+
+        function renderHoca(d) {
+            // ── Photo ──
+            var photoObj = d.photo && d.photo.data ? d.photo.data.attributes : d.photo;
+            var photoUrl = null;
+            if (photoObj) {
+                photoUrl = (photoObj.formats && (photoObj.formats.medium || photoObj.formats.small || photoObj.formats.thumbnail))
+                    ? fixImgUrl((photoObj.formats.medium || photoObj.formats.small || photoObj.formats.thumbnail).url)
+                    : fixImgUrl(photoObj.url || '');
+            }
+
+            var photoWrap = document.getElementById('hocaPhotoWrap');
+            photoWrap.innerHTML = (photoUrl
+                ? '<img src="' + escHtml(photoUrl) + '" alt="' + escHtml(d.name || '') + '" onerror="this.parentElement.querySelector(\'img\').style.display=\'none\';this.parentElement.querySelector(\'.hoca-photo-fallback\').style.display=\'flex\'">'
+                : '') +
+                '<div class="hoca-photo-fallback" style="' + (photoUrl ? 'display:none' : '') + '">👨‍🏫</div>';
+
+            // ── Name ──
+            var name = d.name || 'Hoca';
+            document.getElementById('hocaName').textContent = name;
+
+            // ── Subject ──
+            var subjectsRaw = (d.subjects && d.subjects.data) ? d.subjects.data : (d.subjects || []);
+            var subjectsArr = Array.isArray(subjectsRaw) ? subjectsRaw : [subjectsRaw];
+            var firstSub = subjectsArr.length > 0 ? (subjectsArr[0].attributes || subjectsArr[0]) : null;
+            var subjectName = firstSub ? (firstSub.name || '') : '';
+            if (subjectName) {
+                var badge = document.getElementById('hocaSubjectBadge');
+                badge.textContent = subjectName;
+                badge.style.display = '';
+            }
+
+            // ── Socials ──
+            var youtubeUrl = safeHref(d.youtube || '', '');
+            var instagramUrl = safeHref(d.instagram || '', '');
+            var socialsHtml = '';
+            if (youtubeUrl) {
+                socialsHtml += '<a href="' + youtubeUrl + '" target="_blank" rel="noopener" class="hoca-btn hoca-btn-yt">' +
+                    '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.8 15.5V8.5l6.2 3.5-6.2 3.5z"/></svg>' +
+                    'YouTube Kanalı</a>';
+            }
+            if (instagramUrl) {
+                socialsHtml += '<a href="' + instagramUrl + '" target="_blank" rel="noopener" class="hoca-btn hoca-btn-ig">' +
+                    '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.2 4.8 1.7 5 5 .1 1.3.1 1.6.1 4.7s0 3.4-.1 4.7c-.2 3.3-1.7 4.8-5 5-1.3.1-1.6.1-4.9.1s-3.6 0-4.9-.1c-3.3-.2-4.8-1.7-5-5C2 15.6 2 15.3 2 12s0-3.4.1-4.7c.2-3.3 1.7-4.8 5-5C8.4 2.2 8.8 2.2 12 2.2zM12 0C8.7 0 8.3 0 7 .1 2.7.3.3 2.7.1 7 0 8.3 0 8.7 0 12s0 3.7.1 5c.2 4.3 2.6 6.7 7 6.9 1.3.1 1.7.1 5 .1s3.7 0 5-.1c4.3-.2 6.7-2.6 6.9-7C24 15.7 24 15.3 24 12s0-3.7-.1-5c-.2-4.3-2.6-6.7-7-6.9C15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4A6.2 6.2 0 0 0 12 5.8zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8z"/></svg>' +
+                    'Instagram</a>';
+            }
+            document.getElementById('hocaSocials').innerHTML = socialsHtml;
+
+            // ── SEO ──
+            var rawCamps = (d.camps && d.camps.data) ? d.camps.data : (d.camps || []);
+            if (!Array.isArray(rawCamps)) rawCamps = [];
+            var campCount = rawCamps.length;
+            var hocaSlugFinal = d.slug || slugify(name);
+            var pageUrl = 'https://dersplatosu.com/hoca/' + hocaSlugFinal;
+            var metaDesc = name + (subjectName ? ' ' + subjectName : '') + ' kampları ve kitapları – Ders Platosu\'nda ücretsiz öğren. ' + campCount + ' kamp mevcut.';
+            var ogImg = photoUrl || 'https://i.hizliresim.com/ag3gf4d.png';
+
+            document.title = name + ' – Ders Platosu | Ücretsiz ' + (subjectName || 'YKS') + ' Kampları';
+            document.getElementById('pageTitle').textContent = document.title;
+            document.getElementById('pageDesc').content = metaDesc;
+            document.getElementById('pageCanonical').href = pageUrl;
+            document.getElementById('pageOgTitle').content = name + ' – Ders Platosu';
+            document.getElementById('pageOgDesc').content = metaDesc;
+            document.getElementById('pageOgUrl').content = pageUrl;
+            document.getElementById('pageOgImage').content = ogImg;
+            document.getElementById('pageTwTitle').content = name + ' – Ders Platosu';
+            document.getElementById('pageTwDesc').content = metaDesc;
+            document.getElementById('pageTwImage').content = ogImg;
+
+            // JSON-LD Person + ItemList structured data
+            var jsonLd = {
+                '@context': 'https://schema.org',
+                '@type': 'Person',
+                'name': name,
+                'url': pageUrl,
+                'image': ogImg,
+                'jobTitle': (subjectName ? subjectName + ' Öğretmeni' : 'Youtuber Hoca'),
+                'worksFor': { '@type': 'Organization', 'name': 'Ders Platosu', 'url': 'https://dersplatosu.com' },
+                'sameAs': [youtubeUrl, instagramUrl].filter(Boolean)
+            };
+            document.getElementById('jsonLd').textContent = JSON.stringify(jsonLd);
+
+            // ── Show hero ──
+            document.getElementById('hocaHeroLoading').style.display = 'none';
+            document.getElementById('hocaHero').style.display = '';
+
+            // ── Kamplar ──
+            if (rawCamps.length > 0) {
+                var campsGrid = document.getElementById('hocaCampsGrid');
+                var campsHtml = rawCamps.map(function (camp) {
+                    var c = camp.attributes || camp;
+                    var videoId = extractYouTubeId(c.introVideo || '');
+                    var campCover = c.cover?.data?.attributes || c.cover;
+                    var coverUrl = campCover?.formats?.medium?.url
+                        ? fixImgUrl(campCover.formats.medium.url)
+                        : campCover?.formats?.small?.url
+                            ? fixImgUrl(campCover.formats.small.url)
+                            : campCover?.formats?.thumbnail?.url
+                                ? fixImgUrl(campCover.formats.thumbnail.url)
+                                : campCover?.url
+                                    ? fixImgUrl(campCover.url)
+                                    : '';
+                    var campSlugVal = c.slug || slugify(c.title || '');
+                    var url = campSlugVal ? '/egitim/' + campSlugVal : (videoId ? '/egitim?v=' + videoId : '#');
+                    var thumb = coverUrl || (videoId ? 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg' : '');
+                    var campTitle = escHtml(c.title || 'Kamp');
+                    return '<a href="' + url + '" class="course-card">' +
+                        '<div class="course-thumb" style="background:' + (thumb ? 'url(\'' + thumb + '\') center/cover no-repeat' : 'var(--bg-secondary)') + '">' +
+                        (videoId ? '<div class="course-play-btn"></div>' : '') +
+                        '</div>' +
+                        '<div class="course-body">' +
+                        (subjectName ? '<span class="course-tag">' + escHtml(subjectName) + '</span>' : '') +
+                        '<h3>' + campTitle + '</h3>' +
+                        '</div>' +
+                        '</a>';
+                }).join('');
+
+                campsGrid.innerHTML = campsHtml;
+
+                // hqdefault → mqdefault fallback
+                campsGrid.querySelectorAll('.course-thumb').forEach(function (el) {
+                    var bg = el.style.backgroundImage;
+                    var m = bg && bg.match(/vi\/([^/]+)\/hqdefault/);
+                    if (m && typeof ytThumbBgFallback === 'function') ytThumbBgFallback(m[1], el);
+                });
+
+                document.getElementById('hocaCampsSection').style.display = '';
+            }
+
+            // ── Kitaplar (doğrudan + kamplar üzerinden) ──
+            var seenBookIds = new Set();
+            var allBooks = [];
+            function addBook(book) {
+                var b = book.attributes || book;
+                var bookId = book.id || book.documentId || b.id || b.documentId || '';
+                var key = String(bookId);
+                if (key && seenBookIds.has(key)) return;
+                if (key) seenBookIds.add(key);
+                var cover = (b.cover && b.cover.data) ? b.cover.data.attributes : b.cover;
+                var coverUrl = null;
+                if (cover) {
+                    if (cover.formats && cover.formats.small) coverUrl = fixImgUrl(cover.formats.small.url);
+                    else if (cover.formats && cover.formats.thumbnail) coverUrl = fixImgUrl(cover.formats.thumbnail.url);
+                    else if (cover.url) coverUrl = fixImgUrl(cover.url);
+                }
+                allBooks.push({
+                    title: escHtml(b.title || 'Kitap'),
+                    cover: coverUrl || 'https://via.placeholder.com/200x280?text=Kitap',
+                    buyLink: safeHref(b.buy_link || '/kitaplar', '/kitaplar'),
+                    demoLink: safeHref(b.solution_link || '', '')
+                });
+            }
+            var directBooks = (d.books && d.books.data) ? d.books.data : (d.books || []);
+            if (Array.isArray(directBooks)) directBooks.forEach(addBook);
+            rawCamps.forEach(function (camp) {
+                var c = camp.attributes || camp;
+                var bks = (c.books && c.books.data) ? c.books.data : (c.books || []);
+                if (Array.isArray(bks)) bks.forEach(addBook);
+            });
+
+            if (allBooks.length > 0) {
+                var booksGrid = document.getElementById('hocaBooksGrid');
+                booksGrid.innerHTML = allBooks.map(function (b) {
+                    return '<div class="hoca-book-card">' +
+                        '<img class="hoca-book-cover" src="' + escHtml(b.cover) + '" alt="' + b.title + '" loading="lazy">' +
+                        '<div class="hoca-book-body">' +
+                        '<h4>' + b.title + '</h4>' +
+                        '<div class="hoca-book-btns">' +
+                        '<a href="' + escHtml(b.buyLink) + '" class="btn-buy" target="_blank" rel="noopener">📦 Satın Al ↗</a>' +
+                        (b.demoLink ? '<a href="' + escHtml(b.demoLink) + '" class="btn-demo" target="_blank" rel="noopener">🔎 Kitabı İncele</a>' : '') +
+                        '</div></div></div>';
+                }).join('');
+                document.getElementById('hocaBooksSection').style.display = '';
+            }
+
+            if (rawCamps.length === 0 && allBooks.length === 0) {
+                document.getElementById('hocaEmpty').style.display = '';
+            }
+
+            // ── Hide loading, show content ──
+            document.getElementById('hocaLoading').style.display = 'none';
+            document.getElementById('hocaContent').style.display = '';
+        }
+
+        function showNotFound(msg) {
+            document.getElementById('hocaHeroLoading').style.display = 'none';
+            document.getElementById('hocaLoading').style.display = 'none';
+            document.getElementById('hocaContent').style.display = '';
+            document.getElementById('hocaContent').innerHTML =
+                '<div class="hoca-not-found">' +
+                '<h2>Hoca Bulunamadı</h2>' +
+                '<p>' + escHtml(msg) + '</p>' +
+                '<p style="margin-top:16px"><a href="/youtuber-hocalar">← Tüm Hocalar</a></p>' +
+                '</div>';
+        }
+
+        loadHoca();
+    })();
+    </script>
+</body>
+</html>

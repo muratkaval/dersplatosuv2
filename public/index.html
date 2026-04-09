@@ -1,0 +1,251 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <!-- dp-seo-injector: Admin panelindeki SEO ayarlarını otomatik uygular -->
+    <script>
+        (function () {
+            try {
+                var s = JSON.parse(localStorage.getItem('dp_seo_settings') || '{}');
+                if (!s || !Object.keys(s).length) return;
+                var h = document.head;
+
+                // Mevcut meta etiketini bulup günceller, yoksa yenisini oluşturur
+                function up(n, c, isProp) {
+                    if (!c) return;
+                    var sel = isProp ? 'meta[property="' + n + '"]' : 'meta[name="' + n + '"]';
+                    var el = document.querySelector(sel);
+                    if (el) { el.content = c; }
+                    else {
+                        var m = document.createElement('meta');
+                        isProp ? m.setAttribute('property', n) : m.name = n;
+                        m.content = c;
+                        h.appendChild(m);
+                    }
+                }
+
+                function addScript(code) { var t = document.createElement('script'); t.textContent = code; h.appendChild(t); }
+                function addSrcScript(src) { var t = document.createElement('script'); t.async = true; t.src = src; h.appendChild(t); }
+                function upFavicon(url) {
+                    if (!url) return;
+                    ['icon', 'shortcut icon', 'apple-touch-icon'].forEach(function (rel) {
+                        var el = document.querySelector('link[rel="' + rel + '"]');
+                        if (!el) {
+                            el = document.createElement('link');
+                            el.setAttribute('rel', rel);
+                            h.appendChild(el);
+                        }
+                        el.setAttribute('href', url);
+                    });
+                }
+                function isValidGa4Id(v) { return /^G-[A-Z0-9]{4,20}$/i.test((v || '').trim()); }
+                function isValidGtmId(v) { return /^GTM-[A-Z0-9]{4,20}$/i.test((v || '').trim()); }
+                function isValidPixelId(v) { return /^\d{6,20}$/.test((v || '').trim()); }
+
+                // Temel SEO & Open Graph
+                if (s.title) document.title = s.title;
+                up('description', s.desc, false);
+                up('keywords', s.keywords, false);
+                up('author', s.author, false);
+                up('og:site_name', s.siteName, true);
+                up('og:title', s.ogTitle, true);
+                up('og:description', s.ogDesc, true);
+                up('og:image', s.ogImage, true);
+                upFavicon(s.faviconUrl || s.iconUrl);
+
+                // Doğrulama & Analitik
+                if (s.googleVerify) up('google-site-verification', s.googleVerify, false);
+                if (s.bingVerify) up('msvalidate.01', s.bingVerify, false);
+                if (s.yandexVerify) up('yandex-verification', s.yandexVerify, false);
+
+                if (isValidGa4Id(s.ga4Id)) {
+                    addSrcScript('https://www.googletagmanager.com/gtag/js?id=' + s.ga4Id);
+                    addScript('window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","' + s.ga4Id + '");');
+                }
+                if (isValidGtmId(s.gtmId)) {
+                    addScript('(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src="https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);})(window,document,"script","dataLayer","' + s.gtmId + '");');
+                }
+                if (isValidPixelId(s.fbPixelId)) {
+                    addScript('!function(f,b,e,v,n,t,s2){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s2=b.getElementsByTagName(e)[0];s2.parentNode.insertBefore(t,s2)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","' + s.fbPixelId + '");fbq("track","PageView");');
+                }
+
+            } catch (e) { }
+        })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ders Platosu - TYT AYT Ücretsiz Eğitim Platformu</title>
+    <meta name="description"
+        content="Ders Platosu ile YKS, TYT ve AYT'ye en iyi şekilde hazırlanın. Uzman eğitmenlerden konu anlatım kampları, yeni nesil soru çözümleri ve kitaplar burada!" />
+    <meta name="keywords"
+        content="ders platosu, yks, tyt, ayt, online eğitim, yks hazırlık, tyt kampı, ayt kampı, soru çözümü, yks kitap, online ders, temel matematik" />
+    <meta name="author" content="Ders Platosu" />
+    <link rel="canonical" href="https://dersplatosu.com/" />
+    <!-- Open Graph (Facebook, LinkedIn) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://dersplatosu.com/" />
+    <meta property="og:title" content="Ders Platosu - TYT AYT Ücretsiz Eğitim Platformu" />
+    <meta property="og:description"
+        content="Türkiye'nin en kapsamlı TYT AYT ücretsiz online eğitim platformu. Sınava hazırlık kampları ve soru çözümleri." />
+    <meta property="og:image" content="https://i.hizliresim.com/ag3gf4d.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:site_name" content="Ders Platosu" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://dersplatosu.com/" />
+    <meta name="twitter:title" content="Ders Platosu - TYT AYT Ücretsiz Eğitim Platformu" />
+    <meta name="twitter:description"
+        content="Türkiye'nin en kapsamlı TYT AYT ücretsiz online eğitim platformu. Sınava hazırlık kampları ve soru çözümleri." />
+    <meta name="twitter:image" content="https://i.hizliresim.com/ag3gf4d.png" />
+    <!-- Fonts & CSS -->
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="https://i.hizliresim.com/ag3gf4d.png" class="logo-img" alt="Ders Platosu"><span
+                    class="logo-text">Ders Platosu</span>
+            </a>
+            <ul class="nav-links">
+                <!-- Navigasyon linkleri main.js ile dinamik olarak yüklenecek -->
+            </ul>
+            <div class="nav-actions">
+                <button class="btn-icon" id="themeToggle" title="Tema değiştir">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="5" />
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                        <line x1="1" y1="12" x2="3" y2="12" />
+                        <line x1="21" y1="12" x2="23" y2="12" />
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                    </svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" style="display:none">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                    </svg>
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <!-- Mobil menü linkleri main.js ile dinamik olarak yüklenecek -->
+        </div>
+    </nav>
+
+    <div class="hero-block">
+        <!-- INSTRUCTORS - Dynamic Story Scroll + Panel -->
+        <section class="instructors-section" id="ogretmenler">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">Youtuber Hocalarımız</h2>
+                    <p class="section-desc">Alanında uzman, deneyimli öğretmenlerle çalış</p>
+                </div>
+                <!-- Dynamic Story Scroll -->
+                <div class="story-scroll-wrapper">
+                    <div class="story-scroll" id="storyScroll">
+                        <!-- Dinamik olarak hocalar buraya yüklenecek -->
+                    </div>
+                </div>
+                <!-- Instructor Expand Panel -->
+                <div class="instructor-expand-panel" id="instructorExpandPanel"></div>
+            </div>
+        </section>
+
+        <!-- HERO -->
+        <section class="hero hero-top" id="hero">
+            <div class="hero-bg">
+                <div class="hero-orb orb1"></div>
+                <div class="hero-orb orb2"></div>
+                <div class="hero-orb orb3"></div>
+            </div>
+            <div class="hero-inner">
+                <div class="hero-content">
+                    <div class="hero-badge" id="heroBadge">?? Türkiye'nin #1 Ücretsiz Eğitim Platformu</div>
+                    <h1 class="hero-title">
+                        <span class="gradient-text" id="heroTitle1">TYT & AYT'ye</span><br /><span
+                            id="heroTitle2">Hazırlanmanın</span><br /><span id="heroTitle3">En Akıllı Yolu</span>
+                    </h1>
+                    <p class="hero-desc" id="heroDesc">Alanında uzman öğretmenlerle sınava hazırlan. Binlerce ücretsiz ders,
+                        kamplar ve
+                        soru çözümlerine hemen eriş.</p>
+                    <div class="hero-ctas">
+                        <a id="heroBtn1" href="#dersler" class="btn-primary btn-lg pulse-btn">Kamplarımız</a>
+                        <a id="heroBtn2" href="/kitaplar" class="btn-outline btn-lg">Kitaplarımız</a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-card course-card floating">
+                        <div class="course-thumb hero-course-thumb" style="background: center/cover no-repeat">
+                            <div class="course-play-btn"></div>
+                        </div>
+                        <div class="course-body">
+                            <span class="course-tag hero-course-tag"></span>
+                            <h3 class="hero-course-title"></h3>
+                            <div class="course-instructor">
+                                <div class="hero-instructor-stack"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="floating-badge badge-top" id="heroBadgeTop">
+                        <span>?</span> Ücretsiz!
+                    </div>
+                    <div class="floating-badge badge-bottom" id="heroBadgeBot">
+                        <span>??</span> İşler Yayın Grubu Katkıları ile
+                    </div>
+                </div>
+            </div><!-- /hero-inner -->
+        </section>
+    </div>
+
+    <!-- FEATURED COURSES (DYNAMIC) -->
+    <section class="courses-section" id="dersler">
+        <div class="container" id="dynamic-camps-container"></div>
+    </section>
+
+    <!-- FEATURED BOOKS SECTION -->
+    <section class="books-section" id="kitaplar">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Öne Çıkan Kitaplar</h2>
+                <a href="/kitaplar" class="section-link">Tümünü Gör ›</a>
+            </div>
+            <div id="featured-books-container" class="books-grid">
+                <!-- Strapi'den dinamik kitaplar buraya yüklenecek -->
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Footer sütunları main.js ile dinamik olarak yüklenecek -->
+            </div>
+            <div class="footer-bottom">
+                <p>© Tüm hakları saklıdır. <a href="https://kvl.com.tr/" target="_blank" rel="noopener">KVL Digital</a> Tarafından Geliştirilmiştir.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="main.js?v=999"></script>
+
+</body>
+
+</html>
