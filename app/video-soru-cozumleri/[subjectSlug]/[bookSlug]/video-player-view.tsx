@@ -11,10 +11,8 @@ interface Props {
 }
 
 export default function VideoPlayerView({ book, subject, subjectSlug, videos }: Props) {
-  const [activeVideo, setActiveVideo] = useState<any>(videos[0] || null);
-  const [openChapters, setOpenChapters] = useState<string[]>(
-    videos[0]?.bolum_adi ? [videos[0].bolum_adi] : []
-  );
+  const [activeVideo, setActiveVideo] = useState<any>(null);
+  const [openChapters, setOpenChapters] = useState<string[]>([]);
 
   const toggleChapter = (chapterName: string) => {
     setOpenChapters(prev =>
