@@ -26,6 +26,12 @@ export default function BookForm({ book, subjects, categories, instructors }: Pr
   const [selCats, setSelCats] = useState<string[]>((book?.solution_categories || []).map((c: any) => c.documentId || String(c.id)));
   const [selIns, setSelIns] = useState<string[]>((book?.instructors || []).map((i: any) => i.documentId || String(i.id)));
 
+  const [features, setFeatures] = useState<string[]>(book?.features || []);
+  const [faq, setFaq] = useState<{ q: string; a: string }[]>(book?.faq || []);
+  const [showFeatures, setShowFeatures] = useState<boolean>(book?.show_features ?? true);
+  const [showFaq, setShowFaq] = useState<boolean>(book?.show_faq ?? true);
+  const [previewLink, setPreviewLink] = useState<string>(book?.preview_link || "");
+
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>(book?.cover?.url || "");
   const [saving, setSaving] = useState(false);
@@ -85,6 +91,11 @@ export default function BookForm({ book, subjects, categories, instructors }: Pr
         subjects: selSubs,
         solution_categories: selCats,
         instructors: selIns,
+        features,
+        faq,
+        show_features: showFeatures,
+        show_faq: showFaq,
+        preview_link: previewLink,
         ...(coverId ? { cover: coverId } : {}),
       };
 
@@ -133,9 +144,14 @@ export default function BookForm({ book, subjects, categories, instructors }: Pr
             </div>
 
             <div className="form-group">
-              <label>Demo PDF Linki</label>
+              <label>İnceleme (Flipbox) Linki</label>
+              <input value={previewLink} onChange={(e) => setPreviewLink(e.target.value)} placeholder="https://flipbook.dersplatosu.com/..." />
+            </div>
+
+            <div className="form-group">
+              <label>Soru Çözüm Linki</label>
               <input value={solutionLink} onChange={(e) => setSolutionLink(e.target.value)} placeholder="https://..." />
-              <small>Soru çözüm videoları için "Soru Çözümleri" bölümünü kullanın. Demo PDF için aşağıdan medya yükleyin.</small>
+              <small>Kitabın kendi çözüm sayfası varsa buraya ekleyin. Demo sayfalar için aşağıdan PDF yükleyebilirsiniz.</small>
             </div>
 
             <div className="form-group">
@@ -208,6 +224,161 @@ export default function BookForm({ book, subjects, categories, instructors }: Pr
               </button>
             </div>
           </div>
+
+          {/* Dinamik Özellikler Yönetimi */}
+          <div className="info-card" style={{ marginBottom: "20px", padding: "24px" }}>
+            <div className="card-title" style={{ marginBottom: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <span className="ms">list_alt</span> Kitap Özellikleri (Pills)
+              </div>
+              {/* Toggle switch */}
+              <div 
+                onClick={() => setShowFeatures(!showFeatures)}
+                style={{
+                  width: "40px", height: "22px", borderRadius: "11px",
+                  background: showFeatures ? "#10b981" : "#1e3a5f",
+                  position: "relative", transition: "background 0.2s",
+                  cursor: "pointer"
+                }}
+              >
+                <div style={{
+                  position: "absolute", top: "3px",
+                  left: showFeatures ? "21px" : "3px",
+                  width: "16px", height: "16px", borderRadius: "50%",
+                  background: "#fff", transition: "left 0.2s",
+                }} />
+              </div>
+            </div>
+
+            {showFeatures ? (
+              <>
+                <p style={{ fontSize: "0.72rem", color: "#475569", marginBottom: "16px" }}>
+                  Kitap kapağının altında görünecek küçük özellik haplarını (Ör: Tamamı Renkli, Video Çözümlü) buradan ekleyebilirsiniz.
+                </p>
+                
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                  {features.map((feat, idx) => (
+                    <div key={idx} style={{ display: "flex", gap: "10px" }}>
+                      <input 
+                        value={feat} 
+                        className="form-control"
+                        onChange={(e) => {
+                          const newFeats = [...features];
+                          newFeats[idx] = e.target.value;
+                          setFeatures(newFeats);
+                        }} 
+                        placeholder="Örn: Yeni Müfredat" 
+                        style={{ flex: 1 }}
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => setFeatures(features.filter((_, i) => i !== idx))}
+                        style={{ background: "rgba(239,68,68,0.1)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.2)", borderRadius: "8px", padding: "0 10px", cursor: "pointer" }}
+                      >
+                        <span className="ms" style={{ fontSize: "18px" }}>delete</span>
+                      </button>
+                    </div>
+                  ))}
+                  <button 
+                    type="button" 
+                    onClick={() => setFeatures([...features, ""])}
+                    className="btn btn-ghost" 
+                    style={{ width: "100%", justifyContent: "center", borderStyle: "dashed", marginTop: "4px" }}
+                  >
+                    <span className="ms">add</span> Yeni Özellik Ekle
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div style={{ fontSize: "0.75rem", color: "#475569", fontStyle: "italic", textAlign: "center", padding: "10px", background: "rgba(255,255,255,0.02)", borderRadius: "8px" }}>
+                Bu bölüm şu an kapalı ve web sitesinde gösterilmeyecek.
+              </div>
+            )}
+          </div>
+
+          {/* Sıkça Sorulan Sorular Yönetimi */}
+          <div className="info-card" style={{ marginBottom: "20px", padding: "24px" }}>
+            <div className="card-title" style={{ marginBottom: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <span className="ms">quiz</span> Sıkça Sorulan Sorular (FAQ)
+              </div>
+              {/* Toggle switch */}
+              <div 
+                onClick={() => setShowFaq(!showFaq)}
+                style={{
+                  width: "40px", height: "22px", borderRadius: "11px",
+                  background: showFaq ? "#10b981" : "#1e3a5f",
+                  position: "relative", transition: "background 0.2s",
+                  cursor: "pointer"
+                }}
+              >
+                <div style={{
+                  position: "absolute", top: "3px",
+                  left: showFaq ? "21px" : "3px",
+                  width: "16px", height: "16px", borderRadius: "50%",
+                  background: "#fff", transition: "left 0.2s",
+                }} />
+              </div>
+            </div>
+            
+            {showFaq ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                {faq.map((item, idx) => (
+                  <div key={idx} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid #1a2536", borderRadius: "12px", padding: "16px", position: "relative" }}>
+                    <button 
+                      type="button" 
+                      onClick={() => setFaq(faq.filter((_, i) => i !== idx))}
+                      style={{ position: "absolute", top: "12px", right: "12px", background: "transparent", color: "#ef4444", border: "none", cursor: "pointer" }}
+                    >
+                      <span className="ms" style={{ fontSize: "20px" }}>close</span>
+                    </button>
+                    <div className="form-group" style={{ marginBottom: "12px" }}>
+                      <label style={{ fontSize: "0.75rem" }}>Soru</label>
+                      <input 
+                        value={item.q} 
+                        onChange={(e) => {
+                          const newFaq = [...faq];
+                          const updatedItem = { ...newFaq[idx], q: e.target.value };
+                          newFaq[idx] = updatedItem;
+                          setFaq(newFaq);
+                        }} 
+                        placeholder="Örn: Video çözümlere nasıl ulaşırım?" 
+                      />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label style={{ fontSize: "0.75rem" }}>Cevap</label>
+                      <textarea 
+                        value={item.a} 
+                        className="form-control"
+                        onChange={(e) => {
+                          const newFaq = [...faq];
+                          const updatedItem = { ...newFaq[idx], a: e.target.value };
+                          newFaq[idx] = updatedItem;
+                          setFaq(newFaq);
+                        }} 
+                        placeholder="Cevabı buraya yazın..." 
+                        rows={2}
+                        style={{ resize: "vertical" }}
+                      />
+                    </div>
+                  </div>
+                ))}
+                <button 
+                  type="button" 
+                  onClick={() => setFaq([...faq, { q: "", a: "" }])}
+                  className="btn btn-ghost" 
+                  style={{ width: "100%", justifyContent: "center", borderStyle: "dashed" }}
+                >
+                  <span className="ms">add</span> Yeni Soru Ekle
+                </button>
+              </div>
+            ) : (
+              <div style={{ fontSize: "0.75rem", color: "#475569", fontStyle: "italic", textAlign: "center", padding: "10px", background: "rgba(255,255,255,0.02)", borderRadius: "8px" }}>
+                Bu bölüm şu an kapalı ve web sitesinde gösterilmeyecek.
+              </div>
+            )}
+          </div>
+
 
           <div className="info-card" style={{ padding: "24px" }}>
             <div className="card-title" style={{ marginBottom: "20px" }}><span className="ms">image</span> Kapak Görseli</div>

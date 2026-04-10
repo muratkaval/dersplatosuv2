@@ -54,19 +54,26 @@ export default async function BookDetailPage({ params }: Props) {
   });
   const campInstructors = Array.from(instructorSet.values());
 
-  // FAQ – use Strapi data if available, else defaults
-  const faqItems: { q: string; a: string }[] = Array.isArray(book.faq) && book.faq.length > 0
-    ? book.faq
-    : DEFAULT_FAQ;
+  // FAQ – show ONLY if enabled
+  const showFaq = book.show_faq !== false;
+  const faqData = (Array.isArray(book.faq) ? book.faq : []) as any[];
+  const faqItems: { q: string; a: string }[] = faqData.length > 0
+    ? faqData.map(item => ({ q: String(item.q || ""), a: String(item.a || "") }))
+    : (showFaq ? DEFAULT_FAQ : []);
 
   const subjects: string[] = (book.subjects || []).map((s: any) => s.name).filter(Boolean);
 
-  const features = [
-    { icon: "🎬", label: "Video Çözümlü" },
-    { icon: "🎯", label: "Yeni Nesil Sorular" },
-    { icon: "📊", label: "ÖSYM Tarzı" },
-    { icon: "🏆", label: "Uzman Hoca Onaylı" },
-  ];
+  // Features – show ONLY if enabled
+  const showFeatures = book.show_features !== false;
+  const rawFeatures = Array.isArray(book.features) ? (book.features as string[]) : [];
+  const features = rawFeatures.length > 0
+    ? rawFeatures.map((f: string) => ({ label: String(f) }))
+    : (showFeatures ? [
+        { label: "Video Çözümlü" },
+        { label: "Yeni Nesil Sorular" },
+        { label: "ÖSYM Tarzı" },
+        { label: "Uzman Hoca Onaylı" },
+      ] : []);
 
   return (
     <PageContainer>
@@ -106,50 +113,75 @@ export default async function BookDetailPage({ params }: Props) {
                 <p className="book-hero-desc">{book.description}</p>
               )}
 
-              {/* Feature pills */}
-              <div className="book-hero-features">
-                {features.map((f) => (
-                  <div key={f.label} className="book-feature-pill">
-                    <span className="book-feature-pill-icon">{f.icon}</span>
-                    {f.label}
+              {showFeatures && features.length > 0 && (
+                <div className="book-hero-features">
+                  {features.map((f) => (
+                    <div key={f.label} className="book-feature-pill">
+                      {f.label}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Hocalarımız Alanı */}
+              {book.instructors && book.instructors.length > 0 && (
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "10px", marginBottom: "24px" }}>
+                  <span style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", opacity: 0.8 }}>Youtuber Hocalarımız</span>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+                    {book.instructors.map((ins: any) => (
+                      <Link 
+                        key={ins.id} 
+                        href={`/hocalarimiz/${ins.slug}`}
+                        style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }}
+                      >
+                        <div style={{ 
+                          width: "48px", height: "48px", borderRadius: "50%", overflow: "hidden", 
+                          border: "2.5px solid #1e3a5f", background: "#0a1118", flexShrink: 0,
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.3)", transition: "transform 0.2s"
+                        }}>
+                          {(() => {
+                            const photoUrl = toMediaUrl(ins.photo?.url || ins.photo);
+                            const safeName = ins.name || "Hoca";
+                            return (
+                              <img 
+                                src={photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(safeName)}&background=1e3a5f&color=fff`} 
+                                alt={safeName} 
+                                style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                              />
+                            );
+                          })()}
+                        </div>
+                        <span style={{ color: "#f8fafc", fontSize: "0.95rem", fontWeight: 600 }}>{ins.name || "Eğitmen"}</span>
+                      </Link>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
 
-              {/* CTA Buttons */}
+              {/* CTA Buttons - Text Only */}
               <div className="book-hero-cta">
-                {book.buy_link && (
-                  <a
-                    href={book.buy_link}
-                    className="btn-book-primary"
-                    target="_blank"
+                {book.preview_link && (
+                  <a 
+                    href={book.preview_link} 
+                    target="_blank" 
                     rel="noopener noreferrer"
-                    id="buy-book-btn"
+                    className="book-btn-primary"
+                    style={{ textDecoration: "none" }}
                   >
-                    🛒 Hemen Sipariş Ver
+                    İncele
                   </a>
                 )}
-                {pdfUrl && (
-                  <a href="#flipbook-section" className="btn-book-secondary" id="preview-book-btn">
-                    📖 Örnek Sayfaları İncele
+                {book.buy_link && (
+                  <a 
+                    href={book.buy_link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="book-btn-secondary"
+                    style={{ textDecoration: "none" }}
+                  >
+                    Hemen Sipariş Ver
                   </a>
                 )}
-              </div>
-
-              {/* Trust Badges */}
-              <div className="book-trust-badges">
-                <div className="trust-badge">
-                  <span className="trust-badge-icon">✅</span>
-                  Güvenli Ödeme
-                </div>
-                <div className="trust-badge">
-                  <span className="trust-badge-icon">🚚</span>
-                  Hızlı Teslimat
-                </div>
-                <div className="trust-badge">
-                  <span className="trust-badge-icon">🔄</span>
-                  İade Garantisi
-                </div>
               </div>
             </div>
 
@@ -271,15 +303,17 @@ export default async function BookDetailPage({ params }: Props) {
         )}
 
         {/* ===================== FAQ ===================== */}
-        <section className="book-section" id="sss-section">
-          <div className="book-section-inner">
-            <div className="book-section-header">
-              <div className="book-section-eyebrow">❓ Sıkça Sorulanlar</div>
-              <h2 className="book-section-title">Aklındaki Soruların Cevabı Burada</h2>
+        {showFaq && faqItems.length > 0 && (
+          <section className="book-section" id="sss-section">
+            <div className="book-section-inner">
+              <div className="book-section-header">
+                <div className="book-section-eyebrow">❓ Sıkça Sorulanlar</div>
+                <h2 className="book-section-title">Aklındaki Soruların Cevabı Burada</h2>
+              </div>
+              <FAQSection items={faqItems} accentColor={accent} />
             </div>
-            <FAQSection items={faqItems} accentColor={accent} />
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* ===================== FINAL CTA ===================== */}
         {book.buy_link && (

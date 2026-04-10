@@ -79,6 +79,10 @@ export type Book = {
   accent_color?: string;
   description?: string;
   faq?: Array<{ q: string; a: string }>;
+  features?: any;
+  show_features?: boolean;
+  show_faq?: boolean;
+  preview_link?: string;
   cover?: { url?: string } | null;
   demo_pdf?: { url?: string } | null;
   subjects?: Array<{ id: number; name?: string }>;
