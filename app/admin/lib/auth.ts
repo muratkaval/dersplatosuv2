@@ -17,6 +17,30 @@ export async function requireAdminToken(): Promise<string> {
   return token;
 }
 
+// Security: Verify the token by actually hitting Strapi to prevent fake tokens bypassing API routes
+export async function verifyApiAccess(): Promise<string | null> {
+  const token = await getAdminToken();
+  if (!token) return null;
+
+  try {
+    const rawBase = process.env.STRAPI_URL || "http://localhost:1340";
+    const strapiOrigin = rawBase.replace(/\/api\/?$/, "");
+    const res = await fetch(`${strapiOrigin}/api/users/me`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    });
+    
+    if (res.ok) {
+      return token;
+    }
+    return null;
+  } catch (err) {
+    console.error("verifyApiAccess error:", err);
+    return null;
+  }
+}
+
 export async function loginAction(_prevState: any, formData: FormData) {
   const identifier = formData.get("identifier") as string;
   const password = formData.get("password") as string;

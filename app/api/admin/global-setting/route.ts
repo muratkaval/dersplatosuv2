@@ -1,3 +1,4 @@
+import { verifyApiAccess } from "@/app/admin/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { adminPut } from "@/app/admin/lib/strapi-admin";
 

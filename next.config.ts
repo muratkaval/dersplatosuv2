@@ -15,6 +15,31 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "X-Frame-Options",
+            value: "DENY", // Prevents clickjacking
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff", // Prevents MIME type sniffing
+          },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()", // Enhances privacy
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
