@@ -36,7 +36,7 @@ export default function BookCard({ book }: BookCardProps) {
     <div className="book-card-premium">
       <div className="book-card-cover-wrap">
         <img 
-          src={bookCover || 'https://via.placeholder.com/400x560?text=Kitap'} 
+          src={bookCover || '/placeholder-book.png'} 
           alt={book.title || 'Kitap'} 
           className="book-card-cover"
           loading="lazy"
@@ -46,23 +46,22 @@ export default function BookCard({ book }: BookCardProps) {
         />
       </div>
       <div className="book-card-body">
-        <h4>{book.title || 'Kitap'}</h4>
-        {book.instructor && (
-          <div style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginBottom: "12px" }}>
-            {book.instructor.name}
-          </div>
-        )}
+        <h3 className="book-card-title">{book.title || 'Kitap'}</h3>
+        
         <div className="book-card-btns">
-          {book.buy_link && (
+          {book.buy_link ? (
             <a href={book.buy_link} className="btn-book-buy" target="_blank" rel="noopener noreferrer">
               📦 Satın Al ↗
             </a>
+          ) : (
+            <button className="btn-book-buy" disabled>
+              📦 Stokta Yok
+            </button>
           )}
-          {book.slug && (
-            <Link href={`/kitaplar/${book.slug}`} className="btn-book-inspect">
-              🔎 Kitabı İncele
-            </Link>
-          )}
+          
+          <Link href={`/kitaplar/${book.slug || book.id}`} className="btn-book-examine">
+            <span className="ms" style={{ fontSize: '1rem' }}>search</span> Kitabı İncele
+          </Link>
         </div>
       </div>
     </div>

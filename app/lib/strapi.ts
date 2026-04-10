@@ -166,7 +166,7 @@ export function flattenStrapi(data: any): any {
 export async function getCamps(): Promise<Camp[]> {
   const [campsData, allInstructors] = await Promise.all([
     fetchWithFallback<{ data: any[] }>([
-      "/camps?populate[categories]=*&populate[lessons]=*&populate[instructors][populate]=*&populate[cover]=*&populate[subject]=*&populate[books][populate][cover]=*&sort[0]=createdAt:desc&pagination[pageSize]=100",
+      "/camps?populate[categories]=*&populate[lessons]=*&populate[instructors][populate]=*&populate[cover]=*&populate[subject]=*&populate[books][populate]=*&sort[0]=createdAt:desc&pagination[pageSize]=100",
       "/camps?populate=*&sort[0]=createdAt:desc&pagination[pageSize]=100"
     ]),
     getInstructors()
@@ -190,16 +190,17 @@ export async function getCamps(): Promise<Camp[]> {
 }
 
 export async function getCampBySlug(slug: string): Promise<any | null> {
-  const [allCamps, allInstructors] = await Promise.all([
+  const [allCamps, allInstructors, allBooks] = await Promise.all([
     getCamps(),
-    getInstructors()
+    getInstructors(),
+    getBooks()
   ]);
   const found = allCamps.find((c) => c.slug === slug);
   if (!found) return null;
 
   const detailsData = await fetchWithFallback<{ data: any[] }>([
-    `/camps?filters[documentId][$eq]=${found.documentId || ''}&populate[lessons]=*&populate[instructors][populate]=*&populate[cover]=*&populate[subject]=*&populate[books][populate][cover]=*`,
-    `/camps?filters[id][$eq]=${found.id}&populate[lessons]=*&populate[instructors][populate]=*&populate[cover]=*&populate[subject]=*&populate[books][populate][cover]=*`
+    `/camps?filters[documentId][$eq]=${found.documentId || ''}&populate[lessons]=*&populate[instructors][populate]=*&populate[cover]=*&populate[subject]=*&populate[books][populate]=*`,
+    `/camps?filters[id][$eq]=${found.id}&populate[lessons]=*&populate[instructors][populate]=*&populate[cover]=*&populate[subject]=*&populate[books][populate]=*`
   ]);
 
   const rawCamp = flattenStrapi(detailsData?.data?.[0] || found);
@@ -209,9 +210,15 @@ export async function getCampBySlug(slug: string): Promise<any | null> {
     return full || ci;
   });
 
+  const mergedBooks = (rawCamp.books || []).map((rb: any) => {
+    const full = allBooks.find(b => b.id === rb.id || b.documentId === rb.documentId);
+    return full || rb;
+  });
+
   return {
     ...rawCamp,
     instructors: mergedInstructors,
+    books: mergedBooks,
     slug: rawCamp.slug || slugify(rawCamp.title)
   };
 }
