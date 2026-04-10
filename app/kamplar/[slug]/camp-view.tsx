@@ -165,47 +165,44 @@ export default function CampView({ camp }: { camp: any }) {
                                 <h4>{lesson.title || `Ders ${i + 1}`}</h4>
                               </div>
                               {(lesson.notes_link || lesson.notes) && (
-                                <a
-                                  href={lesson.notes_link || lesson.notes}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="lesson-notes-btn"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  📄 Ders Notu
-                                </a>
+                                <div className="lesson-notes-badge">
+                                  📄 Notu Var
+                                </div>
                               )}
                             </div>
 
                             {isActive && vid && (
-                              <div className="lesson-player-container" style={{ display: 'block' }}>
-                                <button
-                                  className="lesson-close-btn"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setActiveLessonId(null);
-                                  }}
-                                  title="Kapat"
-                                >
-                                  &times;
-                                </button>
-                                <iframe
-                                  src={`https://www.youtube-nocookie.com/embed/${vid}?autoplay=1&rel=0&modestbranding=1`}
-                                  allowFullScreen
-                                  allow="autoplay; encrypted-media"
-                                />
-                                {lesson.notes_link && (
-                                  <a
-                                    href={lesson.notes_link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="lesson-notes-under"
-                                    onClick={(e) => e.stopPropagation()}
+                              <>
+                                <div className="lesson-player-container" style={{ display: 'block' }}>
+                                  <button
+                                    className="lesson-close-btn"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setActiveLessonId(null);
+                                    }}
+                                    title="Kapat"
                                   >
-                                    📄 Ders Notu İndir
-                                  </a>
+                                    &times;
+                                  </button>
+                                  <iframe
+                                    src={`https://www.youtube-nocookie.com/embed/${vid}?autoplay=1&rel=0&modestbranding=1`}
+                                    allowFullScreen
+                                    allow="autoplay; encrypted-media"
+                                  />
+                                </div>
+                                {(lesson.notes_link || lesson.notes) && (
+                                  <div className="video-notes-action">
+                                    <a 
+                                      href={lesson.notes_link || lesson.notes} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                      className="btn-video-note"
+                                    >
+                                      <span className="ms">download</span> 📄 Ders Notunu İndir
+                                    </a>
+                                  </div>
                                 )}
-                              </div>
+                              </>
                             )}
                           </div>
                         );
@@ -244,47 +241,44 @@ export default function CampView({ camp }: { camp: any }) {
                                     <h4>{lesson.title || `${mainLabel} ${dayNum} - Ders ${i + 1}`}</h4>
                                   </div>
                                   {(lesson.notes_link || lesson.notes) && (
-                                    <a
-                                      href={lesson.notes_link || lesson.notes}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="lesson-notes-btn"
-                                      onClick={(e) => e.stopPropagation()}
-                                    >
-                                      📄 Ders Notu
-                                    </a>
+                                    <div className="lesson-notes-badge">
+                                      📄 Notu Var
+                                    </div>
                                   )}
                                 </div>
 
                                 {isActive && vid && (
-                                  <div className="lesson-player-container" style={{ display: 'block' }}>
-                                    <button
-                                      className="lesson-close-btn"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setActiveLessonId(null);
-                                      }}
-                                      title="Kapat"
-                                    >
-                                      &times;
-                                    </button>
-                                    <iframe
-                                      src={`https://www.youtube-nocookie.com/embed/${vid}?autoplay=1&rel=0&modestbranding=1`}
-                                      allowFullScreen
-                                      allow="autoplay; encrypted-media"
-                                    />
-                                    {lesson.notes_link && (
-                                      <a
-                                        href={lesson.notes_link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="lesson-notes-under"
-                                        onClick={(e) => e.stopPropagation()}
+                                  <>
+                                    <div className="lesson-player-container" style={{ display: 'block' }}>
+                                      <button
+                                        className="lesson-close-btn"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setActiveLessonId(null);
+                                        }}
+                                        title="Kapat"
                                       >
-                                        📄 Ders Notu İndir
-                                      </a>
+                                        &times;
+                                      </button>
+                                      <iframe
+                                        src={`https://www.youtube-nocookie.com/embed/${vid}?autoplay=1&rel=0&modestbranding=1`}
+                                        allowFullScreen
+                                        allow="autoplay; encrypted-media"
+                                      />
+                                    </div>
+                                    {(lesson.notes_link || lesson.notes) && (
+                                      <div className="video-notes-action">
+                                        <a 
+                                          href={lesson.notes_link || lesson.notes} 
+                                          target="_blank" 
+                                          rel="noopener noreferrer"
+                                          className="btn-video-note"
+                                        >
+                                          <span className="ms">download</span> 📄 Ders Notunu İndir
+                                        </a>
+                                      </div>
                                     )}
-                                  </div>
+                                  </>
                                 )}
                               </div>
                             );
