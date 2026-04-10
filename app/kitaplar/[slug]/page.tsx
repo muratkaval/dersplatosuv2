@@ -45,14 +45,21 @@ export default async function BookDetailPage({ params }: Props) {
   // Gather linked camps (relation: book <-> camp)
   const linkedCamps: any[] = book.camps || [];
 
-  // Gather instructors from linked camps (unique)
+  // Gather instructors from book itself and linked camps (unique)
   const instructorSet = new Map<number, any>();
+  
+  // Add book's own instructors
+  (book.instructors || []).forEach((ins: any) => {
+    if (!instructorSet.has(ins.id)) instructorSet.set(ins.id, ins);
+  });
+
+  // Add instructors from linked camps
   linkedCamps.forEach((camp: any) => {
     (camp.instructors || []).forEach((ins: any) => {
       if (!instructorSet.has(ins.id)) instructorSet.set(ins.id, ins);
     });
   });
-  const campInstructors = Array.from(instructorSet.values());
+  const allInstructors = Array.from(instructorSet.values());
 
   // FAQ – show ONLY if enabled
   const showFaq = book.show_faq !== false;
@@ -124,14 +131,14 @@ export default async function BookDetailPage({ params }: Props) {
               )}
 
               {/* Hocalarımız Alanı */}
-              {book.instructors && book.instructors.length > 0 && (
+              {allInstructors.length > 0 && (
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "10px", marginBottom: "24px" }}>
                   <span style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", opacity: 0.8 }}>Youtuber Hocalarımız</span>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
-                    {book.instructors.map((ins: any) => (
+                    {allInstructors.map((ins: any) => (
                       <Link 
                         key={ins.id} 
-                        href={`/hocalarimiz/${ins.slug}`}
+                        href={`/hoca/${ins.slug}`}
                         style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }}
                       >
                         <div style={{ 
@@ -140,7 +147,9 @@ export default async function BookDetailPage({ params }: Props) {
                           boxShadow: "0 4px 12px rgba(0,0,0,0.3)", transition: "transform 0.2s"
                         }}>
                           {(() => {
-                            const photoUrl = toMediaUrl(ins.photo?.url || ins.photo);
+                            // Extract photo object carefully for Strapi v5
+                            const photoData = ins.photo;
+                            const photoUrl = toMediaUrl(photoData?.url || photoData);
                             const safeName = ins.name || "Hoca";
                             return (
                               <img 
@@ -160,28 +169,24 @@ export default async function BookDetailPage({ params }: Props) {
 
               {/* CTA Buttons - Text Only */}
               <div className="book-hero-cta">
-                {book.preview_link && (
-                  <a 
-                    href={book.preview_link} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="book-btn-primary"
-                    style={{ textDecoration: "none" }}
-                  >
-                    İncele
-                  </a>
-                )}
-                {book.buy_link && (
-                  <a 
-                    href={book.buy_link} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="book-btn-secondary"
-                    style={{ textDecoration: "none" }}
-                  >
-                    Hemen Sipariş Ver
-                  </a>
-                )}
+                <a 
+                  href={book.preview_link || "#flipbook-section"} 
+                  target={book.preview_link ? "_blank" : "_self"} 
+                  rel="noopener noreferrer"
+                  className="btn-book-primary"
+                  style={{ textDecoration: "none" }}
+                >
+                  İncele
+                </a>
+                <a 
+                  href={book.buy_link || "#"} 
+                  target={book.buy_link ? "_blank" : "_self"} 
+                  rel="noopener noreferrer"
+                  className="btn-book-secondary"
+                  style={{ textDecoration: "none" }}
+                >
+                  Hemen Sipariş Ver
+                </a>
               </div>
             </div>
 
@@ -246,7 +251,7 @@ export default async function BookDetailPage({ params }: Props) {
         )}
 
         {/* ===================== VIDEO SOLUTION PARTNER ===================== */}
-        {campInstructors.length > 0 && (
+        {allInstructors.length > 0 && (
           <section className="book-section" id="solution-section">
             <div className="book-section-inner">
               <div className="book-section-header">
@@ -258,7 +263,7 @@ export default async function BookDetailPage({ params }: Props) {
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                {campInstructors.map((ins: any) => (
+                {allInstructors.length > 0 && allInstructors.map((ins: any) => (
                   <Link
                     key={ins.id}
                     href={`/video-soru-cozumleri`}

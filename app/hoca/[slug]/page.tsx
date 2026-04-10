@@ -151,13 +151,6 @@ export default async function HocaDetayPage({ params }: { params: Promise<{ slug
                                         alt={book.title} 
                                         loading="lazy" 
                                     />
-                                    <div className="play-overlay">
-                                        <div className="play-button-circle">
-                                            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
-                                                <path d="M8 5v14l11-7z" />
-                                            </svg>
-                                        </div>
-                                    </div>
                                 </div>
                                 <div className="book-card-body">
                                     <h4>{book.title || 'Kitap'}</h4>
