@@ -229,14 +229,16 @@ export default function CategoryManagement({ initialCamps, initialBooks, initial
 
     return (
       <tr ref={setNodeRef} style={style}>
-        <td style={{ display: "flex", alignItems: "center", gap: "12px", borderBottom: "1px solid #1a2536", padding: "14px 16px" }}>
-          <span className="ms" style={{ color: "#475569", cursor: "grab", fontSize: "18px" }} {...attributes} {...listeners}>drag_indicator</span>
-          <span style={{ fontWeight: 600, color: "#cbd5e1" }}>{item.name}</span>
+        <td style={{ borderBottom: "1px solid #1a2536", padding: "14px 16px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <span className="ms" style={{ color: "#475569", cursor: "grab", fontSize: "18px" }} {...attributes} {...listeners}>drag_indicator</span>
+            <span style={{ fontWeight: 600, color: "#cbd5e1" }}>{item.name}</span>
+          </div>
         </td>
-        <td style={{ textAlign: "center", borderBottom: "1px solid #1a2536", color: "#60a5fa", fontWeight: 700 }}>
+        <td style={{ textAlign: "center", borderBottom: "1px solid #1a2536", color: "#60a5fa", fontWeight: 700, padding: "14px 16px" }}>
           {item.sira || "-"}
         </td>
-        <td style={{ borderBottom: "1px solid #1a2536", paddingRight: "16px" }}>
+        <td style={{ borderBottom: "1px solid #1a2536", padding: "14px 16px" }}>
           <div className="td-actions" style={{ justifyContent: "flex-end" }}>
             <button className="btn btn-ghost btn-sm btn-icon" onClick={() => openEdit(type, item)}>
               <span className="ms">edit</span>
