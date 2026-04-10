@@ -5,6 +5,13 @@ import Link from "next/link";
 import { getBooks, getCamps, getInstructors, toMediaUrl, getCampThumbnail, getGlobalSettings } from "@/app/lib/strapi";
 import InstructorScroll from "./components/instructor-scroll";
 
+function slugify(t: string = "") {
+  return t.toLowerCase()
+    .replace(/ç/g, "c").replace(/ğ/g, "g").replace(/ı/g, "i")
+    .replace(/ö/g, "o").replace(/ş/g, "s").replace(/ü/g, "u")
+    .replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+}
+
 export default async function Home() {
   const [camps, instructors, featuredBooks, globalSettings] = await Promise.all([
     getCamps(),
@@ -251,7 +258,7 @@ export default async function Home() {
                     <span style={{ width: "4px", height: "24px", background: "var(--primary-color)", borderRadius: "4px" }}></span>
                     {group.title}
                   </h2>
-                  <Link href="/kamplar" className="section-link" style={{ fontSize: "0.9rem", opacity: 0.8 }}>Tümünü Gör ›</Link>
+                  <Link href={`/kamplar/kategori/${slugify(group.title)}`} className="section-link" style={{ fontSize: "0.9rem", opacity: 0.8 }}>Tümünü Gör ›</Link>
                 </div>
                 <div className="courses-grid">
                   {group.camps.slice(0, 6).map((camp) => (
