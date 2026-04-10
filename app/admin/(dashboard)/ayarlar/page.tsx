@@ -54,9 +54,9 @@ const settingsModules: SettingsModule[] = [
     title: "Header & Footer",
     desc: "Site ana menüsü ve alt bilgi (footer) linklerinin sürükle-bırak yöntemiyle yönetimi.",
     icon: "view_quilt",
-    href: "#",
+    href: "/admin/ayarlar/navigation",
     color: "#6366f1",
-    active: false
+    active: true
   },
   {
     id: "sitemap",
