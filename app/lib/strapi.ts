@@ -50,6 +50,7 @@ export type Camp = {
   playlist?: string;
   subject?: { name?: string } | null;
   cover?: { url?: string } | null;
+  categories?: any;
   instructors?: Array<{
     id: number;
     name: string;

@@ -221,18 +221,46 @@ export default async function Home() {
         </section>
       )}
 
-      {/* FEATURED COURSES */}
-      <section className="courses-section" id="dersler">
+      {/* FEATURED COURSES (CATEGORIZED) */}
+      <section className="courses-categorized-section" id="dersler" style={{ paddingTop: "40px" }}>
         <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">{site.campsTitle || "Kamplar"}</h2>
-            <Link href="/kamplar" className="section-link">Tümünü Gör ›</Link>
-          </div>
-          <div className="courses-grid">
-            {camps.slice(0, 6).map((camp) => (
-              <CourseCard key={camp.id} camp={camp} />
-            ))}
-          </div>
+          {(() => {
+            // Group camps by category
+            const grouped = camps.reduce((acc, camp) => {
+              const cats = Array.isArray(camp.categories) ? camp.categories : (camp.categories?.data || []);
+              if (cats.length > 0) {
+                cats.forEach((cat: any) => {
+                  const catTitle = cat.name || cat.attributes?.name || cat.title || cat.attributes?.title || "Sınıflandırılmamış Kamplar";
+                  const order = cat.displayOrder ?? cat.attributes?.displayOrder ?? 999;
+                  if (!acc[catTitle]) acc[catTitle] = { title: catTitle, order, camps: [] };
+                  acc[catTitle].camps.push(camp);
+                });
+              } else {
+                if (!acc["Diğer Kamplar"]) acc["Diğer Kamplar"] = { title: "Diğer Kamplar", order: 999, camps: [] };
+                acc["Diğer Kamplar"].camps.push(camp);
+              }
+              return acc;
+            }, {} as Record<string, { title: string, order: number, camps: any[] }>);
+
+            const sortedGroups = Object.values(grouped).sort((a, b) => a.order - b.order);
+
+            return sortedGroups.map((group, idx) => (
+              <div key={idx} className="category-block" style={{ marginBottom: "60px" }}>
+                <div className="section-header" style={{ marginBottom: "24px", borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: "12px" }}>
+                  <h2 className="section-title" style={{ fontSize: "1.75rem", fontWeight: "700", color: "#fff", display: "flex", alignItems: "center", gap: "10px" }}>
+                    <span style={{ width: "4px", height: "24px", background: "var(--primary-color)", borderRadius: "4px" }}></span>
+                    {group.title}
+                  </h2>
+                  <Link href="/kamplar" className="section-link" style={{ fontSize: "0.9rem", opacity: 0.8 }}>Tümünü Gör ›</Link>
+                </div>
+                <div className="courses-grid">
+                  {group.camps.slice(0, 6).map((camp) => (
+                    <CourseCard key={camp.id} camp={camp} />
+                  ))}
+                </div>
+              </div>
+            ));
+          })()}
         </div>
       </section>
 
