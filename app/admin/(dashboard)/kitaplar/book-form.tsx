@@ -16,7 +16,6 @@ export default function BookForm({ book, subjects, categories, instructors }: Pr
 
   const [title, setTitle] = useState(book?.title || "");
   const [buyLink, setBuyLink] = useState(book?.buy_link || "");
-  const [solutionLink, setSolutionLink] = useState(book?.solution_link || "");
   const [promoVideo, setPromoVideo] = useState(book?.promo_video || "");
   const [accentColor, setAccentColor] = useState(book?.accent_color || "");
   const [description, setDescription] = useState(book?.description || "");
@@ -83,7 +82,6 @@ export default function BookForm({ book, subjects, categories, instructors }: Pr
       const payload = {
         title,
         buy_link: buyLink,
-        solution_link: solutionLink,
         promo_video: promoVideo,
         accent_color: accentColor,
         description,
@@ -148,11 +146,7 @@ export default function BookForm({ book, subjects, categories, instructors }: Pr
               <input value={previewLink} onChange={(e) => setPreviewLink(e.target.value)} placeholder="https://flipbook.dersplatosu.com/..." />
             </div>
 
-            <div className="form-group">
-              <label>Soru Çözüm Linki</label>
-              <input value={solutionLink} onChange={(e) => setSolutionLink(e.target.value)} placeholder="https://..." />
-              <small>Kitabın kendi çözüm sayfası varsa buraya ekleyin. Demo sayfalar için aşağıdan PDF yükleyebilirsiniz.</small>
-            </div>
+
 
             <div className="form-group">
               <label>Tanıtım Videosu (YouTube URL)</label>
