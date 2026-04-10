@@ -17,7 +17,6 @@ export async function requireAdminToken(): Promise<string> {
   return token;
 }
 
-// Security: Verify the token by actually hitting Strapi to prevent fake tokens bypassing API routes
 export async function verifyApiAccess(): Promise<string | null> {
   const token = await getAdminToken();
   if (!token) return null;
@@ -31,12 +30,17 @@ export async function verifyApiAccess(): Promise<string | null> {
       cache: "no-store",
     });
     
-    if (res.ok) {
+    // 401 means invalid or expired token.
+    // 403 means valid token but insufficient permissions for /users/me.
+    // 200 means valid token and has permission.
+    if (res.ok || res.status === 403) {
       return token;
     }
+    
+    console.error(`[auth] verifyApiAccess failed: ${res.status} ${res.statusText}`);
     return null;
   } catch (err) {
-    console.error("verifyApiAccess error:", err);
+    console.error("[auth] verifyApiAccess error:", err);
     return null;
   }
 }
