@@ -250,46 +250,6 @@ export default async function BookDetailPage({ params }: Props) {
           </section>
         )}
 
-        {/* ===================== VIDEO SOLUTION PARTNER ===================== */}
-        {allInstructors.length > 0 && (
-          <section className="book-section" id="solution-section">
-            <div className="book-section-inner">
-              <div className="book-section-header">
-                <div className="book-section-eyebrow">🎬 Video Çözümler</div>
-                <h2 className="book-section-title">Soru Çözümlerine Git</h2>
-                <p className="book-section-subtitle">
-                  Bu kitabın sorularını çözen hocalarımızın video çözümlerine ücretsiz ulaşabilirsiniz.
-                </p>
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                {allInstructors.length > 0 && allInstructors.map((ins: any) => (
-                  <Link
-                    key={ins.id}
-                    href={`/video-soru-cozumleri`}
-                    className="solution-partner-banner"
-                  >
-                    <img
-                      src={toMediaUrl(ins.photo?.url || ins.photo) || "https://via.placeholder.com/72"}
-                      alt={ins.name}
-                      className="solution-partner-avatar"
-                    />
-                    <div className="solution-partner-content">
-                      <div className="solution-partner-title">Çözüm Ortağı Hoca</div>
-                      <div className="solution-partner-name">{ins.name}</div>
-                      <div className="solution-partner-desc">
-                        Bu kitabın tüm soru çözümleri Ders Platosu'nda mevcuttur.
-                      </div>
-                    </div>
-                    <div className="solution-partner-btn">
-                      🎬 Çözümlere Git
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
 
         {/* ===================== FLIPBOOK ===================== */}
         {pdfUrl && (
