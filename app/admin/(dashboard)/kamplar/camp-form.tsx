@@ -57,6 +57,10 @@ export default function CampForm({ camp, categories, instructors, subjects, book
   const [selIns, setSelIns] = useState<string[]>((camp?.instructors || []).map((c: any) => c.documentId || String(c.id)));
   const [selBooks, setSelBooks] = useState<string[]>((camp?.books || []).map((c: any) => c.documentId || String(c.id)));
   const [displayType, setDisplayType] = useState<"daily" | "topic" | "sequential">(camp?.displayType || "daily");
+  const [heroMode, setHeroMode] = useState<"video" | "image">(camp?.heroMode || "video");
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>(camp?.cover?.url || "");
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [lessons, setLessons] = useState<Lesson[]>((camp?.lessons || []).map((l: any, idx: number) => ({
     id: l.id || `l-${Date.now()}-${idx}`,
     title: l.title ?? "",
@@ -106,6 +110,14 @@ export default function CampForm({ camp, categories, instructors, subjects, book
   function addLessonToDay(dayNum: number) {
     setLessons([...lessons, { id: `l-${Date.now()}`, title: "", day: dayNum, youtube: "", notes_link: "" }]);
     setOpenDays(prev => new Set([...Array.from(prev), dayNum]));
+  }
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) {
+      setCoverFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
   }
 
   function addLessonDirectly() {
@@ -287,6 +299,26 @@ export default function CampForm({ camp, categories, instructors, subjects, book
     if (!title.trim()) { showToast("Başlık zorunludur", "error"); return; }
     setSaving(true);
     try {
+      let coverId = null;
+
+      // Görsel yükleme işlemi
+      if (coverFile) {
+        const formData = new FormData();
+        formData.append("files", coverFile);
+        const uploadRes = await fetch("/api/admin/upload", {
+          method: "POST",
+          body: formData,
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadRes.ok && uploadData[0]) {
+          coverId = uploadData[0].id;
+        } else {
+          showToast("Görsel yüklenemedi", "error");
+          setSaving(false);
+          return;
+        }
+      }
+
       const payload = {
         title,
         slug: slug || slugify(title),
@@ -296,6 +328,7 @@ export default function CampForm({ camp, categories, instructors, subjects, book
         instructors: selIns,
         books: selBooks,
         displayType,
+        heroMode,
         lessons: lessons.map((l) => ({ 
           title: l.title, 
           day: l.day || 0, 
@@ -304,6 +337,7 @@ export default function CampForm({ camp, categories, instructors, subjects, book
           group_title: l.group_title 
         })),
         ...(subjectId ? { subject: subjectId } : {}),
+        ...(coverId ? { cover: coverId } : {}),
       };
 
       const url = isEdit ? `/api/admin/camps/${camp.documentId}` : "/api/admin/camps";
@@ -373,20 +407,6 @@ export default function CampForm({ camp, categories, instructors, subjects, book
               </div>
             </div>
 
-            <div className="form-group">
-              <label>Kamp Tasarım Modu</label>
-              <select 
-                value={displayType} 
-                onChange={(e) => setDisplayType(e.target.value as any)}
-                style={{ width: "100%", background: "#0b1628", border: "1.5px solid #1e3a5f", borderRadius: "8px", color: "#e2e8f0", padding: "10px", outline: "none", cursor: "pointer" }}
-              >
-                <option value="daily">📅 Günlük Program (1. Gün, 2. Gün...)</option>
-                <option value="topic">📖 Konu Bazlı (1. Konu, 2. Konu...)</option>
-                <option value="sequential">▶ Sıralı Liste (Ders 01, Ders 02...)</option>
-              </select>
-              <p style={{ fontSize: "0.7rem", color: "#475569", marginTop: "6px" }}>Bu seçim hem admin panelini hem de sitenin görünümünü etkiler.</p>
-            </div>
-
             {slug && (
               <small style={{ color: "#3b82f6", marginTop: "4px", display: "flex", alignItems: "center", gap: "4px" }}>
                 <span>🔗 dersplatosu.com/kamplar/</span><strong>{slug}</strong>
@@ -395,23 +415,13 @@ export default function CampForm({ camp, categories, instructors, subjects, book
             {!slug && <small style={{ color: "#475569", display: "block", marginTop: "4px" }}>Boş bırakılırsa başlıktan otomatik üretilir</small>}
 
             <div className="form-group" style={{ marginTop: "16px" }}>
-              <label>Intro Video URL</label>
-              <input value={introVideo} onChange={(e) => setIntroVideo(e.target.value)} placeholder="https://youtu.be/..." />
-            </div>
-
-            <div className="form-group">
-              <label>Playlist URL</label>
-              <input value={playlist} onChange={(e) => setPlaylist(e.target.value)} placeholder="https://youtube.com/playlist?list=..." />
-            </div>
-
-            <div className="form-group">
-              <label>Branş</label>
-              <select value={subjectId} onChange={(e) => setSubjectId(e.target.value)}>
-                <option value="">Seç...</option>
-                {subjects.map((s) => (
-                  <option key={s.documentId || s.id} value={s.documentId || s.id}>{s.name}</option>
-                ))}
-              </select>
+              <label>Oynatma Listesi (YouTube Playlist URL)</label>
+              <input 
+                value={playlist} 
+                onChange={(e) => setPlaylist(e.target.value)} 
+                placeholder="https://youtube.com/playlist?list=..." 
+              />
+              <p style={{ fontSize: "0.7rem", color: "#475569", marginTop: "4px" }}>Kampın tüm videolarını içeren genel liste linki.</p>
             </div>
           </div>
 
@@ -421,24 +431,37 @@ export default function CampForm({ camp, categories, instructors, subjects, book
             {/* Reusable row-list renderer */}
             {(
               [
-                { label: "Kategoriler", items: categories, sel: selCats, setSel: setSelCats, nameKey: "name", accent: "#60a5fa", accentBg: "rgba(59,130,246,0.12)", accentBorder: "rgba(59,130,246,0.3)" },
-                { label: "Eğitimciler", items: instructors, sel: selIns, setSel: setSelIns, nameKey: "name", accent: "#34d399", accentBg: "rgba(16,185,129,0.12)", accentBorder: "rgba(16,185,129,0.3)" },
-                { label: "Kitaplar", items: books, sel: selBooks, setSel: setSelBooks, nameKey: "title", accent: "#fbbf24", accentBg: "rgba(245,158,11,0.10)", accentBorder: "rgba(245,158,11,0.3)" },
-              ] as const
-            ).map(({ label, items, sel, setSel, nameKey, accent, accentBg, accentBorder }, gi) => (
-              <div key={gi} className="form-group" style={{ marginBottom: gi === 2 ? 0 : undefined }}>
-                <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                { label: "BRANŞ", items: subjects, sel: subjectId ? [subjectId] : [], setSel: (id: string) => setSubjectId(id === subjectId ? "" : id), nameKey: "name", accent: "#a78bfa", accentBg: "rgba(167,139,250,0.12)", accentBorder: "rgba(167,139,250,0.25)", isSingle: true },
+                { label: "KATEGORİLER", items: categories, sel: selCats, setSel: setSelCats, nameKey: "name", accent: "#60a5fa", accentBg: "rgba(59,130,246,0.12)", accentBorder: "rgba(59,130,246,0.25)" },
+                { label: "EĞİTİMCİLER", items: instructors, sel: selIns, setSel: setSelIns, nameKey: "name", accent: "#34d399", accentBg: "rgba(16,185,129,0.12)", accentBorder: "rgba(16,185,129,0.25)" },
+                { label: "KİTAPLAR", items: books, sel: selBooks, setSel: setSelBooks, nameKey: "title", accent: "#fbbf24", accentBg: "rgba(245,158,11,0.10)", accentBorder: "rgba(245,158,11,0.25)" },
+              ] as any
+            ).map(({ label, items, sel, setSel, nameKey, accent, accentBg, accentBorder, isSingle }: any, gi: number) => (
+              <div key={gi} className="form-group" style={{ marginBottom: gi === 3 ? 0 : "24px" }}>
+                <label style={{ 
+                  display: "flex", 
+                  justifyContent: "space-between", 
+                  alignItems: "center",
+                  fontSize: "0.75rem",
+                  letterSpacing: "0.05em",
+                  color: "#94a3b8",
+                  fontWeight: 800,
+                  marginBottom: "8px"
+                }}>
                   <span>{label}</span>
                   {sel.length > 0 && (
-                    <span style={{ background: accentBg, color: accent, borderRadius: "50px", padding: "1px 10px", fontSize: "0.68rem", fontWeight: 700 }}>
-                      {sel.length} / {items.length}
+                    <span style={{ background: accentBg, color: accent, borderRadius: "50px", padding: "1px 12px", fontSize: "0.65rem", fontWeight: 800, border: `1px solid ${accentBorder}` }}>
+                      {isSingle ? "SEÇİLDİ" : `${sel.length} SEÇİLİ`}
                     </span>
                   )}
                 </label>
                 <div style={{
-                  maxHeight: "200px", overflowY: "auto",
-                  border: "1px solid #1a2536", borderRadius: "10px",
-                  background: "#060e1a",
+                  maxHeight: "180px", overflowY: "auto",
+                  border: `1.5px solid ${sel.length > 0 ? accentBorder : "#1a2536"}`, 
+                  borderRadius: "12px",
+                  background: "#060d1a",
+                  transition: "all 0.3s ease",
+                  boxShadow: sel.length > 0 ? `0 4px 12px ${accentBg}` : "none"
                 }}>
                   {(items as any[]).map((c, idx) => {
                     const id = c.documentId || String(c.id);
@@ -449,36 +472,33 @@ export default function CampForm({ camp, categories, instructors, subjects, book
                       <button
                         key={id}
                         type="button"
-                        onClick={() => toggleMulti(id, sel as string[], setSel as any)}
+                        onClick={() => isSingle ? setSel(id) : toggleMulti(id, sel as string[], setSel as any)}
                         style={{
                           display: "flex", alignItems: "center", gap: "10px",
-                          width: "100%", padding: "10px 14px",
+                          width: "100%", padding: "11px 16px",
                           background: selected ? accentBg : "transparent",
                           color: selected ? accent : "#94a3b8",
                           border: "none",
                           borderBottom: isLast ? "none" : "1px solid #111d2e",
                           cursor: "pointer", fontFamily: "inherit",
-                          fontSize: "0.855rem", fontWeight: selected ? 600 : 400,
+                          fontSize: "0.85rem", fontWeight: selected ? 600 : 400,
                           textAlign: "left",
-                          transition: "background 0.15s, color 0.15s",
+                          transition: "all 0.15s",
                         }}
                       >
                         {/* Toggle indicator */}
                         <span style={{
-                          width: "18px", height: "18px", borderRadius: "5px", flexShrink: 0,
+                          width: "18px", height: "18px", borderRadius: isSingle ? "50%" : "5px", flexShrink: 0,
                           border: selected ? `2px solid ${accent}` : "2px solid #243249",
-                          background: selected ? accentBg : "transparent",
+                          background: selected ? accent : "transparent",
                           display: "flex", alignItems: "center", justifyContent: "center",
                           transition: "all 0.15s",
                         }}>
-                          {selected && <span className="ms" style={{ fontSize: "12px", color: accent }}>check</span>}
+                          {selected && <span className="ms" style={{ fontSize: "14px", color: "#060d1a", fontWeight: "bold" }}>{isSingle ? "radio_button_checked" : "check"}</span>}
                         </span>
                         <span style={{ flex: 1 }}>{name}</span>
                         {selected && (
-                          <span style={{
-                            width: "6px", height: "6px", borderRadius: "50%",
-                            background: accent, flexShrink: 0,
-                          }} />
+                          <span className="ms" style={{ fontSize: "16px", color: accent, opacity: 0.5 }}>{isSingle ? "verified" : "done_all"}</span>
                         )}
                       </button>
                     );
@@ -489,8 +509,73 @@ export default function CampForm({ camp, categories, instructors, subjects, book
           </div>
         </div>
 
-        {/* Sağ Kolon - Dersler */}
-        <div className="info-card">
+        {/* Sağ Kolon */}
+        <div>
+          <div className="info-card" style={{ marginBottom: "20px", border: "1px solid rgba(59, 130, 246, 0.2)", background: "rgba(6, 13, 26, 0.4)" }}>
+            <div className="card-title"><span className="ms">palette</span> Kamp Tasarımı</div>
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label>LİSTELEME MODU</label>
+                <select 
+                  value={displayType} 
+                  onChange={(e) => setDisplayType(e.target.value as any)}
+                  style={{ width: "100%", background: "#0b1628", border: "1.5px solid #1e3a5f", borderRadius: "8px", color: "#e2e8f0", padding: "12px", outline: "none", cursor: "pointer", fontWeight: 600 }}
+                >
+                  <option value="daily">📅 Günlük Program (1. Gün, 2. Gün...)</option>
+                  <option value="topic">📖 Konu Bazlı (1. Konu, 2. Konu...)</option>
+                  <option value="sequential">▶ Sıralı Liste (Ders 01, Ders 02...)</option>
+                </select>
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label>TANITIM ALANI MODU</label>
+                <select 
+                  value={heroMode} 
+                  onChange={(e) => setHeroMode(e.target.value as any)}
+                  style={{ width: "100%", background: "#060d1a", border: "1.5px solid #3b82f6", color: "#fff", borderRadius: "8px", padding: "12px", fontWeight: 700, outline: "none", boxShadow: "0 0 10px rgba(59, 130, 246, 0.1)" }}
+                >
+                  <option value="video">🎥 Video Tanıtımı (YouTube'dan çeker)</option>
+                  <option value="image">🖼️ Görsel Tanıtımı (Sadece resim yüklenir)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid #1a2536" }}>
+              {heroMode === "video" ? (
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label>Tanıtım Videosu URL</label>
+                  <input value={introVideo} onChange={(e) => setIntroVideo(e.target.value)} placeholder="https://youtu.be/..." />
+                  <p style={{ fontSize: "0.7rem", color: "#475569", marginTop: "4px" }}>Tanıtım alanında oynatılacak video linki.</p>
+                </div>
+              ) : (
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label>Kapak Görseli</label>
+                  <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+                    <div style={{ width: "80px", height: "50px", background: "#0f172a", border: "1.5px dashed #1e3a5f", borderRadius: "8px", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      {previewUrl ? (
+                        <img 
+                          src={previewUrl.startsWith("http") || previewUrl.startsWith("blob") ? previewUrl : `${process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1340"}${previewUrl}`} 
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                        />
+                      ) : (
+                        <span className="ms" style={{ fontSize: "1.2rem", opacity: 0.2 }}>image</span>
+                      )}
+                    </div>
+                    <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "12px" }}>
+                      <input type="file" ref={fileInputRef} accept="image/*" onChange={handleFileChange} style={{ display: "none" }} />
+                      <button type="button" className="btn btn-ghost btn-sm" onClick={() => fileInputRef.current?.click()} style={{ flex: 1, borderStyle: "solid", borderColor: "#1e3a5f" }}>
+                        <span className="ms">add_a_photo</span> {previewUrl ? "Görseli Değiştir" : "Görsel Seç"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Dersler */}
+          <div className="info-card">
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDrop}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px", flexWrap: "wrap", gap: "8px" }}>
               <div className="card-title" style={{ marginBottom: 0, display: "flex", alignItems: "center", gap: "10px" }}>
@@ -595,6 +680,7 @@ export default function CampForm({ camp, categories, instructors, subjects, book
           </DndContext>
         </div>
       </div>
+    </div>
 
       <div style={{ marginTop: "24px", display: "flex", justifyContent: "flex-end", gap: "12px" }}>
         <button type="button" className="btn btn-ghost" onClick={() => router.push("/admin/kamplar")}>◀ İptal</button>
@@ -605,6 +691,30 @@ export default function CampForm({ camp, categories, instructors, subjects, book
       </div>
 
       <style jsx global>{`
+        /* Modern Scrollbar Design */
+        ::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+          background: #060d1a;
+          border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 10px;
+          border: 2px solid #060d1a;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Firefox supports */
+        * {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(255, 255, 255, 0.2) #060d1a;
+        }
+
         .day-card {
           margin-bottom: 12px;
           border: 1px solid #1a2e47;

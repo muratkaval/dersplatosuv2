@@ -46,6 +46,7 @@ export default function CampView({ camp }: { camp: any }) {
 
   const totalLessons = sortedLessons.length || "—";
   const displayType = camp.displayType || "daily";
+  const heroMode = camp.heroMode || "video"; // Yeni mod çekildi
   const mainLabel = displayType === "daily" ? "Gün" : displayType === "topic" ? "Konu" : "Bölüm";
 
   // Gruplandirma Mantigi
@@ -84,16 +85,16 @@ export default function CampView({ camp }: { camp: any }) {
           </div>
 
           {/* VIDEO CARD */}
-          <div className="egitim-video-card">
+          <div className={`egitim-video-card ${heroMode === 'image' ? 'is-image-mode' : ''}`}>
             <div className="egitim-player-wrap" onClick={() => {
-                if(introVideoId) setIsHeroVideoPlaying(true);
+                if(introVideoId && heroMode === 'video') setIsHeroVideoPlaying(true);
             }}>
               {!isHeroVideoPlaying ? (
                 <div
                   className="egitim-thumb"
                   style={{ backgroundImage: `url('${heroCover}')` }}
                 >
-                  {introVideoId && <div className="egitim-play-btn"></div>}
+                  {introVideoId && heroMode === 'video' && <div className="egitim-play-btn"></div>}
                 </div>
               ) : (
                 <iframe
@@ -105,8 +106,12 @@ export default function CampView({ camp }: { camp: any }) {
               )}
             </div>
             <div className="egitim-video-label">
-              <span>▶</span>
-              <span>{introVideoId ? 'Kamp Tanıtım Videosunu İzle' : 'Kamp Kapağı'}</span>
+              <span>{heroMode === 'video' ? '▶' : '🖼️'}</span>
+              <span>
+                {heroMode === 'video' 
+                  ? (introVideoId ? 'Kamp Tanıtım Videosunu İzle' : 'Tanıtım Videosu Bekleniyor') 
+                  : 'Kamp Kapak Görseli'}
+              </span>
             </div>
           </div>
         </div>

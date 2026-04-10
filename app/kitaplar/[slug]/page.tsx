@@ -132,23 +132,24 @@ export default async function BookDetailPage({ params }: Props) {
 
               {/* Hocalarımız Alanı */}
               {allInstructors.length > 0 && (
-                <div className="instructors-block" style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "10px", marginBottom: "24px" }}>
+                <div className="instructors-block" style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "10px", marginBottom: "24px" }}>
                   <span style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", opacity: 0.8 }}>Youtuber Hocalarımız</span>
-                  <div className="instructor-scroll-container">
+                  <div className="instructor-grid-container" style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
                     {allInstructors.map((ins: any) => (
                       <Link 
                         key={ins.id} 
                         href={`/hoca/${ins.slug}`}
-                        style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none", flexShrink: 0 }}
+                        style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none", flexShrink: 0, padding: "4px 12px 4px 4px", borderRadius: "50px", border: "1px solid rgba(255,255,255,0.05)", background: "rgba(255,255,255,0.02)", transition: "all 0.2s" }}
+                        className="instructor-item-pill"
                       >
                         <div style={{ 
-                          width: "48px", height: "48px", borderRadius: "50%", overflow: "hidden", 
-                          border: "2.5px solid #1e3a5f", background: "#0a1118", flexShrink: 0,
-                          boxShadow: "0 4px 12px rgba(0,0,0,0.3)", transition: "transform 0.2s"
+                          width: "36px", height: "36px", borderRadius: "50%", overflow: "hidden", 
+                          border: "2px solid #1e3a5f", background: "#0a1118", flexShrink: 0,
+                          boxShadow: "0 4px 8px rgba(0,0,0,0.2)"
                         }}>
                           {(() => {
                             // Extract photo object carefully for Strapi v5
-                            const photoData = ins.photo;
+                            const photoData = ins.photo?.data?.attributes || ins.photo?.attributes || ins.photo;
                             const photoUrl = toMediaUrl(photoData?.url || photoData);
                             const safeName = ins.name || "Hoca";
                             return (
@@ -160,7 +161,7 @@ export default async function BookDetailPage({ params }: Props) {
                             );
                           })()}
                         </div>
-                        <span style={{ color: "#f8fafc", fontSize: "0.95rem", fontWeight: 600 }}>{ins.name || "Eğitmen"}</span>
+                        <span style={{ color: "#f8fafc", fontSize: "0.85rem", fontWeight: 600 }}>{ins.name || "Eğitmen"}</span>
                       </Link>
                     ))}
                   </div>
