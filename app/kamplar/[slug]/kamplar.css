@@ -260,17 +260,25 @@
           gap: 12px;
           margin-bottom: 16px;
           padding: 8px 12px;
-          background: linear-gradient(to right, rgba(37, 99, 235, 0.12), transparent);
+          background: rgba(37, 99, 235, 0.05);
           border-left: 4px solid var(--primary);
           border-radius: 4px;
+        }
+
+        body[data-theme="dark"] .day-group-header {
+          background: linear-gradient(to right, rgba(37, 99, 235, 0.12), transparent);
         }
 
         .day-group-title {
           font-size: 1.1rem;
           font-weight: 850;
-          color: #fff;
+          color: var(--text);
           letter-spacing: 0.02em;
           text-transform: uppercase;
+        }
+
+        body[data-theme="dark"] .day-group-title {
+          color: #fff;
         }
         
         .day-group-count {
@@ -296,6 +304,11 @@
         }
 
         .lesson-item:hover {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.05);
+        }
+
+        body[data-theme="dark"] .lesson-item:hover {
             background: var(--bg-secondary);
             border-color: var(--border);
         }
@@ -385,12 +398,16 @@
         }
 
         .lesson-info-dyn h4 {
-            font-size: 1.1rem; /* 0.95rem -> 1.1rem */
+            font-size: 1.1rem;
             font-weight: 800;
-            color: #fff;
+            color: var(--text);
             line-height: 1.3;
             margin-bottom: 4px;
             white-space: normal;
+        }
+
+        body[data-theme="dark"] .lesson-info-dyn h4 {
+            color: #fff;
         }
 
         .lesson-info-dyn span {
@@ -401,7 +418,7 @@
 
         .lesson-notes-btn {
             flex-shrink: 0;
-            display: none;
+            display: inline-flex !important;
             align-items: center;
             gap: 6px;
             padding: 6px 12px;

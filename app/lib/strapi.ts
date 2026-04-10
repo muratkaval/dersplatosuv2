@@ -166,7 +166,7 @@ export function flattenStrapi(data: any): any {
 export async function getCamps(): Promise<Camp[]> {
   const [campsData, allInstructors] = await Promise.all([
     fetchWithFallback<{ data: any[] }>([
-      "/camps?populate[categories]=*&populate[lessons][populate]=*&populate[instructors][populate]=*&populate[cover]=*&populate[subject]=*&populate[books][populate][cover]=*&sort[0]=createdAt:desc&pagination[pageSize]=100",
+      "/camps?populate[categories]=*&populate[lessons]=*&populate[instructors][populate]=*&populate[cover]=*&populate[subject]=*&populate[books][populate][cover]=*&sort[0]=createdAt:desc&pagination[pageSize]=100",
       "/camps?populate=*&sort[0]=createdAt:desc&pagination[pageSize]=100"
     ]),
     getInstructors()
@@ -198,8 +198,8 @@ export async function getCampBySlug(slug: string): Promise<any | null> {
   if (!found) return null;
 
   const detailsData = await fetchWithFallback<{ data: any[] }>([
-    `/camps?filters[documentId][$eq]=${found.documentId || ''}&populate[lessons][populate]=*&populate[instructors][populate]=*&populate[cover]=*&populate[subject]=*&populate[books][populate][cover]=*`,
-    `/camps?filters[id][$eq]=${found.id}&populate[lessons][populate]=*&populate[instructors][populate]=*&populate[cover]=*&populate[subject]=*&populate[books][populate][cover]=*`
+    `/camps?filters[documentId][$eq]=${found.documentId || ''}&populate[lessons]=*&populate[instructors][populate]=*&populate[cover]=*&populate[subject]=*&populate[books][populate][cover]=*`,
+    `/camps?filters[id][$eq]=${found.id}&populate[lessons]=*&populate[instructors][populate]=*&populate[cover]=*&populate[subject]=*&populate[books][populate][cover]=*`
   ]);
 
   const rawCamp = flattenStrapi(detailsData?.data?.[0] || found);

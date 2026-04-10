@@ -10,15 +10,24 @@ export default function BookCard({ book }: BookCardProps) {
   const findUrl = (obj: any): string | null => {
     if (!obj) return null;
     if (typeof obj === 'string') return obj;
+    // If it's an array, look inside the first item
+    if (Array.isArray(obj)) return findUrl(obj[0]);
     if (obj.url && typeof obj.url === 'string') return obj.url;
     if (obj.data) return findUrl(obj.data);
     if (obj.attributes) return findUrl(obj.attributes);
     if (obj.formats?.small?.url) return obj.formats.small.url;
     if (obj.formats?.thumbnail?.url) return obj.formats.thumbnail.url;
+    // Recursively check keys for something that might be a cover/image
+    for (const key in obj) {
+      if (typeof obj[key] === 'object' && obj[key] !== null) {
+        const found = findUrl(obj[key]);
+        if (found) return found;
+      }
+    }
     return null;
   };
 
-  const rawUrl = findUrl(book.cover);
+  const rawUrl = findUrl(book.cover || book.image || book.thumbnail || book);
   const bookCover = toMediaUrl(rawUrl);
   
   return (
@@ -26,9 +35,12 @@ export default function BookCard({ book }: BookCardProps) {
       <div className="book-card-cover-wrap">
         <img 
           src={bookCover || 'https://via.placeholder.com/400x560?text=Kitap'} 
-          alt={book.title} 
+          alt={book.title || 'Kitap'} 
           className="book-card-cover"
           loading="lazy"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x560?text=Kitap';
+          }}
         />
       </div>
       <div className="book-card-body">
