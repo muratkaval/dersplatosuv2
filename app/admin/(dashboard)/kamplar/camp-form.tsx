@@ -690,67 +690,6 @@ export default function CampForm({ camp, categories, instructors, subjects, book
         </button>
       </div>
 
-      <style jsx global>{`
-        /* Modern Scrollbar Design */
-        ::-webkit-scrollbar {
-          width: 8px;
-          height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-          background: #060d1a;
-          border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.2);
-          border-radius: 10px;
-          border: 2px solid #060d1a;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.5);
-        }
-        
-        /* Firefox supports */
-        * {
-          scrollbar-width: thin;
-          scrollbar-color: rgba(255, 255, 255, 0.2) #060d1a;
-        }
-
-        .day-card {
-          margin-bottom: 12px;
-          border: 1px solid #1a2e47;
-          border-radius: 12px;
-          overflow: visible;
-          background: #0d1a2e;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .day-header {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 12px 16px;
-          cursor: pointer;
-          background: #0d1a2e;
-          transition: all 0.2s;
-        }
-        .day-header:hover { background: #12223a; }
-        .day-body {
-          background: #060e1a;
-          border-top: 1px solid #111d2e;
-          padding: 16px;
-        }
-        .lesson-row {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 12px;
-          background: #0b1221;
-          border: 1px solid #1e3a5f;
-          border-radius: 10px;
-          margin-bottom: 8px;
-          transition: border-color 0.2s;
-        }
-        .lesson-row:hover { border-color: #3b82f6; }
-      `}</style>
     </>
   );
 }
@@ -891,61 +830,6 @@ function SortableLessonRow({ lesson, index, updateLesson, removeLesson }: any) {
         </div>
       )}
       
-      <style jsx>{`
-        .lesson-row-card {
-          background: #0b1221;
-          border: 1px solid #1e3a5f;
-          border-radius: 12px;
-          margin-bottom: 16px; /* 8px -> 16px yapıldı */
-          transition: all 0.2s;
-          overflow: hidden;
-          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .lesson-row-card:hover { border-color: #3b82f6; }
-        .lesson-row-card.is-expanded { 
-          border-color: #60a5fa; 
-          box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 10px rgba(96, 165, 250, 0.1);
-          transform: translateY(-2px);
-        }
-        .lesson-row-header {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 14px 18px; /* Padding artırıldı */
-          cursor: pointer;
-          background: #0b1221;
-        }
-        .lesson-row-body {
-          padding: 16px 18px 20px 18px; /* Sol boşluk sağ ile eşitlendi (52px -> 18px) */
-          background: #060e1a;
-          border-top: 1px solid #111d2e;
-          animation: slideDown 0.2s ease-out;
-        }
-        @keyframes slideDown {
-          from { opacity: 0; transform: translateY(-5px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .lesson-input {
-          width: 100%;
-          background: #0f172a;
-          border: 1.5px solid #1e3a5f;
-          border-radius: 8px;
-          padding: 10px 14px;
-          color: #fff;
-          font-size: 0.85rem;
-          font-weight: 600;
-          transition: all 0.2s;
-          outline: none;
-        }
-        .lesson-input:focus {
-          border-color: #60a5fa;
-          background: #111d35;
-          box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
-        }
-        .lesson-input.vid { color: #60a5fa; }
-        .lesson-input.note { color: #34d399; }
-        .lesson-input::placeholder { color: #475569; font-style: italic; font-weight: 400; }
-      `}</style>
     </div>
   );
 }

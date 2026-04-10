@@ -606,3 +606,216 @@ tbody tr:hover { background: rgba(59, 130, 246, 0.06) !important; }
   .sidebar-brand span, .sidebar-brand strong span:last-child { display: none; }
   .nav-section { display: none; }
 }
+/* ===== SETTINGS DASHBOARD ===== */
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.setting-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none !important;
+  color: var(--text) !important;
+  width: 100%;
+  min-height: 250px;
+}
+
+.setting-card:hover:not(.coming-soon) {
+  transform: translateY(-5px);
+  border-color: var(--primary);
+  box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
+  background: #0f172a !important;
+}
+
+.card-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+
+.card-content { flex: 1; }
+
+.card-content h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+  transition: color 0.2s;
+}
+
+.coming-soon .card-content h3 { color: #475569; }
+
+.card-content p {
+  font-size: 0.875rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.card-footer {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.btn-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  background: var(--primary);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 6px 14px;
+  border-radius: 50px;
+  transition: all 0.3s;
+}
+
+.setting-card:hover .btn-open {
+  background: var(--primary-hover);
+  transform: translateX(4px);
+}
+
+.badge-soon {
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  font-weight: 800;
+  color: #334155;
+  background: rgba(255,255,255,0.02);
+  padding: 4px 12px;
+  border-radius: 50px;
+  border: 1px solid var(--border);
+}
+
+.coming-soon .card-icon {
+  background-color: rgba(255,255,255,0.03) !important;
+  color: #1e293b !important;
+}
+
+.coming-soon { cursor: not-allowed; }
+
+/* ===== SEO & FORMS SPECIALS ===== */
+.seo-form-container { max-width: 1200px; margin: 0 auto; }
+.form-grid-seo { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 24px; }
+
+@media (max-width: 1000px) {
+  .form-grid-seo { grid-template-columns: 1fr; }
+}
+
+/* ===== GLOBAL SCROLLBAR ===== */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #05070a; border-radius: 10px; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  border: 2px solid #05070a;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+
+/* Firefox support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) #05070a;
+}
+
+/* ===== CAMP FORM SPECIALS ===== */
+.day-card {
+  margin-bottom: 12px;
+  border: 1px solid #1a2e47;
+  border-radius: 12px;
+  overflow: visible;
+  background: #0d1a2e;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.day-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  background: #0d1a2e;
+  transition: all 0.2s;
+  border-radius: 12px;
+}
+.day-header:hover { background: #12223a; }
+.day-body {
+  background: #060e1a;
+  border-top: 1px solid #111d2e;
+  padding: 16px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+.lesson-row-card {
+  background: #0b1221;
+  border: 1px solid #1e3a5f;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.lesson-row-card:hover { border-color: #3b82f6; }
+.lesson-row-card.is-expanded { 
+  border-color: #60a5fa; 
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 10px rgba(96, 165, 250, 0.1);
+  transform: translateY(-2px);
+}
+.lesson-row-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  background: #0b1221;
+}
+.lesson-row-body {
+  padding: 16px 18px 20px 18px;
+  background: #060e1a;
+  border-top: 1px solid #111d2e;
+  animation: slideDown 0.2s ease-out;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.lesson-input {
+  width: 100%;
+  background: #0f172a;
+  border: 1.5px solid #1e3a5f;
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  outline: none;
+}
+.lesson-input:focus {
+  border-color: #60a5fa;
+  background: #111d35;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+}
+.lesson-input.vid { color: #60a5fa; }
+.lesson-input.note { color: #34d399; }
+.lesson-input::placeholder { color: #475569; font-style: italic; font-weight: 400; }

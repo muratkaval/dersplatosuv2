@@ -330,3 +330,8 @@ export async function getBookBySlug(slug: string): Promise<any | null> {
     slug: raw.slug || slugify(raw.title)
   };
 }
+
+export async function getGlobalSettings(): Promise<any> {
+  const data = await fetchStrapi<{ data: any }>(`/global-setting?populate=*`);
+  return flattenStrapi(data?.data || null);
+}

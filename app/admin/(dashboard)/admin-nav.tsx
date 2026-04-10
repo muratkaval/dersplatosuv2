@@ -11,6 +11,8 @@ const navItems = [
   { href: "/admin/egitimciler", icon: "supervisor_account", label: "Eğitimciler" },
   { section: "Kategoriler" },
   { href: "/admin/kategoriler", icon: "local_offer", label: "Kategoriler" },
+  { section: "Sistem" },
+  { href: "/admin/ayarlar", icon: "settings", label: "Ayarlar" },
 ];
 
 export default function AdminNav() {
