@@ -12,71 +12,79 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dersplatosu.com";
-const siteName = "Ders Platosu";
-const defaultTitle = "Ders Platosu - TYT AYT Ucretsiz Egitim Platformu";
-const defaultDescription = "TYT ve AYT hazirliginda uzman hocalar, kamp programlari, videolu cozumler ve kitaplarla sinava sistemli hazirlan.";
-const defaultOgImage = "https://i.hizliresim.com/ag3gf4d.png";
+import { getGlobalSettings, toMediaUrl } from "@/app/lib/strapi";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: defaultTitle,
-    template: "%s | Ders Platosu",
-  },
-  description: defaultDescription,
-  applicationName: siteName,
-  keywords: [
-    "ders platosu",
-    "tyt",
-    "ayt",
-    "yks",
-    "online egitim",
-    "sinav hazirlik",
-    "videolu soru cozumleri",
-  ],
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    type: "website",
-    locale: "tr_TR",
-    siteName,
-    url: "/",
-    title: defaultTitle,
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dersplatosu.com";
+
+export async function generateMetadata(): Promise<Metadata> {
+  let settings: any = null;
+  try {
+    const res = await getGlobalSettings();
+    settings = res?.attributes || res || {};
+  } catch (err) {
+    console.error("Failed to fetch global settings for SEO:", err);
+    settings = {};
+  }
+
+  const siteName = settings.siteName || "Ders Platosu";
+  const defaultTitle = settings.ogTitle || "Ders Platosu - TYT AYT Ücretsiz Eğitim Platformu";
+  const defaultDescription = settings.ogDescription || "TYT ve AYT hazırlığında uzman hocalar, kamp programları, videolu çözümler ve kitaplarla sınava sistemli hazırlan.";
+  
+  // Custom media from Strapi or fallback
+  const shareImgUrl = settings.shareImage ? toMediaUrl(settings.shareImage?.url || settings.shareImage) : null;
+  const defaultOgImage = shareImgUrl || "https://i.hizliresim.com/ag3gf4d.png";
+
+  return {
+    metadataBase: new URL(siteUrl),
+    title: {
+      default: defaultTitle,
+      template: `%s | ${siteName}`,
+    },
     description: defaultDescription,
-    images: [
-      {
-        url: defaultOgImage,
-        width: 1200,
-        height: 630,
-        alt: "Ders Platosu",
-      },
+    applicationName: siteName,
+    keywords: [
+      "ders platosu", "tyt", "ayt", "yks", "online eğitim", "sınav hazırlık", "videolu soru çözümleri"
     ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: defaultTitle,
-    description: defaultDescription,
-    images: [defaultOgImage],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+    alternates: {
+      canonical: "/",
+    },
+    openGraph: {
+      type: "website",
+      locale: "tr_TR",
+      siteName,
+      url: "/",
+      title: defaultTitle,
+      description: defaultDescription,
+      images: [{ url: defaultOgImage, width: 1200, height: 630, alt: siteName }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: defaultTitle,
+      description: defaultDescription,
+      images: [defaultOgImage],
+    },
+    verification: {
+      google: settings.googleSearchConsole || undefined,
+      yandex: settings.yandexVerification || undefined,
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
     },
-  },
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/favicon.ico",
-  },
-};
+    icons: {
+      icon: "/favicon.ico",
+      shortcut: "/favicon.ico",
+      apple: "/favicon.ico",
+    },
+  };
+}
 
 export default function RootLayout({
   children,

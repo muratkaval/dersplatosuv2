@@ -15,8 +15,50 @@ export default async function Home() {
 
   const site = globalSettings?.attributes || globalSettings || {};
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dersplatosu.com";
+  
+  // JSON-LD: WebSite + Organization
+  const homeJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
+        "url": siteUrl,
+        "name": site.siteName || "Ders Platosu",
+        "description": site.ogDescription || "TYT AYT Ücretsiz Eğitim Platformu",
+        "potentialAction": [{
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": `${siteUrl}/video-soru-cozumleri?q={search_term_string}`
+          },
+          "query-input": "required name=search_term_string"
+        }],
+        "inLanguage": "tr"
+      },
+      {
+        "@type": "Organization",
+        "@id": `${siteUrl}/#organization`,
+        "name": "Ders Platosu",
+        "url": siteUrl,
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://i.hizliresim.com/ag3gf4d.png",
+          "width": 1200,
+          "height": 630
+        },
+        "sameAs": [
+          "https://www.youtube.com/c/dersplatosu",
+          "https://www.instagram.com/dersplatosu/"
+        ]
+      }
+    ]
+  };
+
   return (
     <PageContainer>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }} />
       <div className="hero-block">
         {/* INSTRUCTORS */}
         <section className="instructors-section" id="ogretmenler">
