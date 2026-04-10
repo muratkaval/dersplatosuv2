@@ -234,7 +234,7 @@ export default function SeoForm({ initialData, token }: Props) {
                 <button type="button" className="btn btn-ghost btn-sm" onClick={() => faviconInputRef.current?.click()}>
                   İkonu Değiştir
                 </button>
-                <small style={{ fontSize: "0.65rem", marginTop: "4px" }}>PNG, ICO veya SVG (Maks. 1MB).</small>
+                <small style={{ fontSize: "0.75rem", marginTop: "8px", color: "var(--text-muted)", display: "block" }}>PNG, ICO veya SVG (Maks. 1MB).</small>
               </div>
             </div>
           </div>
