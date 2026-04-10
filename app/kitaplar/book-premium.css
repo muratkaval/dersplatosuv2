@@ -969,30 +969,67 @@ body:not([data-theme="dark"]) .solution-partner-name { color: #0f172a; }
    RESPONSIVE
    ============================================================ */
 @media (max-width: 900px) {
+  .book-hero {
+    padding: calc(var(--nav-h, 64px) + 20px) 20px 40px;
+  }
   .book-hero-inner {
-    grid-template-columns: 1fr;
-    gap: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    text-align: center;
   }
-  .book-3d-scene {
-    min-height: unset;
-    order: -1;
+  .book-hero-info {
+    display: contents; /* Allows children to be ordered via parent flex */
   }
-  .book-3d-front {
-    width: 220px;
-    height: 308px;
+
+  /* Professional Mobile Order */
+  .title-block       { order: 1; margin: 0; }
+  .book-hero-image-wrap { order: 2; margin: 0 auto; width: 100%; max-width: 280px; }
+  .cta-block         { order: 3; width: 100%; display: flex; flex-direction: column; gap: 12px; }
+  .tags-block        { order: 4; justify-content: center; }
+  .instructors-block { order: 5; margin: 0 !important; width: 100%; text-align: left; }
+  .desc-block        { order: 6; font-size: 0.95rem; line-height: 1.5; color: #94a3b8; }
+  .features-block    { order: 7; justify-content: center; padding: 0 !important; }
+
+  .book-hero-title {
+    font-size: 2.1rem;
+    line-height: 1.2;
   }
-  .flipbook-spread { flex-direction: column; }
-  .flipbook-spine { width: 100%; height: 10px; }
-  .page-shadow-left, .page-shadow-right { display: none; }
-  .book-hero-title { font-size: 2rem; }
+  
+  .book-static-cover {
+    max-width: 100%;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+  }
+
+  /* Horizontal Scroll for Instructors */
+  .instructor-scroll-container {
+    width: 100vw;
+    margin-left: -20px;
+    padding: 12px 20px;
+    overflow-x: auto;
+    display: flex;
+    gap: 16px;
+    background: rgba(255,255,255,0.02);
+    border-top: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .instructor-scroll-container::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @media (max-width: 640px) {
-  .book-hero { padding: calc(var(--nav-h, 64px) + 24px) 16px 40px; }
-  .book-section { padding: 50px 16px; }
-  .solution-partner-banner { flex-direction: column; align-items: flex-start; gap: 16px; }
-  .solution-partner-btn { width: 100%; justify-content: center; }
-  .faq-answer-inner { padding-left: 20px; }
+  .btn-book-primary, .btn-book-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-size: 1rem;
+  }
+  .book-section { padding: 40px 16px; }
+  .book-section-title { font-size: 1.7rem; }
 }
 
 /* ============================================================

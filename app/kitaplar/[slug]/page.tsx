@@ -107,21 +107,21 @@ export default async function BookDetailPage({ params }: Props) {
             <div className="book-hero-info">
               {/* Tags */}
               {subjects.length > 0 && (
-                <div className="book-hero-tags">
+                <div className="book-hero-tags tags-block">
                   {subjects.map((s: string) => (
                     <span key={s} className="book-hero-tag">{s}</span>
                   ))}
                 </div>
               )}
 
-              <h1 className="book-hero-title">{book.title}</h1>
+              <h1 className="book-hero-title title-block">{book.title}</h1>
 
               {book.description && (
-                <p className="book-hero-desc">{book.description}</p>
+                <p className="book-hero-desc desc-block">{book.description}</p>
               )}
 
               {showFeatures && features.length > 0 && (
-                <div className="book-hero-features">
+                <div className="book-hero-features features-block">
                   {features.map((f) => (
                     <div key={f.label} className="book-feature-pill">
                       {f.label}
@@ -132,14 +132,14 @@ export default async function BookDetailPage({ params }: Props) {
 
               {/* Hocalarımız Alanı */}
               {allInstructors.length > 0 && (
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "10px", marginBottom: "24px" }}>
+                <div className="instructors-block" style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "10px", marginBottom: "24px" }}>
                   <span style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", opacity: 0.8 }}>Youtuber Hocalarımız</span>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+                  <div className="instructor-scroll-container">
                     {allInstructors.map((ins: any) => (
                       <Link 
                         key={ins.id} 
                         href={`/hoca/${ins.slug}`}
-                        style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }}
+                        style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none", flexShrink: 0 }}
                       >
                         <div style={{ 
                           width: "48px", height: "48px", borderRadius: "50%", overflow: "hidden", 
@@ -168,7 +168,7 @@ export default async function BookDetailPage({ params }: Props) {
               )}
 
               {/* CTA Buttons - Text Only */}
-              <div className="book-hero-cta">
+              <div className="book-hero-cta cta-block">
                 <a 
                   href={book.preview_link || "#flipbook-section"} 
                   target={book.preview_link ? "_blank" : "_self"} 
@@ -191,7 +191,7 @@ export default async function BookDetailPage({ params }: Props) {
             </div>
 
             {/* Right: Static Book Cover */}
-            <div className="book-hero-image-wrap">
+            <div className="book-hero-image-wrap image-block">
               <img
                 src={coverUrl || "https://via.placeholder.com/400x560?text=Kitap"}
                 alt={book.title}
