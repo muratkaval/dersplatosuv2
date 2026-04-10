@@ -20,11 +20,23 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const title = `${camp.title} – Ücretsiz ${subject} Kampı | Ders Platosu`;
   const description = `${camp.title}${instructorStr ? ` | ${instructorStr}` : ""} – Tüm ders videoları, kitaplar ve kaynaklarla ücretsiz ${subject} kampı. TYT-AYT hazırlığında en iyi kamp programı.`;
+  
+  const keywords = [
+    camp.title,
+    `${subject} kampı`,
+    `ücretsiz ${subject}`,
+    "TYT kamp",
+    "AYT kamp",
+    "YKS hazırlık",
+    "Ders Platosu",
+    `${camp.title} izle`,
+    instructorStr,
+  ];
 
   return {
     title,
     description,
-    keywords: [camp.title, `${subject} kampı`, `ücretsiz ${subject}`, "TYT kamp", "AYT kamp", "YKS hazırlık", instructorStr, "Ders Platosu"].filter(Boolean),
+    keywords: keywords.filter(Boolean),
     alternates: { canonical: `${siteUrl}/kamplar/${slug}` },
     openGraph: {
       title,
@@ -44,8 +56,44 @@ export default async function EgitimDetayPage({ params }: { params: Promise<{ sl
     notFound();
   }
 
+  const subjectName = camp.subject?.name || "YKS";
+  const instructors = Array.isArray(camp.instructors) ? camp.instructors : (camp.instructors?.data || []);
+  
+  // JSON-LD: Course Schema
+  const courseJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": camp.title,
+    "description": camp.description || `${camp.title} kampı, ücretsiz Ders Platosu eğitim platformunda.`,
+    "provider": {
+      "@type": "Organization",
+      "name": "Ders Platosu",
+      "sameAs": siteUrl
+    },
+    "hasCourseInstance": {
+      "@type": "CourseInstance",
+      "courseMode": "online",
+      "instructor": instructors.map((i: any) => ({
+        "@type": "Person",
+        "name": i.name
+      }))
+    },
+    "offers": [{
+      "@type": "Offer",
+      "category": "Free",
+      "price": "0",
+      "priceCurrency": "TRY",
+      "url": `${siteUrl}/kamplar/${slug}`,
+      "availability": "https://schema.org/InStock",
+    }]
+  };
+
   return (
     <PageContainer>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }}
+      />
       <CampView camp={camp} />
     </PageContainer>
   );

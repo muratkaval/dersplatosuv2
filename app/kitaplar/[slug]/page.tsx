@@ -49,10 +49,23 @@ export async function generateMetadata({ params }: Props): Promise<import("next"
     ? book.description.slice(0, 155)
     : `${book.title} kitabının video çözümleri${instructorNames ? `, ${instructorNames} tarafından hazırlanmış` : ""} TYT-AYT soru bankası. Örnek sayfaları incele, hemen sipariş ver.`;
 
+  const keywords = [
+    book.title,
+    subjectStr.trim(),
+    `${book.title} satın al`,
+    `${book.title} çözümleri`,
+    instructorNames ? `${instructorNames} kitapları` : "",
+    "YKS soru bankası",
+    "TYT kitap",
+    "AYT kitap",
+    "video çözümlü kitap",
+    "Ders Platosu"
+  ];
+
   return {
     title,
     description,
-    keywords: [book.title, subjectStr.trim(), "YKS soru bankası", "TYT kitap", "AYT kitap", "video çözüm", "Ders Platosu"],
+    keywords: keywords.filter(Boolean),
     alternates: { canonical: `${siteUrl}/kitaplar/${slug}` },
     openGraph: {
       title,
