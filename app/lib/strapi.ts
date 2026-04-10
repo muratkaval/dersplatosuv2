@@ -72,11 +72,18 @@ export type Book = {
   id: number;
   documentId?: string;
   title: string;
+  slug?: string;
   featured?: boolean;
   buy_link?: string;
   solution_link?: string;
+  accent_color?: string;
+  description?: string;
+  faq?: Array<{ q: string; a: string }>;
   cover?: { url?: string } | null;
+  demo_pdf?: { url?: string } | null;
   subjects?: Array<{ id: number; name?: string }>;
+  instructors?: Array<{ id: number; name: string; photo?: { url?: string }; slug?: string }>;
+  camps?: Array<{ id: number; title: string; slug: string; instructors?: Array<{ id: number; name: string; photo?: { url?: string }; slug?: string }>; cover?: { url?: string } | null }>;
 };
 
 async function fetchStrapi<T>(pathAndQuery: string): Promise<T | null> {
@@ -254,6 +261,7 @@ export async function getInstructorBySlug(slug: string): Promise<any | null> {
 export async function getBooks(featuredOnly = false): Promise<Book[]> {
   const featuredFilter = featuredOnly ? "&filters[featured][$eq]=true" : "";
   const data = await fetchWithFallback<{ data: any[] }>([
+    `/books?populate[cover]=*&populate[demo_pdf]=*&populate[subjects]=*&populate[instructors][populate]=photo&populate[camps][populate][instructors][populate]=photo&populate[camps][populate][cover]=*&sort[0]=createdAt:desc&pagination[pageSize]=100${featuredFilter}`,
     `/books?populate=*&sort[0]=createdAt:desc&pagination[pageSize]=100${featuredFilter}`,
     `/books?pagination[pageSize]=100${featuredFilter}`
   ]);
@@ -303,5 +311,18 @@ export async function getSubjectBySlug(slug: string): Promise<any | null> {
 
 export async function getBookBySlug(slug: string): Promise<any | null> {
   const all = await getBooks(false);
-  return all.find((b: any) => (b.slug || '') === slug) || null;
+  const found = all.find((b: any) => (b.slug || '') === slug);
+  if (!found) return null;
+
+  // Fetch full detail with all relations
+  const detailData = await fetchWithFallback<{ data: any[] }>([
+    `/books?filters[documentId][$eq]=${found.documentId || ''}&populate[cover]=*&populate[demo_pdf]=*&populate[subjects]=*&populate[instructors][populate]=photo&populate[camps][populate][instructors][populate]=photo&populate[camps][populate][cover]=*&populate[solution_categories]=*`,
+    `/books?filters[id][$eq]=${found.id}&populate=*`
+  ]);
+
+  const raw = flattenStrapi(detailData?.data?.[0] || found);
+  return {
+    ...raw,
+    slug: raw.slug || slugify(raw.title)
+  };
 }

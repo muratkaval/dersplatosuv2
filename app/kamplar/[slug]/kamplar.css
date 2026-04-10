@@ -6,32 +6,38 @@
 
         /* ¦¦ Hero ¦¦ */
         .egitim-hero {
-            background: linear-gradient(135deg, #0b1629 0%, #1e3a8a 60%, #0b1629 100%);
-            padding: 52px 0 44px;
+            background: #050b1f;
+            padding: 20px 0; /* Daha da daraltıldı */
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            min-height: 320px; /* Boyut iyice düşürüldü */
         }
 
-        .egitim-hero::before {
-            content: '';
+        /* Cinematic Background Blur (Zeduva Style) */
+        .egitim-hero-bg-blur {
             position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse at 70% 50%, rgba(37, 99, 235, 0.25) 0%, transparent 65%);
-            z-index: 1;
-        }
-
-        .egitim-hero::after {
-            content: '';
-            position: absolute;
-            inset: -6% -4%;
+            inset: -5%;
             background-image: var(--hero-cover, none);
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0.16;
-            filter: blur(6px) saturate(1.05);
-            transform: scale(1.02);
+            filter: blur(25px) brightness(0.4) saturate(1.1);
             z-index: 0;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .egitim-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to right, 
+                rgba(5, 11, 31, 1) 20%, 
+                rgba(5, 11, 31, 0.7) 100%
+            );
+            z-index: 1;
+            pointer-events: none;
         }
 
         .egitim-hero-inner {
@@ -39,7 +45,7 @@
             margin: 0 auto;
             padding: 0 24px;
             display: grid;
-            grid-template-columns: 1fr 400px;
+            grid-template-columns: 1fr 440px;
             gap: 40px;
             align-items: center;
             position: relative;
@@ -50,17 +56,17 @@
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .ebadge {
-            padding: 4px 14px;
+            padding: 3px 12px;
             border-radius: 50px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 700;
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.1);
             color: #e0e7ff;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .ebadge.green {
@@ -70,25 +76,27 @@
         }
 
         .egitim-hero h1 {
-            font-size: 2rem;
-            font-weight: 800;
+            font-size: 2.2rem;
+            font-weight: 850;
             color: #fff;
-            line-height: 1.25;
-            margin-bottom: 14px;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
         }
 
         .egitim-hero p {
-            color: #cbd5e1;
+            color: rgba(255,255,255,0.7);
             font-size: 0.95rem;
-            line-height: 1.7;
-            margin-bottom: 22px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            max-width: 540px;
         }
 
         .egitim-meta {
             display: flex;
-            gap: 20px;
+            gap: 18px;
             flex-wrap: wrap;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .emeta {
@@ -96,7 +104,8 @@
             align-items: center;
             gap: 6px;
             color: #94a3b8;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
         .egitim-btns {
@@ -105,13 +114,20 @@
             flex-wrap: wrap;
         }
 
-        /* ¦¦ Video Card (right side of hero) ¦¦ */
+        /* ¦¦ Integrated Video (Seamless) ¦¦ */
         .egitim-video-card {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: none; /* Kart havası kaldırıldı */
+            border: none;
             border-radius: 16px;
             overflow: hidden;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .egitim-video-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.6);
         }
 
         .egitim-player-wrap {
@@ -135,7 +151,9 @@
         .egitim-thumb {
             position: absolute;
             inset: 0;
-            background-position: center; background-size: cover; background-repeat: no-repeat;
+            background-position: center; 
+            background-size: cover; 
+            background-repeat: no-repeat;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -145,13 +163,13 @@
             width: 64px;
             height: 64px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.98);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 5;
         }
 
         .egitim-play-btn::after {
@@ -160,25 +178,13 @@
             width: 0;
             height: 0;
             border-style: solid;
-            border-width: 12px 0 12px 22px;
-            border-color: transparent transparent transparent #1d4ed8;
+            border-width: 12px 0 12px 20px;
+            border-color: transparent transparent transparent var(--primary);
             margin-left: 4px;
         }
 
-        .egitim-player-wrap:hover .egitim-play-btn {
-            transform: scale(1.08);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-        }
-
         .egitim-video-label {
-            padding: 12px 16px;
-            background: rgba(0, 0, 0, 0.3);
-            color: #e2e8f0;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            display: none; /* Alt etiket kaldırıldı, seamless görünüm için */
         }
 
         /* ¦¦ Tabs ¦¦ */

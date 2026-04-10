@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { toMediaUrl } from "@/app/lib/strapi";
 import BookCard from "@/app/components/book-card";
+import Book3D from "@/app/components/book-3d";
 
 // URL'den YouTube / Playlist ID cikarma yardimcilari (orijinal js'den)
 function extractYouTubeId(url: string) {
@@ -41,7 +42,7 @@ export default function CampView({ camp }: { camp: any }) {
   const normalizedBooks = Array.isArray(books) ? books : (books?.data || []);
 
   const instructors = camp.instructors || [];
-  const normalizedInstructors = Array.isArray(instructors) ? instructors : (instructors?.data || []);
+    const normalizedInstructors = Array.isArray(instructors) ? instructors : (instructors?.data || []);
 
   const totalLessons = sortedLessons.length || "—";
 
@@ -49,11 +50,15 @@ export default function CampView({ camp }: { camp: any }) {
     <div className="egitim-page">
       {/* HERO */}
       <section className="egitim-hero" style={heroCover ? { '--hero-cover': `url('${heroCover}')` } as any : {}}>
+        {/* Sinematik Arka Plan Katmanları */}
+        <div className="egitim-hero-bg-blur" />
+        <div className="egitim-hero-overlay" />
+
         <div className="egitim-hero-inner">
           <div className="egitim-hero-left">
-            <div className="egitim-badges">
-            </div>
             <h1 id="heroTitle">{camp.title}</h1>
+
+            {camp.description && <p>{camp.description}</p>}
             <div className="egitim-btns">
               <button
                 className="btn-primary btn-lg"
@@ -313,10 +318,6 @@ export default function CampView({ camp }: { camp: any }) {
             <div className="detail-row">
               <span className="detail-label">Seviye</span>
               <span className="detail-val">Tüm Seviyeler</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Ücret</span>
-              <span className="detail-val green">Ücretsiz</span>
             </div>
           </div>
 

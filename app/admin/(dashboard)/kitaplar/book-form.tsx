@@ -17,6 +17,9 @@ export default function BookForm({ book, subjects, categories, instructors }: Pr
   const [title, setTitle] = useState(book?.title || "");
   const [buyLink, setBuyLink] = useState(book?.buy_link || "");
   const [solutionLink, setSolutionLink] = useState(book?.solution_link || "");
+  const [promoVideo, setPromoVideo] = useState(book?.promo_video || "");
+  const [accentColor, setAccentColor] = useState(book?.accent_color || "");
+  const [description, setDescription] = useState(book?.description || "");
   const [featured, setFeatured] = useState(book?.featured || false);
   
   const [selSubs, setSelSubs] = useState<string[]>((book?.subjects || []).map((s: any) => s.documentId || String(s.id)));
@@ -75,6 +78,9 @@ export default function BookForm({ book, subjects, categories, instructors }: Pr
         title,
         buy_link: buyLink,
         solution_link: solutionLink,
+        promo_video: promoVideo,
+        accent_color: accentColor,
+        description,
         featured,
         subjects: selSubs,
         solution_categories: selCats,
@@ -127,9 +133,35 @@ export default function BookForm({ book, subjects, categories, instructors }: Pr
             </div>
 
             <div className="form-group">
-              <label>Demo / Önizleme Linki</label>
-              <input value={solutionLink} onChange={(e) => setSolutionLink(e.target.value)} placeholder="https://online.fliphtml5.com/..." />
-              <small>Kitabın online önizleme linki (FlipHTML5 vb.). Soru çözüm videoları için "Soru Çözümleri" bölümünü kullanın.</small>
+              <label>Demo PDF Linki</label>
+              <input value={solutionLink} onChange={(e) => setSolutionLink(e.target.value)} placeholder="https://..." />
+              <small>Soru çözüm videoları için "Soru Çözümleri" bölümünü kullanın. Demo PDF için aşağıdan medya yükleyin.</small>
+            </div>
+
+            <div className="form-group">
+              <label>Tanıtım Videosu (YouTube URL)</label>
+              <input value={promoVideo} onChange={(e) => setPromoVideo(e.target.value)} placeholder="https://www.youtube.com/watch?v=..." />
+              <small>Kitabın hero bölümünde gösterilecek YouTube tanıtım videosu. Kampın intro videosu olabilir.</small>
+            </div>
+
+            <div className="form-group">
+              <label>Vurgu Rengi (Accent Color)</label>
+              <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                <input
+                  type="color"
+                  value={accentColor || "#4289F7"}
+                  onChange={(e) => setAccentColor(e.target.value)}
+                  style={{ width: "50px", height: "36px", padding: "2px", border: "1px solid #1a2536", borderRadius: "8px", background: "transparent", cursor: "pointer" }}
+                />
+                <input value={accentColor} onChange={(e) => setAccentColor(e.target.value)} placeholder="#4289F7" style={{ flex: 1 }} />
+              </div>
+              <small>Sayfanın arka plan ışığı bu renge göre değişir. Kitap kapağının ana rengiyle uyumlu seçin.</small>
+            </div>
+
+            <div className="form-group">
+              <label>Kısa Açıklama</label>
+              <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Bu kitap hakkında kısa bir açıklama..." rows={3} style={{ resize: "vertical" }} />
+              <small>Tanıtım sayfasının hero bölümünde kitap başlığının altında gösterilir.</small>
             </div>
 
             <div
