@@ -32,6 +32,44 @@ const DEFAULT_FAQ = [
   },
 ];
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dersplatosu.com";
+
+export async function generateMetadata({ params }: Props): Promise<import("next").Metadata> {
+  const { slug } = await params;
+  const book = await getBookBySlug(slug);
+  if (!book) return { title: "Kitap Bulunamadı | Ders Platosu" };
+
+  const coverUrl = toMediaUrl(book.cover?.url || book.cover);
+  const subjects: string[] = (book.subjects || []).map((s: any) => s.name).filter(Boolean);
+  const subjectStr = subjects.length > 0 ? subjects.join(", ") + " " : "";
+  const instructorNames = (book.instructors || []).map((i: any) => i.name).filter(Boolean).join(", ");
+
+  const title = `${book.title} – ${subjectStr}Soru Bankası | Ders Platosu`;
+  const description = book.description
+    ? book.description.slice(0, 155)
+    : `${book.title} kitabının video çözümleri${instructorNames ? `, ${instructorNames} tarafından hazırlanmış` : ""} TYT-AYT soru bankası. Örnek sayfaları incele, hemen sipariş ver.`;
+
+  return {
+    title,
+    description,
+    keywords: [book.title, subjectStr.trim(), "YKS soru bankası", "TYT kitap", "AYT kitap", "video çözüm", "Ders Platosu"],
+    alternates: { canonical: `${siteUrl}/kitaplar/${slug}` },
+    openGraph: {
+      title,
+      description,
+      url: `${siteUrl}/kitaplar/${slug}`,
+      type: "website",
+      images: coverUrl ? [{ url: coverUrl, width: 800, height: 1120, alt: book.title }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: coverUrl ? [coverUrl] : [],
+    },
+  };
+}
+
 export default async function BookDetailPage({ params }: Props) {
   const { slug } = await params;
   const book = await getBookBySlug(slug);
@@ -42,18 +80,11 @@ export default async function BookDetailPage({ params }: Props) {
   const coverUrl = toMediaUrl(book.cover?.url || book.cover);
   const pdfUrl = toMediaUrl(book.demo_pdf?.url || book.demo_pdf);
 
-  // Gather linked camps (relation: book <-> camp)
   const linkedCamps: any[] = book.camps || [];
-
-  // Gather instructors from book itself and linked camps (unique)
   const instructorSet = new Map<number, any>();
-  
-  // Add book's own instructors
   (book.instructors || []).forEach((ins: any) => {
     if (!instructorSet.has(ins.id)) instructorSet.set(ins.id, ins);
   });
-
-  // Add instructors from linked camps
   linkedCamps.forEach((camp: any) => {
     (camp.instructors || []).forEach((ins: any) => {
       if (!instructorSet.has(ins.id)) instructorSet.set(ins.id, ins);
@@ -61,7 +92,6 @@ export default async function BookDetailPage({ params }: Props) {
   });
   const allInstructors = Array.from(instructorSet.values());
 
-  // FAQ – show ONLY if enabled
   const showFaq = book.show_faq !== false;
   const faqData = (Array.isArray(book.faq) ? book.faq : []) as any[];
   const faqItems: { q: string; a: string }[] = faqData.length > 0
@@ -70,7 +100,6 @@ export default async function BookDetailPage({ params }: Props) {
 
   const subjects: string[] = (book.subjects || []).map((s: any) => s.name).filter(Boolean);
 
-  // Features – show ONLY if enabled
   const showFeatures = book.show_features !== false;
   const rawFeatures = Array.isArray(book.features) ? (book.features as string[]) : [];
   const features = rawFeatures.length > 0
@@ -82,8 +111,45 @@ export default async function BookDetailPage({ params }: Props) {
         { label: "Uzman Hoca Onaylı" },
       ] : []);
 
+  // JSON-LD: Book + FAQPage
+  const bookJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Book",
+        "name": book.title,
+        "url": `${siteUrl}/kitaplar/${slug}`,
+        "image": coverUrl || undefined,
+        "description": book.description || undefined,
+        "author": allInstructors.length > 0 ? allInstructors.map((i: any) => ({ "@type": "Person", "name": i.name })) : undefined,
+        "publisher": { "@type": "Organization", "name": "Ders Platosu", "url": siteUrl },
+        "offers": book.buy_link ? {
+          "@type": "Offer",
+          "url": book.buy_link,
+          "priceCurrency": "TRY",
+          "availability": "https://schema.org/InStock",
+        } : undefined,
+        "inLanguage": "tr",
+        "isAccessibleForFree": false,
+      },
+      ...(showFaq && faqItems.length > 0 ? [{
+        "@type": "FAQPage",
+        "mainEntity": faqItems.map(item => ({
+          "@type": "Question",
+          "name": item.q,
+          "acceptedAnswer": { "@type": "Answer", "text": item.a },
+        })),
+      }] : []),
+    ],
+  };
+
+
   return (
     <PageContainer>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(bookJsonLd) }}
+      />
       <div
         className="book-page-root"
         style={{ "--accent-color": accent } as React.CSSProperties}

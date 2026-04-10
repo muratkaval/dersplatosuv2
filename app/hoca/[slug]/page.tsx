@@ -5,18 +5,31 @@ import { getInstructorBySlug, toMediaUrl } from "@/app/lib/strapi";
 import "./hoca.css";
 import { Metadata } from "next";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dersplatosu.com";
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const instructor = await getInstructorBySlug(slug);
   
   if (!instructor) return { title: "Eğitmen Bulunamadı | Ders Platosu" };
 
+  const photoUrl = instructor.photo?.url ? toMediaUrl(instructor.photo.url) : undefined;
+  const subjectName = (instructor.subjects?.[0]?.name || instructor.subjects?.data?.[0]?.attributes?.name || "YKS");
+  const title = `${instructor.name} – ${subjectName} Hocası | Ders Platosu`;
+  const description = `${instructor.name} hocamızın ücretsiz YouTube kampları, ${subjectName} kitapları ve eğitim içerikleri Ders Platosu'nda. TYT-AYT hazırlığında en iyi kaynaklar burada.`;
+
   return {
-    title: `${instructor.name} | Ders Platosu`,
-    description: `${instructor.name} hocamızın YouTube kampları, kitapları ve eğitim içerikleri Ders Platosu'nda.`,
+    title,
+    description,
+    keywords: [instructor.name, `${instructor.name} kampları`, `${subjectName} hoca`, "YKS kampları", "ücretsiz TYT", "Ders Platosu"],
+    alternates: { canonical: `${siteUrl}/hoca/${slug}` },
     openGraph: {
-      images: instructor.photo?.url ? [toMediaUrl(instructor.photo.url)] : [],
-    }
+      title,
+      description,
+      url: `${siteUrl}/hoca/${slug}`,
+      images: photoUrl ? [{ url: photoUrl, width: 400, height: 400, alt: instructor.name }] : [],
+    },
+    twitter: { card: "summary", title, description, images: photoUrl ? [photoUrl] : [] },
   };
 }
 
@@ -63,8 +76,22 @@ export default async function HocaDetayPage({ params }: { params: Promise<{ slug
       addBooks(camp.books);
   });
 
+  // JSON-LD: Person schema
+  const personJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": instName,
+    "url": `${siteUrl}/hoca/${slug}`,
+    "image": photoUrl || undefined,
+    "jobTitle": `${subjectName} Öğretmeni`,
+    "worksFor": { "@type": "Organization", "name": "Ders Platosu", "url": siteUrl },
+    "sameAs": [instructor.youtube, instructor.instagram].filter(Boolean),
+    "knowsAbout": [subjectName, "TYT", "AYT", "YKS"],
+  };
+
   return (
     <PageContainer>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }} />
       {/* ── HERO ── */}
       <section className="hoca-hero" id="hocaHero">
         <div className="hoca-hero-inner">
