@@ -29,16 +29,16 @@ const settingsModules: SettingsModule[] = [
     icon: "edit_square",
     href: "/admin/ayarlar/site",
     color: "#10b981",
-    active: false
+    active: true
   },
   {
     id: "pages",
     title: "Sayfalar",
     desc: "KVKK, Gizlilik Politikası ve Kullanım Koşulları gibi statik metin sayfalarının yönetimi.",
     icon: "description",
-    href: "#",
+    href: "/admin/sayfalar",
     color: "#a78bfa",
-    active: false
+    active: true
   },
   {
     id: "alt-tags",

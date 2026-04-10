@@ -12,6 +12,7 @@ const navItems = [
   { section: "Kategoriler" },
   { href: "/admin/kategoriler", icon: "local_offer", label: "Kategoriler" },
   { section: "Sistem" },
+  { href: "/admin/sayfalar", icon: "description", label: "Sayfalar" },
   { href: "/admin/ayarlar", icon: "settings", label: "Ayarlar" },
 ];
 

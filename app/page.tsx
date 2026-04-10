@@ -2,15 +2,18 @@ import { PageContainer } from "./components/site-layout";
 import CourseCard from "./components/course-card";
 import BookCard from "@/app/components/book-card";
 import Link from "next/link";
-import { getBooks, getCamps, getInstructors, toMediaUrl, getCampThumbnail } from "@/app/lib/strapi";
+import { getBooks, getCamps, getInstructors, toMediaUrl, getCampThumbnail, getGlobalSettings } from "@/app/lib/strapi";
 import InstructorScroll from "./components/instructor-scroll";
 
 export default async function Home() {
-  const [camps, instructors, featuredBooks] = await Promise.all([
+  const [camps, instructors, featuredBooks, globalSettings] = await Promise.all([
     getCamps(),
     getInstructors(),
     getBooks(true),
+    getGlobalSettings()
   ]);
+
+  const site = globalSettings?.attributes || globalSettings || {};
 
   return (
     <PageContainer>
@@ -19,8 +22,8 @@ export default async function Home() {
         <section className="instructors-section" id="ogretmenler">
           <div className="container">
             <div className="section-header">
-              <h2 className="section-title">Youtuber Hocalarımız</h2>
-              <p className="section-desc">Alanında uzman, deneyimli öğretmenlerle çalış</p>
+              <h2 className="section-title">{site.instructorsTitle || "Youtuber Hocalarımız"}</h2>
+              <p className="section-desc">{site.instructorsDesc || "Alanında uzman, deneyimli öğretmenlerle çalış"}</p>
             </div>
             <InstructorScroll instructors={instructors} />
           </div>
@@ -35,18 +38,42 @@ export default async function Home() {
           </div>
           <div className="hero-inner">
             <div className="hero-content">
-              <div className="hero-badge" id="heroBadge">✨ Türkiye'nin #1 Ücretsiz Eğitim Platformu</div>
+              <div className="hero-badge" id="heroBadge">{site.heroBadge || "✨ Türkiye'nin #1 Ücretsiz Eğitim Platformu"}</div>
               <h1 className="hero-title">
-                <span className="gradient-text">TYT & AYT'ye</span><br />
-                <span>Hazırlanmanın</span><br />
-                <span>En Akıllı Yolu</span>
+                {site.heroTitle ? (
+                  site.heroTitle.split(/(<[^>]+>)/g).map((part: string, index: number) => {
+                    if (part.startsWith("<") && part.endsWith(">")) {
+                      return <span key={index} className="gradient-text">{part.slice(1, -1)}</span>;
+                    }
+                    return (
+                      <span key={index}>
+                        {part.split("\n").map((line: string, i: number, arr: string[]) => (
+                          <span key={`line-${i}`}>
+                            {line}
+                            {i < arr.length - 1 && <br />}
+                          </span>
+                        ))}
+                      </span>
+                    );
+                  })
+                ) : (
+                  <>
+                    <span className="gradient-text">TYT & AYT'ye</span><br />
+                    <span>Hazırlanmanın</span><br />
+                    <span>En Akıllı Yolu</span>
+                  </>
+                )}
               </h1>
               <p className="hero-desc">
-                Alanında uzman öğretmenlerle sınava hazırlan. Binlerce ücretsiz ders, kamplar ve soru çözümlerine hemen eriş.
+                {site.heroDescription || "Alanında uzman öğretmenlerle sınava hazırlan. Binlerce ücretsiz ders, kamplar ve soru çözümlerine hemen eriş."}
               </p>
               <div className="hero-ctas">
-                <a href="#dersler" className="btn-primary btn-lg pulse-btn">Kamplarımız</a>
-                <Link href="/kitaplar" className="btn-outline btn-lg">Kitaplarımız</Link>
+                <Link href={site.heroBtn1Link || "#dersler"} className="btn-primary btn-lg pulse-btn">
+                  {site.heroBtn1Text || "Kamplarımız"}
+                </Link>
+                <Link href={site.heroBtn2Link || "/kitaplar"} className="btn-outline btn-lg">
+                  {site.heroBtn2Text || "Kitaplarımız"}
+                </Link>
               </div>
             </div>
             <div className="hero-visual">
@@ -98,21 +125,65 @@ export default async function Home() {
                 </Link>
               ) : null}
               <div className="floating-badge badge-top">
-                <span>🎁</span> Ücretsiz!
+                <span>🎁</span> {site.floatingBadgeTop || "Ücretsiz!"}
               </div>
               <div className="floating-badge badge-bottom">
-                <span>📚</span> İşler Yayın Grubu Katkıları ile
+                <span>📚</span> {site.floatingBadgeBottom || "İşler Yayın Grubu Katkıları ile"}
               </div>
             </div>
           </div>
         </section>
       </div>
 
+      {/* STATISTICS SECTION */}
+      {site.statsItems && site.statsItems.length > 0 && (
+        <section className="stats-section">
+          <div className="container">
+            <div className="stats-grid">
+              {site.statsItems.map((item: any, idx: number) => (
+                <div key={idx} className="stat-card">
+                  <div className="stat-icon">
+                    <span className="ms">{item.icon || "trending_up"}</span>
+                  </div>
+                  <div className="stat-info">
+                    <h3 className="stat-value">{item.value}</h3>
+                    <p className="stat-label">{item.label}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* WHY US SECTION */}
+      {site.whyUsItems && site.whyUsItems.length > 0 && (
+        <section className="features-section" id="neden-biz">
+          <div className="container">
+            <div className="section-header centered">
+              <h2 className="section-title">{site.whyUsTitle || "Neden Ders Platosu?"}</h2>
+              <p className="section-desc">{site.whyUsDesc || "Sınav yolculuğunda seni zirveye taşıyacak her şey burada."}</p>
+            </div>
+            <div className="features-grid">
+              {site.whyUsItems.map((item: any, idx: number) => (
+                <div key={idx} className="feature-card">
+                  <div className="feature-icon">
+                    <span className="ms">{item.icon || "star"}</span>
+                  </div>
+                  <h3 className="feature-title">{item.title}</h3>
+                  <p className="feature-description">{item.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* FEATURED COURSES */}
       <section className="courses-section" id="dersler">
         <div className="container">
           <div className="section-header">
-            <h2 className="section-title">Kamplar</h2>
+            <h2 className="section-title">{site.campsTitle || "Kamplar"}</h2>
             <Link href="/kamplar" className="section-link">Tümünü Gör ›</Link>
           </div>
           <div className="courses-grid">
@@ -127,7 +198,7 @@ export default async function Home() {
       <section className="books-section" id="kitaplar">
         <div className="container">
           <div className="section-header">
-            <h2 className="section-title">Öne Çıkan Kitaplar</h2>
+            <h2 className="section-title">{site.booksTitle || "Öne Çıkan Kitaplar"}</h2>
             <Link href="/kitaplar" className="section-link">Tümünü Gör ›</Link>
           </div>
           <div className="books-grid-unified">
