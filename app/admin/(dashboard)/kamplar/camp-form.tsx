@@ -1,9 +1,27 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface Lesson {
+  id?: string; // For dnd-kit stable IDs
   title: string;
   day: number;
   youtube: string;
@@ -37,7 +55,8 @@ export default function CampForm({ camp, categories, instructors, subjects, book
   const [selCats, setSelCats] = useState<string[]>((camp?.categories || []).map((c: any) => c.documentId || String(c.id)));
   const [selIns, setSelIns] = useState<string[]>((camp?.instructors || []).map((c: any) => c.documentId || String(c.id)));
   const [selBooks, setSelBooks] = useState<string[]>((camp?.books || []).map((c: any) => c.documentId || String(c.id)));
-  const [lessons, setLessons] = useState<Lesson[]>((camp?.lessons || []).map((l: any) => ({
+  const [lessons, setLessons] = useState<Lesson[]>((camp?.lessons || []).map((l: any, idx: number) => ({
+    id: l.id || `l-${Date.now()}-${idx}`,
     title: l.title ?? "",
     day: l.day ?? 0,
     youtube: l.youtube ?? "",
@@ -46,7 +65,16 @@ export default function CampForm({ camp, categories, instructors, subjects, book
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
+  const [openDays, setOpenDays] = useState<Set<number>>(new Set([1])); // Default Day 1 open
+  const [editingDay, setEditingDay] = useState<number | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
   function showToast(msg: string, type: "success" | "error" = "success") {
+// ...
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3000);
   }
@@ -55,18 +83,50 @@ export default function CampForm({ camp, categories, instructors, subjects, book
     setList(list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
   }
 
-  function addLesson() {
-    setLessons([...lessons, { title: "", day: lessons.length + 1, youtube: "", notes_link: "" }]);
+  function toggleDay(dayNum: number) {
+    setOpenDays((prev) => {
+      const s = new Set(prev);
+      s.has(dayNum) ? s.delete(dayNum) : s.add(dayNum);
+      return s;
+    });
   }
 
-  function updateLesson(i: number, field: keyof Lesson, value: string | number) {
-    const updated = [...lessons];
-    (updated[i] as any)[field] = value;
-    setLessons(updated);
+  function addDay() {
+    const maxDay = lessons.length > 0 ? Math.max(...lessons.map(l => l.day)) : 0;
+    const nextDay = maxDay + 1;
+    setLessons([...lessons, { id: `l-${Date.now()}`, title: "", day: nextDay, youtube: "", notes_link: "" }]);
+    setOpenDays(prev => new Set([...Array.from(prev), nextDay]));
   }
 
-  function removeLesson(i: number) {
-    setLessons(lessons.filter((_, idx) => idx !== i));
+  function addLessonToDay(dayNum: number) {
+    setLessons([...lessons, { id: `l-${Date.now()}`, title: "", day: dayNum, youtube: "", notes_link: "" }]);
+    setOpenDays(prev => new Set([...Array.from(prev), dayNum]));
+  }
+
+  function updateLesson(id: string, field: keyof Lesson, value: string | number) {
+    setLessons(prev => prev.map(l => l.id === id ? { ...l, [field]: value } : l));
+  }
+
+  function removeLesson(id: string) {
+    setLessons(prev => prev.filter(l => l.id !== id));
+  }
+
+  function removeDay(dayNum: number) {
+    if (!confirm(`${dayNum}. Günü ve içindeki tüm dersleri silmek istediğinize emin misiniz?`)) return;
+    setLessons(prev => prev.filter(l => l.day !== dayNum));
+  }
+
+  // Grouping logic for rendering
+  const dayGroups: Record<number, Lesson[]> = {};
+  lessons.forEach(l => {
+    if (!dayGroups[l.day]) dayGroups[l.day] = [];
+    dayGroups[l.day].push(l);
+  });
+  const sortedDayNumbers = Object.keys(dayGroups).map(Number).sort((a,b) => a-b);
+
+  function autoOrderDays() {
+    setLessons(prev => prev.map((l, i) => ({ ...l, day: i + 1 })));
+    showToast("Gün numaraları başarıyla sıralandı ✓");
   }
 
   // ── Drag & Drop ───────────────────────────────────────────────
@@ -82,12 +142,37 @@ export default function CampForm({ camp, categories, instructors, subjects, book
     if (i !== dragIndex) setDragOverIndex(i);
   }
 
-  function handleDrop(i: number) {
-    if (dragIndex === null || dragIndex === i) return;
-    const updated = [...lessons];
-    const [moved] = updated.splice(dragIndex, 1);
-    updated.splice(i, 0, moved);
-    setLessons(updated);
+  function handleDrop(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const activeId = active.id as string;
+    const overId = over.id as string;
+
+    // Check if dragging a day or a lesson
+    if (activeId.startsWith("day-")) {
+      const activeDay = parseInt(activeId.replace("day-", ""));
+      const overDay = parseInt(overId.replace("day-", ""));
+      // Simple logic: re-assign day numbers based on move
+      // (This is a simplified reorder for days)
+      const dayNums = [...sortedDayNumbers];
+      const oldIdx = dayNums.indexOf(activeDay);
+      const newIdx = dayNums.indexOf(overDay);
+      const movedDayNums = arrayMove(dayNums, oldIdx, newIdx);
+      
+      const updated = lessons.map(l => {
+        const newDay = movedDayNums.indexOf(l.day) + 1;
+        return { ...l, day: newDay };
+      });
+      setLessons(updated);
+    } else {
+      const oldIdx = lessons.findIndex(l => l.id === activeId);
+      const newIdx = lessons.findIndex(l => l.id === overId);
+      // Ensure same day
+      if (lessons[oldIdx].day !== lessons[newIdx].day) return;
+      setLessons(arrayMove(lessons, oldIdx, newIdx));
+    }
+    
     setDragIndex(null);
     setDragOverIndex(null);
   }
@@ -165,6 +250,7 @@ export default function CampForm({ camp, categories, instructors, subjects, book
         const titleVal = get(iTitle);
         if (!titleVal) return;
         parsed.push({
+          id: `l-csv-${Date.now()}-${rowIdx}`,
           title: titleVal,
           day: iDay !== -1 ? (parseInt(get(iDay)) || startDay + rowIdx + 1) : startDay + rowIdx + 1,
           youtube: get(iYt),
@@ -370,127 +456,196 @@ export default function CampForm({ camp, categories, instructors, subjects, book
 
         {/* Sağ Kolon - Dersler */}
         <div className="info-card">
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px", flexWrap: "wrap", gap: "8px" }}>
-            <div className="card-title" style={{ marginBottom: 0 }}>
-              <span className="ms">video_library</span> Dersler ({lessons.length})
-            </div>
-            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-              {/* CSV Import */}
-              <input
-                ref={csvInputRef}
-                type="file"
-                accept=".csv,.tsv,.txt"
-                style={{ display: "none" }}
-                onChange={handleCsvFile}
-              />
-              <div style={{ position: "relative" }}>
-                <button
-                  className="btn btn-ghost btn-sm"
-                  onClick={() => csvInputRef.current?.click()}
-                  onMouseEnter={() => setShowFormatTip(true)}
-                  onMouseLeave={() => setShowFormatTip(false)}
-                  title="CSV dosyasından toplu ders ekle"
-                >
-                  <span className="ms">upload_file</span> İçeri Aktar
-                </button>
-                {showFormatTip && (
-                  <div style={{
-                    position: "absolute", top: "calc(100% + 8px)", right: 0,
-                    background: "#0f1a2e", border: "1px solid #1e3a5f",
-                    borderRadius: "10px", padding: "12px 14px", zIndex: 999,
-                    width: "280px", fontSize: "0.75rem", color: "#94a3b8",
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
-                    pointerEvents: "none",
-                  }}>
-                    <div style={{ color: "#60a5fa", fontWeight: 700, marginBottom: "6px" }}>📄 CSV Formatı</div>
-                    <code style={{ display: "block", background: "#060d1a", padding: "8px", borderRadius: "6px", color: "#a5f3fc", fontSize: "0.7rem", lineHeight: 1.6 }}>
-                      Başlık,Gün No,YouTube URL,Not Linki<br />
-                      Ders Adı,1,https://youtu.be/...,<br />
-                    </code>
-                    <div style={{ marginTop: "8px", color: "#64748b" }}>Virgül (,) veya noktalı virgül (;) ayraç olarak çalışır.</div>
-                  </div>
-                )}
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDrop}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px", flexWrap: "wrap", gap: "8px" }}>
+              <div className="card-title" style={{ marginBottom: 0, display: "flex", alignItems: "center", gap: "10px" }}>
+                <span className="ms">video_library</span> Ders Listesi ({lessons.length})
               </div>
-              <button
-                className="btn btn-ghost btn-sm"
-                onClick={downloadTemplate}
-                title="Boş CSV şablonu indir"
-              >
-                <span className="ms">download</span> Şablon
-              </button>
-              <button className="btn btn-success btn-sm" onClick={addLesson}>
-                <span className="ms">add</span> Ders Ekle
-              </button>
-            </div>
-          </div>
-
-          {lessons.length === 0 && (
-            <p style={{ color: "#475569", fontSize: "0.82rem" }}>Henüz ders yok.</p>
-          )}
-
-          {lessons.map((l, i) => (
-            <div
-              key={i}
-              draggable
-              onDragStart={() => handleDragStart(i)}
-              onDragOver={(e) => handleDragOver(e, i)}
-              onDrop={() => handleDrop(i)}
-              onDragEnd={handleDragEnd}
-              style={{
-                background: "#0b1221",
-                border: `1px solid ${dragOverIndex === i ? "#3b82f6" : "#1e3a5f"}`,
-                borderRadius: "10px", padding: "12px", marginBottom: "10px",
-                opacity: dragIndex === i ? 0.4 : 1,
-                transition: "border-color 0.15s, opacity 0.15s",
-                cursor: "grab",
-                boxShadow: dragOverIndex === i ? "0 0 0 2px rgba(59,130,246,0.3)" : "none",
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  {/* Drag handle */}
-                  <span
-                    className="ms"
-                    style={{ color: "#2d4a6e", fontSize: "18px", cursor: "grab", userSelect: "none" }}
-                    title="Sürükleyerek sırala"
-                  >drag_indicator</span>
-                  <strong style={{ color: "#60a5fa", fontSize: "0.82rem" }}>Ders {i + 1}</strong>
+              <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                <div style={{ position: "relative" }}>
+                  <button className="btn btn-ghost btn-sm" onClick={() => setShowFormatTip(!showFormatTip)} onMouseEnter={() => setShowFormatTip(true)} onMouseLeave={() => setShowFormatTip(false)}>
+                    <span className="ms">help_outline</span> Şablon
+                  </button>
+                  {showFormatTip && (
+                    <div style={{
+                      position: "absolute", top: "calc(100% + 8px)", right: 0,
+                      background: "#0f1a2e", border: "1px solid #1e3a5f",
+                      borderRadius: "10px", padding: "12px 14px", zIndex: 999,
+                      width: "280px", fontSize: "0.75rem", color: "#94a3b8",
+                      boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
+                      pointerEvents: "none",
+                    }}>
+                      <div style={{ color: "#60a5fa", fontWeight: 700, marginBottom: "6px" }}>📄 CSV Formatı</div>
+                      <code style={{ display: "block", background: "#060d1a", padding: "8px", borderRadius: "6px", color: "#a5f3fc", fontSize: "0.7rem", lineHeight: 1.6 }}>
+                        Başlık,Gün No,YouTube URL,Not Linki<br />
+                        Ders Adı,1,https://youtu.be/...,<br />
+                      </code>
+                    </div>
+                  )}
                 </div>
-                <button className="btn btn-danger btn-sm btn-icon" onClick={() => removeLesson(i)}>
-                  <span className="ms">delete</span>
+                <input ref={csvInputRef} type="file" accept=".csv" onChange={handleCsvFile} style={{ display: "none" }} />
+                <button className="btn btn-ghost btn-sm" onClick={() => csvInputRef.current?.click()} disabled={saving}>
+                  <span className="ms">upload_file</span> CSV Yükle
+                </button>
+                <button className="btn btn-primary btn-sm" onClick={addDay}>
+                  <span className="ms">create_new_folder</span> Gün Ekle
                 </button>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label>Başlık</label>
-                  <input value={l.title} onChange={(e) => updateLesson(i, "title", e.target.value)} />
-                </div>
-                <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label>Gün No</label>
-                  <input type="number" value={l.day} onChange={(e) => updateLesson(i, "day", parseInt(e.target.value) || 0)} />
-                </div>
-              </div>
-              <div className="form-group" style={{ marginBottom: "6px", marginTop: "10px" }}>
-                <label>YouTube URL</label>
-                <input value={l.youtube} onChange={(e) => updateLesson(i, "youtube", e.target.value)} placeholder="https://youtu.be/..." />
-              </div>
-              <div className="form-group" style={{ marginBottom: 0 }}>
-                <label>Not Linki</label>
-                <input value={l.notes_link} onChange={(e) => updateLesson(i, "notes_link", e.target.value)} placeholder="https://..." />
-              </div>
             </div>
-          ))}
+
+            {sortedDayNumbers.length === 0 && (
+              <div className="empty-state">
+                <span className="ms">event_note</span>
+                Henüz gün veya ders eklenmemiş.
+                <br />
+                <button className="btn btn-primary" style={{ marginTop: "16px" }} onClick={addDay}>
+                  <span className="ms">add</span> İlk Günü Oluştur
+                </button>
+              </div>
+            )}
+
+            <SortableContext items={sortedDayNumbers.map(d => `day-${d}`)} strategy={verticalListSortingStrategy}>
+              {sortedDayNumbers.map((dayNum) => (
+                <SortableDayGroup 
+                  key={dayNum} 
+                  dayNum={dayNum} 
+                  dayLessons={dayGroups[dayNum]} 
+                  isOpen={openDays.has(dayNum)} 
+                  toggleDay={toggleDay} 
+                  removeDay={removeDay}
+                  addLessonToDay={addLessonToDay}
+                  updateLesson={updateLesson}
+                  removeLesson={removeLesson}
+                  saving={saving}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
         </div>
       </div>
 
       <div style={{ marginTop: "24px", display: "flex", justifyContent: "flex-end", gap: "12px" }}>
-        <button className="btn btn-ghost" onClick={() => router.push("/admin/kamplar")}>◀ İptal</button>
-        <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
+        <button type="button" className="btn btn-ghost" onClick={() => router.push("/admin/kamplar")}>◀ İptal</button>
+        <button type="button" className="btn btn-primary" onClick={handleSave} disabled={saving}>
           <span className="ms">save</span>
           {saving ? "Kaydediliyor..." : isEdit ? "Güncelle" : "Kaydet"}
         </button>
       </div>
+
+      <style jsx global>{`
+        .day-card {
+          margin-bottom: 12px;
+          border: 1px solid #1a2e47;
+          border-radius: 12px;
+          overflow: visible;
+          background: #0d1a2e;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .day-header {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 16px;
+          cursor: pointer;
+          background: #0d1a2e;
+          transition: all 0.2s;
+        }
+        .day-header:hover { background: #12223a; }
+        .day-body {
+          background: #060e1a;
+          border-top: 1px solid #111d2e;
+          padding: 16px;
+        }
+        .lesson-row {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px;
+          background: #0b1221;
+          border: 1px solid #1e3a5f;
+          border-radius: 10px;
+          margin-bottom: 8px;
+          transition: border-color 0.2s;
+        }
+        .lesson-row:hover { border-color: #3b82f6; }
+      `}</style>
     </>
+  );
+}
+
+// ── Sortable Day Group Component ─────────────────────────────
+function SortableDayGroup({ dayNum, dayLessons, isOpen, toggleDay, removeDay, addLessonToDay, updateLesson, removeLesson, saving }: any) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: `day-${dayNum}` });
+  const style = { transform: CSS.Translate.toString(transform), transition, opacity: isDragging ? 0.6 : 1, zIndex: isDragging ? 10 : 1 };
+
+  return (
+    <div ref={setNodeRef} style={style} className="day-card">
+      <div className="day-header" onClick={() => toggleDay(dayNum)}>
+        <span className="ms" style={{ color: "#2d4a6e", fontSize: "20px", cursor: "grab" }} {...attributes} {...listeners} onClick={e => e.stopPropagation()}>drag_indicator</span>
+        <span style={{ color: "#60a5fa", fontWeight: 800, fontSize: "0.95rem" }}>{dayNum}. Gün</span>
+        <span style={{ flex: 1, color: "#475569", fontSize: "0.75rem", fontWeight: 500 }}>{dayLessons?.length || 0} Ders</span>
+        
+        <div style={{ display: "flex", gap: "8px" }} onClick={e => e.stopPropagation()}>
+          <button type="button" className="btn btn-success btn-sm" onClick={() => addLessonToDay(dayNum)} style={{ padding: "4px 12px !important", fontSize: "0.72rem", fontWeight: 700 }}>+ Ders Ekle</button>
+          <button type="button" className="btn btn-danger btn-sm btn-icon" onClick={() => removeDay(dayNum)}><span className="ms">delete</span></button>
+          <span className="ms" style={{ color: "#3b82f6", transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)", transform: isOpen ? "rotate(90deg)" : "none" }}>chevron_right</span>
+        </div>
+      </div>
+
+      {isOpen && (
+        <div className="day-body">
+          <SortableContext items={(dayLessons || []).map((l: any) => l.id)} strategy={verticalListSortingStrategy}>
+            {(dayLessons || []).map((l: any, idx: number) => (
+              <SortableLessonRow 
+                key={l.id} 
+                lesson={l} 
+                updateLesson={updateLesson} 
+                removeLesson={removeLesson}
+              />
+            ))}
+          </SortableContext>
+          
+          <button type="button" className="btn btn-ghost btn-sm" 
+            style={{ width: "100%", marginTop: "8px", border: "1.5px dashed #1e3a5f", color: "#60a5fa", background: "rgba(59,130,246,0.03) !important" }} 
+            onClick={() => addLessonToDay(dayNum)}>
+            <span className="ms">add_circle</span> Yeni Ders Ekle
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Sortable Lesson Row Component ────────────────────────────
+function SortableLessonRow({ lesson, updateLesson, removeLesson }: any) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: lesson.id });
+  const style = { transform: CSS.Translate.toString(transform), transition, opacity: isDragging ? 0.6 : 1, zIndex: isDragging ? 20 : 1 };
+
+  return (
+    <div ref={setNodeRef} style={style} className="lesson-row">
+      <span className="ms" style={{ color: "#2d4a6e", fontSize: "18px", cursor: "grab" }} {...attributes} {...listeners}>drag_indicator</span>
+      <div style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: "16px" }}>
+        <div className="form-group" style={{ marginBottom: 0 }}>
+          <input 
+            placeholder="Ders Başlığı"
+            value={lesson.title} 
+            onChange={e => updateLesson(lesson.id, "title", e.target.value)} 
+            style={{ padding: "6px 0", background: "transparent", border: "none", borderBottom: "1.5px solid #1a2536", borderRadius: 0, fontSize: "0.85rem", fontWeight: 600 }}
+          />
+        </div>
+        <div className="form-group" style={{ marginBottom: 0 }}>
+          <input 
+            placeholder="YouTube URL / ID"
+            value={lesson.youtube} 
+            onChange={e => updateLesson(lesson.id, "youtube", e.target.value)} 
+            style={{ padding: "6px 0", background: "transparent", border: "none", borderBottom: "1.5px solid #1a2536", borderRadius: 0, fontSize: "0.85rem", color: "#60a5fa" }}
+          />
+        </div>
+      </div>
+      <button type="button" className="btn btn-danger btn-sm btn-icon" onClick={() => removeLesson(lesson.id)} style={{ padding: "4px !important", opacity: 0.6 }}>
+        <span className="ms" style={{ fontSize: "16px" }}>delete</span>
+      </button>
+    </div>
   );
 }
 

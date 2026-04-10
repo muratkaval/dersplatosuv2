@@ -385,7 +385,7 @@ tbody tr:hover { background: rgba(59, 130, 246, 0.06) !important; }
   padding: 24px;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 4px 24px -12px rgba(0,0,0,0.5) !important;
 }
 
