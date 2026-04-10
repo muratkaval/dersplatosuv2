@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { PageContainer } from "@/app/components/site-layout";
 import CourseCard from "@/app/components/course-card";
-import CampFilter from "@/app/components/camp-filter";
 import { getCamps } from "@/app/lib/strapi";
 
 function slugify(t: string = "") {
@@ -69,7 +68,6 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
       <section className="courses-section" style={{ padding: "60px 0" }} id="dersler">
         <div className="container">
-          <CampFilter camps={allCamps} activeSlug={slug} />
           <div className="courses-grid" style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
