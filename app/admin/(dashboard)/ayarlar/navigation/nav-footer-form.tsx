@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 
 interface NavLink { id: string; label: string; href: string; }
 interface FooterColumn { id: string; title: string; links: NavLink[]; }
