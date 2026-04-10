@@ -45,6 +45,17 @@ export default function CampView({ camp }: { camp: any }) {
     const normalizedInstructors = Array.isArray(instructors) ? instructors : (instructors?.data || []);
 
   const totalLessons = sortedLessons.length || "—";
+  const displayType = camp.displayType || "daily";
+  const mainLabel = displayType === "daily" ? "Gün" : displayType === "topic" ? "Konu" : "Bölüm";
+
+  // Gruplandirma Mantigi
+  const groupedLessons = sortedLessons.reduce((acc: any, lesson: any) => {
+    const day = lesson.day || 1;
+    if (!acc[day]) acc[day] = [];
+    acc[day].push(lesson);
+    return acc;
+  }, {});
+  const dayNums = Object.keys(groupedLessons).map(Number).sort((a, b) => a - b);
 
   return (
     <div className="egitim-page">
@@ -122,81 +133,162 @@ export default function CampView({ camp }: { camp: any }) {
 
           {/* TAB: DERSLER */}
           {activeTab === "dersler" && (
-            <div>
-              {sortedLessons.length === 0 ? (
-                <p style={{ color: 'var(--text-muted)' }}>Bu kampa ait henüz ders yüklenmemiştir.</p>
-              ) : (
-                <div className="lesson-list-dyn">
-                  {sortedLessons.map((lesson: any, i: number) => {
-                    const lId = lesson.id || i;
-                    const isActive = activeLessonId === lId;
-                    const vid = extractYouTubeId(lesson.youtube || '');
+            sortedLessons.length === 0 ? (
+              <p style={{ color: 'var(--text-muted)' }}>Bu kampa ait henüz ders yüklenmemiştir.</p>
+            ) : (
+                  <div className={`lesson-list-dyn ${displayType === "sequential" ? "is-sequential" : ""}`}>
+                    {displayType === "sequential" ? (
+                      sortedLessons.map((lesson: any, i: number) => {
+                        const lId = lesson.id || `seq-${i}`;
+                        const isActive = activeLessonId === lId;
+                        const vid = extractYouTubeId(lesson.youtube || '');
 
-                    return (
-                      <div
-                        key={lId}
-                        className={`lesson-item ${isActive ? "active" : ""}`}
-                        onClick={() => setActiveLessonId(isActive ? null : lId)}
-                      >
-                        <div className="lesson-row">
-                          <span className="lesson-num">{String(lesson.day || i + 1).padStart(2, '0')}</span>
-                          <img
-                            src={vid ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg` : 'https://via.placeholder.com/110x68?text=Ders'}
-                            className="lesson-thumb-sm"
-                            alt="thumb"
-                          />
-                          <div className="lesson-info-dyn">
-                            <h4>{lesson.title || `Ders ${i+1}`}</h4>
-                          </div>
-                          {lesson.notes_link && (
-                            <a
-                              href={lesson.notes_link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="lesson-notes-btn"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              📄 Ders Notu
-                            </a>
-                          )}
-                        </div>
+                        return (
+                          <div
+                            key={lId}
+                            className={`lesson-item ${isActive ? "active" : ""}`}
+                            onClick={() => setActiveLessonId(isActive ? null : lId)}
+                          >
+                            <div className="lesson-row">
+                              <span className="lesson-num">{String(i + 1).padStart(2, '0')}</span>
+                              <img
+                                src={vid ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg` : 'https://via.placeholder.com/110x68?text=Ders'}
+                                className="lesson-thumb-sm"
+                                alt="thumb"
+                              />
+                              <div className="lesson-info-dyn">
+                                <h4>{lesson.title || `Ders ${i + 1}`}</h4>
+                              </div>
+                              {lesson.notes_link && (
+                                <a
+                                  href={lesson.notes_link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="lesson-notes-btn"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  📄 Ders Notu
+                                </a>
+                              )}
+                            </div>
 
-                        {isActive && vid && (
-                          <div className="lesson-player-container" style={{ display: 'block' }}>
-                            <button
-                              className="lesson-close-btn"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setActiveLessonId(null);
-                              }}
-                              title="Kapat"
-                            >
-                              &times;
-                            </button>
-                            <iframe
-                              src={`https://www.youtube-nocookie.com/embed/${vid}?autoplay=1&rel=0&modestbranding=1`}
-                              allowFullScreen
-                              allow="autoplay; encrypted-media"
-                            />
-                            {lesson.notes_link && (
-                              <a
-                                href={lesson.notes_link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="lesson-notes-under"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                📄 Ders Notu İndir
-                              </a>
+                            {isActive && vid && (
+                              <div className="lesson-player-container" style={{ display: 'block' }}>
+                                <button
+                                  className="lesson-close-btn"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActiveLessonId(null);
+                                  }}
+                                  title="Kapat"
+                                >
+                                  &times;
+                                </button>
+                                <iframe
+                                  src={`https://www.youtube-nocookie.com/embed/${vid}?autoplay=1&rel=0&modestbranding=1`}
+                                  allowFullScreen
+                                  allow="autoplay; encrypted-media"
+                                />
+                                {lesson.notes_link && (
+                                  <a
+                                    href={lesson.notes_link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="lesson-notes-under"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    📄 Ders Notu İndir
+                                  </a>
+                                )}
+                              </div>
                             )}
                           </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+                        );
+                      })
+                    ) : (
+                      dayNums.map((dayNum) => (
+                        <div key={dayNum} className="day-group-container">
+                          <div className="day-group-header">
+                            <span className="day-group-title">
+                              {groupedLessons[dayNum][0]?.group_title 
+                                ? `${dayNum}. ${mainLabel}: ${groupedLessons[dayNum][0].group_title}` 
+                                : `${dayNum}. ${mainLabel}`}
+                            </span>
+                            <span className="day-group-count">{groupedLessons[dayNum].length} Video</span>
+                          </div>
+
+                          {groupedLessons[dayNum].map((lesson: any, i: number) => {
+                            const lId = lesson.id || `${dayNum}-${i}`;
+                            const isActive = activeLessonId === lId;
+                            const vid = extractYouTubeId(lesson.youtube || '');
+
+                            return (
+                              <div
+                                key={lId}
+                                className={`lesson-item ${isActive ? "active" : ""}`}
+                                onClick={() => setActiveLessonId(isActive ? null : lId)}
+                              >
+                                <div className="lesson-row">
+                                  <span className="lesson-num">{i + 1}</span>
+                                  <img
+                                    src={vid ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg` : 'https://via.placeholder.com/110x68?text=Ders'}
+                                    className="lesson-thumb-sm"
+                                    alt="thumb"
+                                  />
+                                  <div className="lesson-info-dyn">
+                                    <h4>{lesson.title || `${mainLabel} ${dayNum} - Ders ${i + 1}`}</h4>
+                                  </div>
+                                  {lesson.notes_link && (
+                                    <a
+                                      href={lesson.notes_link}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="lesson-notes-btn"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      📄 Ders Notu
+                                    </a>
+                                  )}
+                                </div>
+
+                                {isActive && vid && (
+                                  <div className="lesson-player-container" style={{ display: 'block' }}>
+                                    <button
+                                      className="lesson-close-btn"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setActiveLessonId(null);
+                                      }}
+                                      title="Kapat"
+                                    >
+                                      &times;
+                                    </button>
+                                    <iframe
+                                      src={`https://www.youtube-nocookie.com/embed/${vid}?autoplay=1&rel=0&modestbranding=1`}
+                                      allowFullScreen
+                                      allow="autoplay; encrypted-media"
+                                    />
+                                    {lesson.notes_link && (
+                                      <a
+                                        href={lesson.notes_link}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="lesson-notes-under"
+                                        onClick={(e) => e.stopPropagation()}
+                                      >
+                                        📄 Ders Notu İndir
+                                      </a>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ))
+                    )}
+                  </div>
+            )
           )}
 
           {/* TAB: KİTAPLAR */}

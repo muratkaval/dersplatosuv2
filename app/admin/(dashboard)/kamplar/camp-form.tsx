@@ -26,6 +26,7 @@ interface Lesson {
   day: number;
   youtube: string;
   notes_link: string;
+  group_title?: string;
 }
 
 interface Props {
@@ -55,15 +56,19 @@ export default function CampForm({ camp, categories, instructors, subjects, book
   const [selCats, setSelCats] = useState<string[]>((camp?.categories || []).map((c: any) => c.documentId || String(c.id)));
   const [selIns, setSelIns] = useState<string[]>((camp?.instructors || []).map((c: any) => c.documentId || String(c.id)));
   const [selBooks, setSelBooks] = useState<string[]>((camp?.books || []).map((c: any) => c.documentId || String(c.id)));
+  const [displayType, setDisplayType] = useState<"daily" | "topic" | "sequential">(camp?.displayType || "daily");
   const [lessons, setLessons] = useState<Lesson[]>((camp?.lessons || []).map((l: any, idx: number) => ({
     id: l.id || `l-${Date.now()}-${idx}`,
     title: l.title ?? "",
     day: l.day ?? 0,
     youtube: l.youtube ?? "",
     notes_link: l.notes_link ?? "",
+    group_title: l.group_title ?? "",
   })));
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
+
+  const typeLabel = displayType === "daily" ? "Gün" : displayType === "topic" ? "Konu" : "Bölüm";
 
   const [openDays, setOpenDays] = useState<Set<number>>(new Set([1])); // Default Day 1 open
   const [editingDay, setEditingDay] = useState<number | null>(null);
@@ -103,6 +108,10 @@ export default function CampForm({ camp, categories, instructors, subjects, book
     setOpenDays(prev => new Set([...Array.from(prev), dayNum]));
   }
 
+  function addLessonDirectly() {
+    setLessons([...lessons, { id: `l-${Date.now()}`, title: "", day: 1, youtube: "", notes_link: "" }]);
+  }
+
   function updateLesson(id: string, field: keyof Lesson, value: string | number) {
     setLessons(prev => prev.map(l => l.id === id ? { ...l, [field]: value } : l));
   }
@@ -111,8 +120,12 @@ export default function CampForm({ camp, categories, instructors, subjects, book
     setLessons(prev => prev.filter(l => l.id !== id));
   }
 
+  function updateGroupTitle(dayNum: number, title: string) {
+    setLessons(prev => prev.map(l => l.day === dayNum ? { ...l, group_title: title } : l));
+  }
+
   function removeDay(dayNum: number) {
-    if (!confirm(`${dayNum}. Günü ve içindeki tüm dersleri silmek istediğinize emin misiniz?`)) return;
+    if (!confirm(`${dayNum}. ${typeLabel} ve içindeki tüm dersleri silmek istediğinize emin misiniz?`)) return;
     setLessons(prev => prev.filter(l => l.day !== dayNum));
   }
 
@@ -126,7 +139,7 @@ export default function CampForm({ camp, categories, instructors, subjects, book
 
   function autoOrderDays() {
     setLessons(prev => prev.map((l, i) => ({ ...l, day: i + 1 })));
-    showToast("Gün numaraları başarıyla sıralandı ✓");
+    showToast(`${typeLabel} numaraları başarıyla sıralandı ✓`);
   }
 
   // ── Drag & Drop ───────────────────────────────────────────────
@@ -282,7 +295,14 @@ export default function CampForm({ camp, categories, instructors, subjects, book
         categories: selCats,
         instructors: selIns,
         books: selBooks,
-        lessons: lessons.map((l) => ({ title: l.title, day: l.day || 0, youtube: l.youtube, notes_link: l.notes_link })),
+        displayType,
+        lessons: lessons.map((l) => ({ 
+          title: l.title, 
+          day: l.day || 0, 
+          youtube: l.youtube, 
+          notes_link: l.notes_link,
+          group_title: l.group_title 
+        })),
         ...(subjectId ? { subject: subjectId } : {}),
       };
 
@@ -351,15 +371,30 @@ export default function CampForm({ camp, categories, instructors, subjects, book
                   <span className="ms">auto_awesome</span>
                 </button>
               </div>
-              {slug && (
-                <small style={{ color: "#3b82f6", marginTop: "4px", display: "block" }}>
-                  🔗 dersplatosu.com/kamplar/<strong>{slug}</strong>
-                </small>
-              )}
-              {!slug && <small>Boş bırakılırsa başlıktan otomatik üretilir</small>}
             </div>
 
             <div className="form-group">
+              <label>Kamp Tasarım Modu</label>
+              <select 
+                value={displayType} 
+                onChange={(e) => setDisplayType(e.target.value as any)}
+                style={{ width: "100%", background: "#0b1628", border: "1.5px solid #1e3a5f", borderRadius: "8px", color: "#e2e8f0", padding: "10px", outline: "none", cursor: "pointer" }}
+              >
+                <option value="daily">📅 Günlük Program (1. Gün, 2. Gün...)</option>
+                <option value="topic">📖 Konu Bazlı (1. Konu, 2. Konu...)</option>
+                <option value="sequential">▶ Sıralı Liste (Ders 01, Ders 02...)</option>
+              </select>
+              <p style={{ fontSize: "0.7rem", color: "#475569", marginTop: "6px" }}>Bu seçim hem admin panelini hem de sitenin görünümünü etkiler.</p>
+            </div>
+
+            {slug && (
+              <small style={{ color: "#3b82f6", marginTop: "4px", display: "flex", alignItems: "center", gap: "4px" }}>
+                <span>🔗 dersplatosu.com/kamplar/</span><strong>{slug}</strong>
+              </small>
+            )}
+            {!slug && <small style={{ color: "#475569", display: "block", marginTop: "4px" }}>Boş bırakılırsa başlıktan otomatik üretilir</small>}
+
+            <div className="form-group" style={{ marginTop: "16px" }}>
               <label>Intro Video URL</label>
               <input value={introVideo} onChange={(e) => setIntroVideo(e.target.value)} placeholder="https://youtu.be/..." />
             </div>
@@ -487,39 +522,76 @@ export default function CampForm({ camp, categories, instructors, subjects, book
                 <button className="btn btn-ghost btn-sm" onClick={() => csvInputRef.current?.click()} disabled={saving}>
                   <span className="ms">upload_file</span> CSV Yükle
                 </button>
-                <button className="btn btn-primary btn-sm" onClick={addDay}>
-                  <span className="ms">create_new_folder</span> Gün Ekle
-                </button>
+                {displayType === "sequential" ? (
+                  <button className="btn btn-primary btn-sm" onClick={addLessonDirectly}>
+                    <span className="ms">add</span> Ders Ekle
+                  </button>
+                ) : (
+                  <button className="btn btn-primary btn-sm" onClick={addDay}>
+                    <span className="ms">create_new_folder</span> {typeLabel} Ekle
+                  </button>
+                )}
               </div>
             </div>
 
-            {sortedDayNumbers.length === 0 && (
+            {lessons.length === 0 && (
               <div className="empty-state">
                 <span className="ms">event_note</span>
-                Henüz gün veya ders eklenmemiş.
+                Henüz ders eklenmemiş.
                 <br />
-                <button className="btn btn-primary" style={{ marginTop: "16px" }} onClick={addDay}>
-                  <span className="ms">add</span> İlk Günü Oluştur
+                <button className="btn btn-primary" style={{ marginTop: "16px" }} onClick={displayType === "sequential" ? addLessonDirectly : addDay}>
+                  <span className="ms">add</span> {displayType === "sequential" ? "İlk Dersi Ekle" : `İlk ${typeLabel}'ü Oluştur`}
                 </button>
               </div>
             )}
 
-            <SortableContext items={sortedDayNumbers.map(d => `day-${d}`)} strategy={verticalListSortingStrategy}>
-              {sortedDayNumbers.map((dayNum) => (
-                <SortableDayGroup 
-                  key={dayNum} 
-                  dayNum={dayNum} 
-                  dayLessons={dayGroups[dayNum]} 
-                  isOpen={openDays.has(dayNum)} 
-                  toggleDay={toggleDay} 
-                  removeDay={removeDay}
-                  addLessonToDay={addLessonToDay}
-                  updateLesson={updateLesson}
-                  removeLesson={removeLesson}
-                  saving={saving}
-                />
-              ))}
-            </SortableContext>
+            {displayType === "sequential" ? (
+              <SortableContext items={lessons.map(l => l.id as string)} strategy={verticalListSortingStrategy}>
+                <div style={{ padding: "0 4px" }}>
+                  {lessons.map((l, index) => (
+                    <SortableLessonRow 
+                      key={l.id} 
+                      lesson={l} 
+                      index={index + 1}
+                      updateLesson={updateLesson} 
+                      removeLesson={removeLesson}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
+            ) : (
+              <SortableContext items={sortedDayNumbers.map(d => `day-${d}`)} strategy={verticalListSortingStrategy}>
+                {sortedDayNumbers.map((dayNum) => (
+                  <SortableDayGroup 
+                    key={dayNum} 
+                    dayNum={dayNum} 
+                    dayLessons={dayGroups[dayNum]} 
+                    isOpen={openDays.has(dayNum)} 
+                    toggleDay={toggleDay} 
+                    removeDay={removeDay}
+                    addLessonToDay={addLessonToDay}
+                    updateLesson={updateLesson}
+                    removeLesson={removeLesson}
+                    updateGroupTitle={updateGroupTitle}
+                    saving={saving}
+                    displayType={displayType}
+                  />
+                ))}
+              </SortableContext>
+            )}
+            
+            {lessons.length > 0 && (
+              <div style={{ marginTop: "16px", padding: "0 4px" }}>
+                <button 
+                  type="button" 
+                  className="btn btn-primary btn-lg" 
+                  onClick={displayType === "sequential" ? addLessonDirectly : addDay}
+                  style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", padding: "14px" }}
+                >
+                  <span className="ms">add_circle</span> {displayType === "sequential" ? "Yeni Ders Ekle" : `Yeni ${typeLabel} Ekle`}
+                </button>
+              </div>
+            )}
           </DndContext>
         </div>
       </div>
@@ -574,22 +646,45 @@ export default function CampForm({ camp, categories, instructors, subjects, book
 }
 
 // ── Sortable Day Group Component ─────────────────────────────
-function SortableDayGroup({ dayNum, dayLessons, isOpen, toggleDay, removeDay, addLessonToDay, updateLesson, removeLesson, saving }: any) {
+function SortableDayGroup({ dayNum, dayLessons, isOpen, toggleDay, removeDay, addLessonToDay, updateLesson, removeLesson, updateGroupTitle, saving, displayType }: any) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: `day-${dayNum}` });
   const style = { transform: CSS.Translate.toString(transform), transition, opacity: isDragging ? 0.6 : 1, zIndex: isDragging ? 10 : 1 };
+
+  const label = displayType === "daily" ? "Gün" : displayType === "topic" ? "Konu" : "Bölüm";
+  const groupTitle = dayLessons?.[0]?.group_title || "";
 
   return (
     <div ref={setNodeRef} style={style} className="day-card">
       <div className="day-header" onClick={() => toggleDay(dayNum)}>
         <span className="ms" style={{ color: "#2d4a6e", fontSize: "20px", cursor: "grab" }} {...attributes} {...listeners} onClick={e => e.stopPropagation()}>drag_indicator</span>
-        <span style={{ color: "#60a5fa", fontWeight: 800, fontSize: "0.95rem" }}>{dayNum}. Gün</span>
-        <span style={{ flex: 1, color: "#475569", fontSize: "0.75rem", fontWeight: 500 }}>{dayLessons?.length || 0} Ders</span>
+        
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1 }} onClick={e => e.stopPropagation()}>
+          <span style={{ color: "#60a5fa", fontWeight: 800, fontSize: "0.95rem", whiteSpace: "nowrap" }}>{dayNum}. {label}:</span>
+          <input 
+            value={groupTitle}
+            placeholder={`${label} Başlığı (Opsiyonel)`}
+            onChange={(e) => updateGroupTitle(dayNum, e.target.value)}
+            style={{ 
+              background: "transparent", 
+              border: "none", 
+              borderBottom: "1.5px solid #1e3a5f", 
+              color: "#fff", 
+              fontSize: "0.9rem", 
+              fontWeight: 600, 
+              padding: "2px 4px",
+              width: "100%",
+              outline: "none"
+            }}
+          />
+        </div>
+
+        <span style={{ color: "#475569", fontSize: "0.75rem", fontWeight: 500, marginLeft: "12px", whiteSpace: "nowrap" }}>{dayLessons?.length || 0} Ders</span>
         
         <div style={{ display: "flex", gap: "8px" }} onClick={e => e.stopPropagation()}>
           <button type="button" className="btn btn-success btn-sm" onClick={() => addLessonToDay(dayNum)} style={{ padding: "4px 12px !important", fontSize: "0.72rem", fontWeight: 700 }}>+ Ders Ekle</button>
           <button type="button" className="btn btn-danger btn-sm btn-icon" onClick={() => removeDay(dayNum)}><span className="ms">delete</span></button>
-          <span className="ms" style={{ color: "#3b82f6", transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)", transform: isOpen ? "rotate(90deg)" : "none" }}>chevron_right</span>
         </div>
+        <span className="ms" style={{ color: "#3b82f6", transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)", transform: isOpen ? "rotate(90deg)" : "none", marginLeft: "8px" }}>chevron_right</span>
       </div>
 
       {isOpen && (
@@ -599,6 +694,7 @@ function SortableDayGroup({ dayNum, dayLessons, isOpen, toggleDay, removeDay, ad
               <SortableLessonRow 
                 key={l.id} 
                 lesson={l} 
+                index={idx + 1}
                 updateLesson={updateLesson} 
                 removeLesson={removeLesson}
               />
@@ -617,34 +713,129 @@ function SortableDayGroup({ dayNum, dayLessons, isOpen, toggleDay, removeDay, ad
 }
 
 // ── Sortable Lesson Row Component ────────────────────────────
-function SortableLessonRow({ lesson, updateLesson, removeLesson }: any) {
+function SortableLessonRow({ lesson, index, updateLesson, removeLesson }: any) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: lesson.id });
+  const [expanded, setExpanded] = useState(false);
   const style = { transform: CSS.Translate.toString(transform), transition, opacity: isDragging ? 0.6 : 1, zIndex: isDragging ? 20 : 1 };
 
   return (
-    <div ref={setNodeRef} style={style} className="lesson-row">
-      <span className="ms" style={{ color: "#2d4a6e", fontSize: "18px", cursor: "grab" }} {...attributes} {...listeners}>drag_indicator</span>
-      <div style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: "16px" }}>
-        <div className="form-group" style={{ marginBottom: 0 }}>
-          <input 
-            placeholder="Ders Başlığı"
-            value={lesson.title} 
-            onChange={e => updateLesson(lesson.id, "title", e.target.value)} 
-            style={{ padding: "6px 0", background: "transparent", border: "none", borderBottom: "1.5px solid #1a2536", borderRadius: 0, fontSize: "0.85rem", fontWeight: 600 }}
-          />
-        </div>
-        <div className="form-group" style={{ marginBottom: 0 }}>
-          <input 
-            placeholder="YouTube URL / ID"
-            value={lesson.youtube} 
-            onChange={e => updateLesson(lesson.id, "youtube", e.target.value)} 
-            style={{ padding: "6px 0", background: "transparent", border: "none", borderBottom: "1.5px solid #1a2536", borderRadius: 0, fontSize: "0.85rem", color: "#60a5fa" }}
-          />
+    <div ref={setNodeRef} style={style} className={`lesson-row-card ${expanded ? 'is-expanded' : ''}`}>
+      <div className="lesson-row-header" onClick={() => setExpanded(!expanded)}>
+        <span className="ms drag-handle" style={{ color: "#2d4a6e", fontSize: "18px", cursor: "grab" }} {...attributes} {...listeners} onClick={e => e.stopPropagation()}>drag_indicator</span>
+        <span style={{ 
+          background: "#1e293b", 
+          color: "#60a5fa", 
+          fontSize: "0.7rem", 
+          fontWeight: 800, 
+          padding: "2px 6px", 
+          borderRadius: "4px",
+          marginRight: "4px"
+        }}>
+          {String(index).padStart(2, '0')}
+        </span>
+        <span className="lesson-title-preview" style={{ fontSize: "0.85rem", fontWeight: 600, color: "#e2e8f0" }}>{lesson.title || "Başlıksız Ders"}</span>
+        <div style={{ flex: 1 }} />
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }} onClick={e => e.stopPropagation()}>
+          <button type="button" className="btn btn-danger btn-sm btn-icon" onClick={() => removeLesson(lesson.id)} style={{ padding: "4px !important", opacity: 0.6 }}>
+            <span className="ms" style={{ fontSize: "16px" }}>delete</span>
+          </button>
+          <span className="ms expand-icon" style={{ 
+            color: "#60a5fa", 
+            transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)", 
+            transform: expanded ? "rotate(90deg)" : "none" 
+          }}>chevron_right</span>
         </div>
       </div>
-      <button type="button" className="btn btn-danger btn-sm btn-icon" onClick={() => removeLesson(lesson.id)} style={{ padding: "4px !important", opacity: 0.6 }}>
-        <span className="ms" style={{ fontSize: "16px" }}>delete</span>
-      </button>
+
+      {expanded && (
+        <div className="lesson-row-body">
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 700, marginBottom: "6px", display: "block", textTransform: "uppercase", letterSpacing: "0.5px" }}>Ders Başlığı</label>
+              <input 
+                className="lesson-input"
+                value={lesson.title} 
+                onChange={e => updateLesson(lesson.id, "title", e.target.value)} 
+                placeholder="Örn: 9. Sınıf Biyoloji - Hücre Bölünmesi"
+              />
+            </div>
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 700, marginBottom: "6px", display: "block", textTransform: "uppercase", letterSpacing: "0.5px" }}>YouTube URL / ID</label>
+              <input 
+                className="lesson-input vid"
+                value={lesson.youtube} 
+                onChange={e => updateLesson(lesson.id, "youtube", e.target.value)} 
+                placeholder="https://www.youtube.com/watch?v=..."
+              />
+            </div>
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 700, marginBottom: "6px", display: "block", textTransform: "uppercase", letterSpacing: "0.5px" }}>Ders Notu (PDF/Drive Linki)</label>
+              <input 
+                className="lesson-input note"
+                value={lesson.notes_link} 
+                onChange={e => updateLesson(lesson.id, "notes_link", e.target.value)} 
+                placeholder="Drive veya PDF döküman linkini buraya yapıştırın"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <style jsx>{`
+        .lesson-row-card {
+          background: #0b1221;
+          border: 1px solid #1e3a5f;
+          border-radius: 12px;
+          margin-bottom: 16px; /* 8px -> 16px yapıldı */
+          transition: all 0.2s;
+          overflow: hidden;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .lesson-row-card:hover { border-color: #3b82f6; }
+        .lesson-row-card.is-expanded { 
+          border-color: #60a5fa; 
+          box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 10px rgba(96, 165, 250, 0.1);
+          transform: translateY(-2px);
+        }
+        .lesson-row-header {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 14px 18px; /* Padding artırıldı */
+          cursor: pointer;
+          background: #0b1221;
+        }
+        .lesson-row-body {
+          padding: 16px 18px 20px 18px; /* Sol boşluk sağ ile eşitlendi (52px -> 18px) */
+          background: #060e1a;
+          border-top: 1px solid #111d2e;
+          animation: slideDown 0.2s ease-out;
+        }
+        @keyframes slideDown {
+          from { opacity: 0; transform: translateY(-5px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .lesson-input {
+          width: 100%;
+          background: #0f172a;
+          border: 1.5px solid #1e3a5f;
+          border-radius: 8px;
+          padding: 10px 14px;
+          color: #fff;
+          font-size: 0.85rem;
+          font-weight: 600;
+          transition: all 0.2s;
+          outline: none;
+        }
+        .lesson-input:focus {
+          border-color: #60a5fa;
+          background: #111d35;
+          box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+        }
+        .lesson-input.vid { color: #60a5fa; }
+        .lesson-input.note { color: #34d399; }
+        .lesson-input::placeholder { color: #475569; font-style: italic; font-weight: 400; }
+      `}</style>
     </div>
   );
 }
