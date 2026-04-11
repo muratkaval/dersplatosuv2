@@ -4,6 +4,7 @@ import { PageContainer } from "@/app/components/site-layout";
 import { getBookBySlug, toMediaUrl, getGlobalSettings } from "@/app/lib/strapi";
 import Book3D from "@/app/components/book-3d";
 import FlipBookNative from "@/app/components/flip-book-native";
+import BookStickyCTA from "@/app/components/book-sticky-cta";
 import FAQSection from "@/app/components/faq-section";
 import "../book-premium.css";
 
@@ -222,23 +223,20 @@ export default async function BookDetailPage({ params }: Props) {
 
               {/* Hocalarımız Alanı */}
               {allInstructors.length > 0 && (
-                <div className="instructors-block" style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "10px", marginBottom: "24px" }}>
-                  <span style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", opacity: 0.8 }}>Youtuber Hocalarımız</span>
-                  <div className="instructor-grid-container" style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+                <div className="instructors-block" style={{ marginTop: "10px", marginBottom: "24px" }}>
+                  <span className="book-section-eyebrow" style={{ background: "transparent", border: "none", padding: 0, marginBottom: "12px", display: "block" }}>Youtuber Hocalarımız</span>
+                  <div className="instructor-grid-container" style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
                     {allInstructors.map((ins: any) => (
                       <Link 
                         key={ins.id} 
                         href={`/hoca/${ins.slug}`}
-                        style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none", flexShrink: 0, padding: "4px 12px 4px 4px", borderRadius: "50px", border: "1px solid rgba(255,255,255,0.05)", background: "rgba(255,255,255,0.02)", transition: "all 0.2s" }}
                         className="instructor-item-pill"
                       >
                         <div style={{ 
                           width: "36px", height: "36px", borderRadius: "50%", overflow: "hidden", 
-                          border: "2px solid #1e3a5f", background: "#0a1118", flexShrink: 0,
-                          boxShadow: "0 4px 8px rgba(0,0,0,0.2)"
+                          border: "2px solid var(--accent-color, #1e3a5f)", background: "#0a1118", flexShrink: 0
                         }}>
                           {(() => {
-                            // Extract photo object carefully for Strapi v5
                             const photoData = ins.photo?.data?.attributes || ins.photo?.attributes || ins.photo;
                             const photoUrl = toMediaUrl(photoData?.url || photoData);
                             const safeName = ins.name || "Hoca";
@@ -251,7 +249,7 @@ export default async function BookDetailPage({ params }: Props) {
                             );
                           })()}
                         </div>
-                        <span style={{ color: "#f8fafc", fontSize: "0.85rem", fontWeight: 600 }}>{ins.name || "Eğitmen"}</span>
+                        <span>{ins.name || "Eğitmen"}</span>
                       </Link>
                     ))}
                   </div>
@@ -394,6 +392,15 @@ export default async function BookDetailPage({ params }: Props) {
             </div>
           </section>
         )}
+
+        {/* Mobile Sticky CTA */}
+        <BookStickyCTA 
+          title={book.title}
+          coverUrl={coverUrl || "https://via.placeholder.com/100"}
+          buyLink={book.buy_link}
+          previewLink={book.preview_link}
+          accentColor={accent}
+        />
       </div>
     </PageContainer>
   );
