@@ -18,7 +18,13 @@ export function toMediaUrl(url?: any): string {
     actualUrl = url;
   } else if (url && typeof url === "object") {
     // Try nested data.attributes first (v4/v5 populated style)
-    actualUrl = url.attributes?.url || url.data?.attributes?.url || url.url || "";
+    actualUrl = (
+      url.url || 
+      url.attributes?.url || 
+      url.data?.attributes?.url || 
+      url.data?.url || 
+      ""
+    );
   }
   
   if (!actualUrl || typeof actualUrl !== "string") return "";
