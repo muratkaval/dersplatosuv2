@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toMediaUrl } from "@/app/lib/strapi";
 
 interface Props {
   instructor?: any;
@@ -26,7 +27,7 @@ export default function InstructorForm({ instructor, subjects }: Props) {
   const [selSubs, setSelSubs] = useState<string[]>((instructor?.subjects || []).map((s: any) => s.documentId || String(s.id)));
 
   const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>(instructor?.photo?.url || "");
+  const [previewUrl, setPreviewUrl] = useState<string>(toMediaUrl(instructor?.photo));
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
@@ -172,7 +173,7 @@ export default function InstructorForm({ instructor, subjects }: Props) {
             <div style={{ marginBottom: "16px", textAlign: "center" }}>
               {previewUrl ? (
                 <img 
-                  src={previewUrl.startsWith("http") || previewUrl.startsWith("blob") ? previewUrl : `${process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1340"}${previewUrl}`} 
+                  src={previewUrl} 
                   alt="Preview" 
                   style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "50%", border: "3px solid #1e3a5f" }} 
                 />

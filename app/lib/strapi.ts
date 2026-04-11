@@ -1,4 +1,4 @@
-const rawBase = process.env.STRAPI_URL || "http://localhost:1340";
+const rawBase = process.env.STRAPI_URL || process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1340";
 const strapiOrigin = rawBase.replace(/\/api\/?$/, "");
 const strapiApiBase = `${strapiOrigin}/api`;
 
@@ -11,15 +11,24 @@ function buildHeaders(): HeadersInit {
 
 export function toMediaUrl(url?: any): string {
   if (!url) return "";
-  // If we accidentally got an object, try to extract url from it
-  const actualUrl = typeof url === 'string' ? url : (url.url || url.attributes?.url);
-  if (!actualUrl || typeof actualUrl !== 'string') return "";
+  
+  // Robust extraction from Strapi v4/v5 structures
+  let actualUrl = "";
+  if (typeof url === "string") {
+    actualUrl = url;
+  } else if (url && typeof url === "object") {
+    // Try nested data.attributes first (v4/v5 populated style)
+    actualUrl = url.attributes?.url || url.data?.attributes?.url || url.url || "";
+  }
+  
+  if (!actualUrl || typeof actualUrl !== "string") return "";
 
   if (actualUrl.startsWith("http://") || actualUrl.startsWith("https://")) return actualUrl;
   if (actualUrl.startsWith("//")) return `https:${actualUrl}`;
-  if (actualUrl.startsWith("/uploads")) return actualUrl;
-  if (!actualUrl.startsWith("/")) return `${strapiOrigin}/${actualUrl}`;
-  return `${strapiOrigin}${actualUrl}`;
+  
+  // Prepend origin to relative paths
+  const cleanPath = actualUrl.startsWith("/") ? actualUrl : `/${actualUrl}`;
+  return `${strapiOrigin}${cleanPath}`;
 }
 
 export function getCampThumbnail(camp: any): string {

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { toMediaUrl } from "@/app/lib/strapi";
 
 interface Props {
   initialBooks: any[];
@@ -68,7 +69,7 @@ export default function BooksTable({ initialBooks }: Props) {
                     <td>
                       {coverUrl ? (
                         <img 
-                          src={coverUrl.startsWith("http") ? coverUrl : `${process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1340"}${coverUrl}`} 
+                          src={toMediaUrl(book.cover)} 
                           className="book-thumb" 
                           alt={book.title} 
                         />

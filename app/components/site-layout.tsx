@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { toMediaUrl } from "@/app/lib/strapi";
 
 interface NavLink { label: string; href: string; }
 interface FooterColumn { title: string; links: NavLink[]; }
@@ -41,6 +42,7 @@ export function SiteHeader({ navLinks: propLinks }: { navLinks?: NavLink[] }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [navLinks, setNavLinks] = useState<NavLink[]>(propLinks || DEFAULT_NAV);
+  const [logos, setLogos] = useState<any[]>([]);
 
   useEffect(() => {
     const theme = localStorage.getItem("theme");
@@ -51,6 +53,9 @@ export function SiteHeader({ navLinks: propLinks }: { navLinks?: NavLink[] }) {
     if (!propLinks) {
       fetch("/api/nav").then(r => r.json()).then(d => {
         if (d?.navLinks?.length) setNavLinks(d.navLinks);
+        if (d?.logo) {
+          setLogos(Array.isArray(d.logo) ? d.logo : [d.logo]);
+        }
       }).catch(() => {});
     }
   }, []);
@@ -71,7 +76,11 @@ export function SiteHeader({ navLinks: propLinks }: { navLinks?: NavLink[] }) {
     <nav className={`navbar ${isMobileMenuOpen ? 'mobile-open' : ''}`} id="navbar">
       <div className="nav-container">
         <Link href="/" className="nav-logo">
-          <img src="https://i.hizliresim.com/ag3gf4d.png" className="logo-img" alt="Ders Platosu" />
+          <img 
+            src={logos.length > 0 ? toMediaUrl(logos[0]) : "https://i.hizliresim.com/ag3gf4d.png"} 
+            className="logo-img" 
+            alt="Ders Platosu" 
+          />
           <span className="logo-text">Ders Platosu</span>
         </Link>
         <ul className="nav-links">
@@ -112,11 +121,19 @@ export function SiteHeader({ navLinks: propLinks }: { navLinks?: NavLink[] }) {
 
 export function SiteFooter({ footerColumns: propCols }: { footerColumns?: FooterColumn[] }) {
   const [cols, setCols] = useState<FooterColumn[]>(propCols || DEFAULT_FOOTER);
+  const [footerTitle, setFooterTitle] = useState("Ders Platosu");
+  const [footerDescription, setFooterDescription] = useState("Türkiye'nin en büyük ücretsiz TYT ve AYT eğitim platformu.");
+  const [logos, setLogos] = useState<any[]>([]);
 
   useEffect(() => {
     if (!propCols) {
       fetch("/api/nav").then(r => r.json()).then(d => {
         if (d?.footerColumns?.length) setCols(d.footerColumns);
+        if (d?.footer_title) setFooterTitle(d.footer_title);
+        if (d?.footer_description) setFooterDescription(d.footer_description);
+        if (d?.logo) {
+          setLogos(Array.isArray(d.logo) ? d.logo : [d.logo]);
+        }
       }).catch(() => {});
     }
   }, []);
@@ -126,11 +143,17 @@ export function SiteFooter({ footerColumns: propCols }: { footerColumns?: Footer
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <Link href="/" className="nav-logo" style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <img src="https://i.hizliresim.com/ag3gf4d.png" className="logo-img" alt="Ders Platosu" style={{ width: '36px', height: '36px', borderRadius: '8px' }} />
-              <span className="logo-text" style={{ fontWeight: '800', fontSize: '1.3rem' }}>Ders Platosu</span>
-            </Link>
-            <p style={{ marginTop: '14px', color: 'var(--text-muted)' }}>Türkiye'nin en büyük ücretsiz TYT ve AYT eğitim platformu.</p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", alignItems: "center", marginBottom: "12px" }}>
+              {logos.length > 0 ? (
+                logos.map((l, i) => (
+                  <img key={i} src={toMediaUrl(l)} alt="Logo" style={{ height: '32px', width: 'auto', borderRadius: '4px' }} />
+                ))
+              ) : (
+                <img src="https://i.hizliresim.com/ag3gf4d.png" className="logo-img" alt="Logo" style={{ width: '36px', height: '36px', borderRadius: '8px' }} />
+              )}
+              <span className="logo-text" style={{ fontWeight: '800', fontSize: '1.2rem', marginLeft: "4px" }}>{footerTitle}</span>
+            </div>
+            <p style={{ color: 'var(--text-muted)', fontSize: "0.95rem", lineHeight: "1.5" }}>{footerDescription}</p>
           </div>
           {cols.map((col, ci) => (
             <div key={ci} className="footer-col">

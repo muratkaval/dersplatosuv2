@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { toMediaUrl } from "@/app/lib/strapi";
 
 interface Props {
   book?: any;
@@ -32,7 +33,7 @@ export default function BookForm({ book, subjects, categories, instructors }: Pr
   const [previewLink, setPreviewLink] = useState<string>(book?.preview_link || "");
 
   const [coverFile, setCoverFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>(book?.cover?.url || "");
+  const [previewUrl, setPreviewUrl] = useState<string>(toMediaUrl(book?.cover));
   const [saving, setSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
@@ -383,7 +384,7 @@ export default function BookForm({ book, subjects, categories, instructors }: Pr
                 {previewUrl ? (
                   <div style={{ position: "relative" }}>
                     <img 
-                      src={previewUrl.startsWith("http") || previewUrl.startsWith("blob") ? previewUrl : `${process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1340"}${previewUrl}`} 
+                      src={previewUrl} 
                       alt="Preview" 
                       style={{ width: "210px", height: "295px", objectFit: "cover", borderRadius: "12px", border: "2px solid #1e3a5f", boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }} 
                     />

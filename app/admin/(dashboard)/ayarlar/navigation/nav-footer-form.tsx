@@ -50,6 +50,16 @@ export default function NavFooterForm({ initialData }: Props) {
       ? initialData.footerColumns.map((c: any) => ({ ...c, id: uid(), links: (c.links || []).map((l: any) => ({ ...l, id: uid() })) }))
       : DEFAULT_FOOTER
   );
+  const [footerTitle, setFooterTitle] = useState(initialData?.footer_title || "");
+  const [footerDescription, setFooterDescription] = useState(initialData?.footer_description || "");
+  
+  // Logos state: array of { id, url, file? }
+  const [logos, setLogos] = useState<any[]>(() => {
+    if (Array.isArray(initialData?.logo)) return initialData.logo;
+    if (initialData?.logo) return [initialData.logo];
+    return [];
+  });
+  
   const [navSaving, setNavSaving] = useState(false);
   const [footerSaving, setFooterSaving] = useState(false);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
@@ -151,19 +161,61 @@ export default function NavFooterForm({ initialData }: Props) {
   async function saveFooter() {
     setFooterSaving(true);
     try {
+      const finalLogoIds: number[] = [];
+
+      for (const logoItem of logos) {
+        if (logoItem.file) {
+          // New file to upload
+          const formData = new FormData();
+          formData.append("files", logoItem.file);
+          const uploadRes = await fetch("/api/admin/upload", {
+            method: "POST",
+            body: formData,
+          });
+          const uploadData = await uploadRes.json();
+          if (uploadRes.ok && uploadData[0]) {
+            finalLogoIds.push(uploadData[0].id);
+          }
+        } else if (logoItem.id) {
+          // Existing file
+          finalLogoIds.push(logoItem.id);
+        }
+      }
+
       const payload = {
         footerColumns: footerCols.map(({ title, links }) => ({
           title,
           links: links.map(({ label, href }) => ({ label, href }))
-        }))
+        })),
+        footer_title: footerTitle,
+        footer_description: footerDescription,
+        logo: finalLogoIds
       };
       const res = await fetch("/api/admin/global-setting", {
         method: "PUT", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+      
+      const contentType = res.headers.get("content-type");
+      let errorData: any = {};
+      
+      if (contentType && contentType.includes("application/json")) {
+        errorData = await res.json();
+      } else {
+        const text = await res.text();
+        console.error("Non-JSON error response:", text);
+        errorData = { error: "Sunucu hatası (HTML)" };
+      }
+
       if (res.ok) showToast("Footer kaydedildi ✓");
-      else showToast("Hata oluştu", "error");
-    } catch { showToast("Bağlantı hatası", "error"); }
+      else {
+        console.error("Save error detail:", errorData);
+        showToast("Hata: " + (errorData.error || "Beklenmedik bir hata oluştu"), "error");
+      }
+    } catch (err) { 
+      console.error("Save operation failed:", err);
+      showToast("Bağlantı hatası", "error"); 
+    }
     finally { setFooterSaving(false); }
   }
 
@@ -250,6 +302,69 @@ export default function NavFooterForm({ initialData }: Props) {
             <button className="btn btn-ghost btn-sm" onClick={addFooterCol}>
               <span className="ms">add</span> Sütun Ekle
             </button>
+          </div>
+
+          {/* Footer Branding Fields */}
+          <div style={{ padding: "16px", background: "rgba(255,255,255,0.02)", borderBottom: "1px solid rgba(255,255,255,0.07)", display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+              <label style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 600 }}>FOOTER MARKA BAŞLIĞI</label>
+              <input 
+                style={inputStyle} 
+                value={footerTitle} 
+                onChange={e => setFooterTitle(e.target.value)} 
+                placeholder="Örn: Ders Platosu" 
+              />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+              <label style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 600 }}>FOOTER AÇIKLAMA METNİ</label>
+              <textarea 
+                style={{ ...inputStyle, minHeight: "80px", resize: "vertical" }} 
+                value={footerDescription} 
+                onChange={e => setFooterDescription(e.target.value)} 
+                placeholder="Platform hakkında kısa bilgi..." 
+              />
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              <label style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 600 }}>SİTE LOGOLARI</label>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(60px, 1fr))", gap: "10px" }}>
+                {logos.map((logo, idx) => (
+                  <div key={idx} style={{ position: "relative", width: "60px", height: "60px", background: "rgba(255,255,255,0.05)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(255,255,255,0.1)", overflow: "hidden" }}>
+                    <img 
+                      src={logo.url.startsWith("blob") ? logo.url : (process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1340") + logo.url} 
+                      alt="Logo" 
+                      style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} 
+                    />
+                    <button 
+                      onClick={() => setLogos(prev => prev.filter((_, i) => i !== idx))}
+                      style={{ position: "absolute", top: "1px", right: "1px", background: "rgba(239,68,68,0.9)", border: "none", color: "white", borderRadius: "50%", width: "16px", height: "16px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                    >
+                      <span className="ms" style={{ fontSize: "12px" }}>close</span>
+                    </button>
+                  </div>
+                ))}
+                
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  multiple
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files || []);
+                    const newLogos = files.map(file => ({
+                      url: URL.createObjectURL(file),
+                      file
+                    }));
+                    setLogos(prev => [...prev, ...newLogos]);
+                  }} 
+                  style={{ display: "none" }} 
+                  id="nav-logo-upload-multi"
+                />
+                <label htmlFor="nav-logo-upload-multi" style={{ width: "60px", height: "60px", border: "1px dashed rgba(255,255,255,0.2)", borderRadius: "8px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "rgba(255,255,255,0.4)" }}>
+                  <span className="ms" style={{ fontSize: "18px" }}>add</span>
+                  <span style={{ fontSize: "9px" }}>Ekle</span>
+                </label>
+              </div>
+            </div>
           </div>
 
           <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "16px" }}>

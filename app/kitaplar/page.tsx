@@ -1,9 +1,12 @@
 import { PageContainer } from "../components/site-layout";
-import BookCard from "../components/book-card";
-import { getBooks } from "../lib/strapi";
+import { getBooks, getSubjects } from "../lib/strapi";
+import BookFilterableList from "../components/book-filterable-list";
 
 export default async function KitaplarPage() {
-  const books = await getBooks(false);
+  const [books, subjects] = await Promise.all([
+    getBooks(false),
+    getSubjects()
+  ]);
 
   return (
     <PageContainer>
@@ -15,13 +18,9 @@ export default async function KitaplarPage() {
         </div>
       </section>
 
-      <section className="books-section" style={{ padding: "60px 0" }}>
+      <section className="books-section" style={{ padding: "40px 0 80px" }}>
         <div className="container">
-          <div className="books-grid-unified">
-            {books.map((book) => (
-              <BookCard key={book.id} book={book} />
-            ))}
-          </div>
+          <BookFilterableList initialBooks={books} subjects={subjects} />
         </div>
       </section>
     </PageContainer>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { toMediaUrl } from "@/app/lib/strapi";
 import {
   DndContext,
   closestCenter,
@@ -166,9 +167,9 @@ function SortableInstructorRow({ ins, deleteInstructor }: any) {
           background: "#1e3a5f", overflow: "hidden", display: "flex",
           alignItems: "center", justifyContent: "center"
         }}>
-          {photoUrl ? (
+          {ins.photo ? (
             <img 
-              src={photoUrl.startsWith("http") ? photoUrl : `${process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1340"}${photoUrl}`} 
+              src={toMediaUrl(ins.photo)} 
               style={{ width: "100%", height: "100%", objectFit: "cover" }} 
               alt={ins.name} 
             />
