@@ -188,7 +188,7 @@
 
     /* Avatar Stack Squeezing */
     .avatar-stack-img, .avatar-stack-more {
-        margin-left: -16px !important; /* Squeeze more on mobile */
+        margin-left: -6px !important; /* Loosened significantly for clarity */
         width: 30px !important;
         height: 30px !important;
     }
@@ -233,8 +233,8 @@
 }
 
 .book-card-premium {
-    background: var(--bg-card, #111827);
-    border: 1px solid var(--border, #1e293b);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
     border-radius: 16px;
     overflow: hidden;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
@@ -254,7 +254,7 @@
     width: 100%;
     aspect-ratio: 3/4;
     overflow: hidden;
-    background: var(--bg-secondary, #0f172a);
+    background: var(--bg-secondary);
 }
 
 .book-card-cover {
@@ -278,7 +278,7 @@
 .book-card-body h3 {
     font-size: 1.05rem;
     font-weight: 750;
-    color: #ffffff;
+    color: var(--text);
     margin-bottom: 20px;
     line-height: 1.35;
     display: -webkit-box;
@@ -350,9 +350,9 @@
 }
 
 .stat-card {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--bg-card);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
     padding: 30px;
     border-radius: 24px;
     display: flex;
@@ -387,7 +387,7 @@
 .stat-value {
     font-size: 2rem;
     font-weight: 900;
-    color: #ffffff;
+    color: var(--text);
     line-height: 1;
     margin-bottom: 4px;
     letter-spacing: -0.02em;
@@ -470,7 +470,7 @@
 .feature-title {
     font-size: 1.25rem;
     font-weight: 800;
-    color: #ffffff;
+    color: var(--text);
     margin-bottom: 12px;
     position: relative;
     z-index: 2;
@@ -502,7 +502,7 @@
     padding-right: 110px;
     margin-bottom: 24px;
     padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid var(--border);
 }
 
 .category-title {
@@ -511,7 +511,7 @@
     gap: 10px;
     font-size: 1.5rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--text);
     line-height: 1.25;
     margin: 0;
 }

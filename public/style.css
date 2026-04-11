@@ -1957,11 +1957,16 @@ section.hero {
 
     .story-scroll-wrapper {
         padding: 0 !important;
-        margin: 0 !important;
+        margin-left: -24px !important; /* Reach left edge of screen */
+        margin-right: -24px !important; /* Reach right edge of screen */
+        width: calc(100% + 48px) !important; /* Span full screen */
+        overflow: visible !important;
     }
 
     .story-scroll {
-        padding: 10px 24px 8px !important; /* Safe padding for rings */
+        padding: 10px 24px 8px !important; /* Inner padding preserves alignment */
+        overflow-x: auto !important;
+        scrollbar-width: none;
     }
 }
 
