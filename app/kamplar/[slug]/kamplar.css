@@ -622,17 +622,18 @@
 
         @media(max-width:600px) {
             .egitim-hero {
-                padding: 24px 0 20px;
+                padding: 32px 0 24px;
+                min-height: auto;
             }
 
             .egitim-hero-inner {
-                padding: 0 16px;
-                gap: 24px;
+                padding: 0 20px;
+                gap: 20px;
             }
 
             .egitim-hero h1 {
-                font-size: 1.15rem;
-                margin-bottom: 14px;
+                font-size: 1.4rem; /* 1.15 -> 1.4 */
+                margin-bottom: 16px;
             }
 
             .egitim-hero p {
@@ -640,112 +641,174 @@
             }
 
             .egitim-badges {
-                margin-bottom: 12px;
+                margin-bottom: 14px;
                 gap: 6px;
             }
 
             .ebadge {
-                padding: 3px 10px;
-                font-size: 0.68rem;
+                padding: 4px 12px;
+                font-size: 0.7rem;
             }
 
             .egitim-btns {
-                gap: 10px;
+                gap: 12px;
                 width: 100%;
             }
 
             .egitim-btns .btn-primary,
             .egitim-btns .btn-outline {
-                padding: 11px 16px;
-                font-size: 0.82rem;
+                padding: 14px 20px; /* 11 -> 14 */
+                font-size: 0.95rem; /* 0.82 -> 0.95 */
                 flex: 0 0 100%;
                 width: 100%;
                 justify-content: center;
-                text-align: center;
+                border-radius: 14px;
+                font-weight: 800;
             }
 
             .egitim-video-card {
-                border-radius: 10px;
-            }
-
-            .egitim-video-label {
-                padding: 10px 14px;
-                font-size: 0.72rem;
+                border-radius: 12px;
+                max-width: 100%;
             }
 
             .egitim-body {
-                padding: 16px 6px;
-                gap: 16px;
-            }
-
-            .lesson-list-dyn {
-                gap: 0;
-            }
-
-            .lesson-item {
-                padding: 8px 0;
-                gap: 4px;
-                border-radius: 0;
-                border: none;
-                border-bottom: 1px solid var(--border);
-            }
-
-            .lesson-item:hover {
-                background: transparent;
-                border-color: var(--border);
-            }
-
-            .lesson-item.active {
-                border-color: var(--border);
-            }
-
-            .lesson-row {
-                gap: 6px;
-            }
-
-            .lesson-num {
-                width: 16px;
-                font-size: 0.78rem;
-            }
-
-            .lesson-thumb-sm {
-                width: 140px;
-                height: 84px;
-                border-radius: 8px;
-            }
-
-            .lesson-info-dyn h4 {
-                font-size: 0.8rem;
-                margin-bottom: 0;
-            }
-
-            .lesson-notes-btn {
-                display: none;
+                padding: 12px 10px;
+                gap: 20px;
             }
 
             .egitim-tabs {
-                margin-bottom: 16px;
+                margin-bottom: 20px;
+                position: sticky;
+                top: var(--nav-h);
+                background: var(--bg);
+                z-index: 100;
+                padding-top: 8px;
             }
 
             .etab {
                 flex: 1;
                 text-align: center;
-                padding: 12px 0;
-                font-size: 0.85rem;
+                padding: 14px 0;
+                font-size: 0.95rem;
+                font-weight: 800;
+            }
+
+            .lesson-list-dyn {
+                gap: 0 !important;
+                padding: 0;
+                background: rgba(255, 255, 255, 0.02);
+                border-radius: 16px;
+                overflow: hidden;
+                border: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .day-group-container {
+                margin-bottom: 24px !important;
+            }
+
+            .day-group-header {
+                background: rgba(37, 99, 235, 0.08) !important;
+                border: none !important;
+                border-left: 4px solid var(--primary) !important;
+                border-radius: 0 !important;
+                padding: 12px 16px !important;
+                margin-bottom: 0 !important;
+                backdrop-filter: blur(10px);
+            }
+
+            .lesson-item {
+                padding: 18px 12px !important; /* Increased vertical breathing room */
+                margin: 0 !important;
+                border: none !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+                border-radius: 0 !important;
+                background: transparent !important;
+                display: flex;
+                align-items: center;
+                gap: 0;
+                width: 100% !important;
+                transition: background 0.2s;
+            }
+
+            .lesson-item:last-child {
+                border-bottom: none !important;
+            }
+
+            .lesson-item.active {
+                background: rgba(37, 99, 235, 0.08) !important;
+            }
+
+            .lesson-row {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                width: 100%;
+            }
+
+            .lesson-num {
+                display: flex;
+                width: 28px;
+                height: 28px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 50%;
+                font-size: 0.75rem;
+                color: #fff;
+                font-weight: 700;
+                flex-shrink: 0;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .lesson-thumb-sm {
+                width: 96px; 
+                height: 54px; /* Maintain 16:9 proportionally */
+                border-radius: 6px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+                object-fit: cover;
+            }
+
+            .lesson-info-dyn {
+                flex: 1;
+                min-width: 0;
+                padding-left: 2px;
+            }
+
+            .lesson-info-dyn h4 {
+                font-size: 0.88rem;
+                font-weight: 600;
+                color: #f1f5f9;
+                line-height: 1.35;
+                margin-bottom: 0;
+                white-space: normal;
+                overflow: visible;
+            }
+
+            .lesson-notes-icon {
+                flex-shrink: 0;
+                width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--primary);
+                background: rgba(37, 99, 235, 0.08);
+                border-radius: 8px;
+                margin-left: 8px;
+            }
+
+            .lesson-notes-icon .ms {
+                font-size: 18px;
             }
 
             .sidebar-card {
-                padding: 14px 12px;
-                border-radius: 10px;
-                margin-bottom: 12px;
-                margin-left: 0;
-                margin-right: 0;
+                padding: 18px 16px;
+                border-radius: 14px;
+                margin-bottom: 16px;
             }
 
             .sidebar-card h3 {
-                font-size: 0.88rem;
-                margin-bottom: 12px;
-                gap: 6px;
+                font-size: 1rem;
+                margin-bottom: 14px;
             }
 
             .sidebar-card img[style*="border-radius:50%"] {

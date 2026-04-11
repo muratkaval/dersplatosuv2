@@ -14,7 +14,7 @@ export default function CourseCard({ camp }: { camp: any }) {
 
   return (
     <Link href={`/kamplar/${camp.slug}`} className="course-card">
-      <div className="course-thumb" style={{ aspectRatio: "16 / 9", height: "auto" }}>
+      <div className="course-thumb" style={{ aspectRatio: "16 / 9", height: "auto", position: "relative" }}>
         <img 
           src={thumbnail} 
           alt={camp.title} 
@@ -27,6 +27,11 @@ export default function CourseCard({ camp }: { camp: any }) {
             </svg>
           </div>
         </div>
+        {camp.subject?.name && camp.subject.name !== "Tümü" && (
+          <span className="course-tag">
+            {camp.subject.name}
+          </span>
+        )}
       </div>
       
       <div className="course-body" style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
@@ -38,92 +43,62 @@ export default function CourseCard({ camp }: { camp: any }) {
           {lessonsCount} ders içeriyor
         </div>
 
-        <div style={{ 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "space-between", 
-          paddingTop: "16px",
-          borderTop: "1px solid rgba(255,255,255,0.06)",
-          marginTop: "auto"
-        }}>
+        <div className="course-footer">
           {hasMultipleInstructors ? (
-            <>
-              <div className="avatar-stack" style={{ margin: 0 }}>
-                {normalizedInstructors.slice(0, 5).map((inst: any, idx: number) => {
-                  const pUrl = toMediaUrl(inst.photo?.url || inst.photo?.formats?.thumbnail?.url);
-                  return pUrl ? (
-                    <img 
-                      key={inst.id || idx}
-                      src={pUrl} 
-                      className="avatar-stack-img" 
-                      alt={inst.name} 
-                    />
-                  ) : (
-                    <div 
-                      key={inst.id || idx}
-                      className="avatar-stack-img" 
-                      style={{ 
-                        background: 'var(--bg-secondary)', 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'center',
-                        fontSize: '0.8rem'
-                      }}
-                    >
-                       👤
-                    </div>
-                  );
-                })}
-              </div>
-              <span style={{ fontWeight: 600, fontSize: "0.9rem", color: "var(--text)" }}>Tümü</span>
-            </>
+            <div className="avatar-stack" style={{ margin: 0 }}>
+              {normalizedInstructors.slice(0, 5).map((inst: any, idx: number) => {
+                const pUrl = toMediaUrl(inst.photo?.url || inst.photo?.formats?.thumbnail?.url);
+                return pUrl ? (
+                  <img 
+                    key={inst.id || idx}
+                    src={pUrl} 
+                    className="avatar-stack-img" 
+                    alt={inst.name} 
+                  />
+                ) : (
+                  <div 
+                    key={inst.id || idx}
+                    className="avatar-stack-img" 
+                    style={{ 
+                      background: 'var(--bg-secondary)', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      fontSize: '0.8rem'
+                    }}
+                  >
+                     👤
+                  </div>
+                );
+              })}
+            </div>
           ) : (
-            <>
+            <div className="course-instructor">
               {firstInstructor ? (
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <>
                   {(() => {
                     const pUrl = toMediaUrl(firstInstructor.photo?.url || firstInstructor.photo?.formats?.thumbnail?.url);
                     return pUrl ? (
                       <img 
                         src={pUrl} 
-                        style={{ width: "32px", height: "32px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--border)" }} 
+                        className="instructor-avatar-sm"
                         alt={firstInstructor.name}
                       />
                     ) : (
-                      <div 
-                        style={{ 
-                          width: "32px", height: "32px", borderRadius: "50%", 
-                          background: "var(--bg-secondary)", border: "2px solid var(--border)",
-                          display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem" 
-                        }}
-                      >
-                         👤
-                      </div>
+                      <div className="instructor-avatar-sm-fallback">👤</div>
                     );
                   })()}
-                  <span style={{ fontWeight: 600, fontSize: "0.9rem", color: "var(--text)" }}>
+                  <span className="instructor-name-sm">
                     {firstInstructor.name}
                   </span>
-                </div>
+                </>
               ) : (
-                <span style={{ fontWeight: 600, fontSize: "0.9rem", color: "var(--text)" }}>Eğitmen Yok</span>
+                <span className="instructor-name-sm">Eğitmen Yok</span>
               )}
-              <span 
-                className="course-tag" 
-                style={{ 
-                  position: "static", 
-                  marginBottom: 0, 
-                  fontSize: "0.75rem",
-                  padding: "4px 10px" 
-                }}
-              >
-                {camp.subject?.name || "Kamp"}
-              </span>
-            </>
+            </div>
           )}
         </div>
       </div>
     </Link>
   );
 }
-

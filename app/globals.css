@@ -384,3 +384,39 @@ body[data-theme="dark"] .filter-scroll-btn {
     display: none !important;
   }
 }
+
+/* Hero card left alignment */
+.hero-card .course-body,
+.hero-card .course-body h3,
+.hero-card .hero-course-title {
+  text-align: left !important;
+}
+
+.hero-card .course-instructor {
+  flex-direction: row !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+}
+
+/* Modern App-Style Navbar for Dark Mode */
+body[data-theme="dark"] .navbar {
+  background: rgba(5, 11, 31, 0.8) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-theme="dark"] .mobile-menu {
+  background: rgba(5, 11, 31, 0.98) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+/* App spacing refinements */
+@media (max-width: 640px) {
+  section {
+    padding: 40px 0 !important;
+  }
+  .container {
+    padding: 0 20px !important;
+  }
+}

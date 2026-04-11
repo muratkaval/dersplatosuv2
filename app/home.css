@@ -78,12 +78,13 @@
 }
 
 .story-name {
-    font-size: 0.85rem;
+    display: block; /* Ensure width/overflow works */
+    font-size: 0.82rem;
     font-weight: 700;
     color: var(--text);
     text-align: center;
-    line-height: 1.2;
-    margin-bottom: 2px;
+    line-height: 1.25;
+    margin-bottom: 4px;
     width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -91,20 +92,43 @@
 }
 
 .story-subject {
-    font-size: 0.7rem;
+    display: inline-block;
+    font-size: 0.65rem;
     font-weight: 600;
     text-align: center;
-    background: rgba(66, 137, 247, 0.12);
+    background: rgba(66, 137, 247, 0.1);
     color: #4289F7;
-    padding: 2px 10px;
+    padding: 2px 8px;
     border-radius: 20px;
     white-space: nowrap;
+    max-width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Course Tag Positioning */
+.course-thumb {
+    position: relative;
+}
+
+.course-tag {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 2;
 }
 
 /* Mobile responsive */
 @media (max-width: 640px) {
     .story-scroll {
-        padding: 8px 20px 12px;
+        padding: 0 20px 12px; /* Top padding 0 for Instagram style */
         gap: 16px;
     }
 
@@ -124,6 +148,53 @@
     
     .story-name {
         font-size: 0.75rem;
+        font-weight: 800;
+        max-width: 100%;
+    }
+
+    .story-subject {
+        font-size: 0.6rem;
+        max-width: 100%;
+    }
+
+    .course-footer {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important; /* Keep avatar and text vertically centered */
+        justify-content: flex-start !important;
+        gap: 10px !important;
+        padding-top: 12px !important;
+    }
+
+    .instructor-name-sm {
+        font-size: 0.8rem !important;
+        white-space: normal !important; /* ALLOW wrapping */
+        line-height: 1.2 !important;
+        font-weight: 700 !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2; /* Max 2 lines as in user's 2nd image */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        max-width: none !important;
+        flex: 1; /* Take up remaining space next to avatar */
+    }
+
+    .course-tag {
+        top: 8px !important;
+        right: 8px !important;
+        padding: 4px 10px !important;
+        font-size: 0.65rem !important;
+    }
+
+    /* Avatar Stack Squeezing */
+    .avatar-stack-img, .avatar-stack-more {
+        margin-left: -16px !important; /* Squeeze more on mobile */
+        width: 30px !important;
+        height: 30px !important;
+    }
+    
+    .avatar-stack-img:first-child {
+        margin-left: 0 !important;
     }
 }
 
@@ -414,7 +485,158 @@
 }
 
 @media (max-width: 640px) {
-    .stat-card { padding: 20px; }
-    .stat-value { font-size: 1.5rem; }
-    .feature-card { padding: 30px; }
+    .stat-card {
+        padding: 20px;
+    }
+    .stat-value {
+        font-size: 1.5rem;
+    }
+    .feature-card {
+        padding: 30px;
+    }
+}
+
+/* ===== CATEGORY HEADER - App Style ===== */
+.category-header {
+    position: relative;
+    padding-right: 110px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.category-title {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.25;
+    margin: 0;
+}
+
+.category-title-bar {
+    width: 4px;
+    min-width: 4px;
+    height: 32px;
+    background: #4289F7;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 3px;
+}
+
+.category-title-text {
+    word-break: break-word;
+}
+
+.category-link {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4289F7;
+    background: rgba(66,137,247,0.1);
+    border: 1px solid rgba(66,137,247,0.2);
+    padding: 5px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.category-link:hover {
+    background: rgba(66,137,247,0.2);
+    border-color: rgba(66,137,247,0.4);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+    .category-header {
+        padding-right: 100px;
+    }
+
+    .category-title {
+        font-size: 1.15rem;
+    }
+
+    .category-title-bar {
+        height: 18px;
+        margin-top: 2px;
+    }
+
+    .category-link {
+        font-size: 0.75rem;
+        padding: 4px 10px;
+    }
+}
+
+
+/* ===== Course Card Refinements ===== */
+.course-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    marginTop: auto;
+}
+
+.course-instructor {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.instructor-avatar-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+}
+
+.instructor-avatar-sm-fallback {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.instructor-name-sm {
+    fontWeight: 700;
+    fontSize: 0.92rem;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.course-tag {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(5, 11, 31, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #fff;
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.15);
+    z-index: 5;
+    pointer-events: none;
 }

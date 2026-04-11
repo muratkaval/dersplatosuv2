@@ -120,7 +120,8 @@
         .hoca-btn:hover { opacity: .88; transform: translateY(-1px); }
         .hoca-btn-yt { background: #ff0000; color: #fff; }
         .hoca-btn-ig { background: radial-gradient(circle at 30% 110%, #f09433, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888); color: #fff; }
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
+            .hoca-hero { padding-top: calc(var(--nav-h) + 30px) !important; }
             .hoca-hero-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
             .hoca-photo-wrap img, .hoca-photo-fallback { width: 96px; height: 96px; font-size: 2.4rem; }
             .hoca-logo-circle { width: 96px; height: 96px; }

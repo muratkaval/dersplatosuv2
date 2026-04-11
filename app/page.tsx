@@ -138,11 +138,10 @@ export default async function Home() {
                     </div>
                   </div>
                   <div className="course-body">
-                    <span className="course-tag hero-course-tag">{camps[0].subject?.name || "Kamp"}</span>
                     <h3 className="hero-course-title">{camps[0].title}</h3>
                     <div className="course-instructor">
                       <div className="hero-instructor-stack">
-                        {camps[0].instructors?.slice(0, 3).map((inst) => {
+                        {camps[0].instructors?.map((inst) => {
                           const pUrl = toMediaUrl(inst.photo?.formats?.thumbnail?.url || inst.photo?.url);
                           return pUrl ? (
                             <img
@@ -253,12 +252,12 @@ export default async function Home() {
 
             return sortedGroups.map((group, idx) => (
               <div key={idx} className="category-block" style={{ marginBottom: "60px" }}>
-                <div className="section-header" style={{ marginBottom: "24px", borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: "12px" }}>
-                  <h2 className="section-title" style={{ fontSize: "1.75rem", fontWeight: "700", color: "#fff", display: "flex", alignItems: "center", gap: "10px" }}>
-                    <span style={{ width: "4px", height: "24px", background: "var(--primary-color)", borderRadius: "4px" }}></span>
-                    {group.title}
+                <div className="section-header category-header">
+                  <h2 className="section-title category-title">
+                    <span className="category-title-bar"></span>
+                    <span className="category-title-text">{group.title}</span>
                   </h2>
-                  <Link href={`/kamplar/kategori/${slugify(group.title)}`} className="section-link" style={{ fontSize: "0.9rem", opacity: 0.8 }}>Tümünü Gör ›</Link>
+                  <Link href={`/kamplar/kategori/${slugify(group.title)}`} className="section-link category-link">Tümünü Gör ›</Link>
                 </div>
                 <div className="courses-grid">
                   {group.camps.slice(0, 6).map((camp) => (
@@ -274,9 +273,12 @@ export default async function Home() {
       {/* FEATURED BOOKS */}
       <section className="books-section" id="kitaplar">
         <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">{site.booksTitle || "Öne Çıkan Kitaplar"}</h2>
-            <Link href="/kitaplar" className="section-link">Tümünü Gör ›</Link>
+          <div className="section-header category-header">
+            <h2 className="section-title category-title">
+              <span className="category-title-bar"></span>
+              <span className="category-title-text">{site.booksTitle || "Öne Çıkan Kitaplar"}</span>
+            </h2>
+            <Link href="/kitaplar" className="section-link category-link">Tümünü Gör ›</Link>
           </div>
           <div className="books-grid-unified">
             {featuredBooks.map((book) => (

@@ -165,8 +165,8 @@ export default function CampView({ camp }: { camp: any }) {
                                 <h4>{lesson.title || `Ders ${i + 1}`}</h4>
                               </div>
                               {(lesson.notes_link || lesson.notes) && (
-                                <div className="lesson-notes-badge">
-                                  📄 Notu Var
+                                <div className="lesson-notes-icon" title="Ders Notu Mevcut">
+                                  <span className="ms">description</span>
                                 </div>
                               )}
                             </div>
@@ -241,8 +241,8 @@ export default function CampView({ camp }: { camp: any }) {
                                     <h4>{lesson.title || `${mainLabel} ${dayNum} - Ders ${i + 1}`}</h4>
                                   </div>
                                   {(lesson.notes_link || lesson.notes) && (
-                                    <div className="lesson-notes-badge">
-                                      📄 Notu Var
+                                    <div className="lesson-notes-icon" title="Ders Notu Mevcut">
+                                      <span className="ms">description</span>
                                     </div>
                                   )}
                                 </div>

@@ -51,16 +51,16 @@ export default function BookCard({ book }: BookCardProps) {
         <div className="book-card-btns">
           {book.buy_link ? (
             <a href={book.buy_link} className="btn-book-buy" target="_blank" rel="noopener noreferrer">
-              📦 Satın Al ↗
+              Satın Al ↗
             </a>
           ) : (
             <button className="btn-book-buy" disabled>
-              📦 Stokta Yok
+              Stokta Yok
             </button>
           )}
           
           <Link href={`/kitaplar/${book.slug || book.id}`} className="btn-book-examine">
-            <span className="ms" style={{ fontSize: '1rem' }}>search</span> Kitabı İncele
+            Kitabı İncele
           </Link>
         </div>
       </div>
