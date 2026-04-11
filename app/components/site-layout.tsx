@@ -80,6 +80,9 @@ export function SiteHeader({ navLinks: propLinks }: { navLinks?: NavLink[] }) {
             src={logos.length > 0 ? toMediaUrl(logos[0]) : "https://i.hizliresim.com/ag3gf4d.png"} 
             className="logo-img" 
             alt="Ders Platosu" 
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "https://i.hizliresim.com/ag3gf4d.png";
+            }}
           />
           <span className="logo-text">Ders Platosu</span>
         </Link>
@@ -146,7 +149,16 @@ export function SiteFooter({ footerColumns: propCols }: { footerColumns?: Footer
             <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", alignItems: "center", marginBottom: "12px" }}>
               {logos.length > 0 ? (
                 logos.map((l, i) => (
-                  <img key={i} src={toMediaUrl(l)} alt="Logo" style={{ height: '32px', width: 'auto', borderRadius: '4px' }} />
+                  <img 
+                    key={i} 
+                    src={toMediaUrl(l)} 
+                    alt="Logo" 
+                    style={{ height: '32px', width: 'auto', borderRadius: '4px' }} 
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "https://i.hizliresim.com/ag3gf4d.png";
+                      (e.target as HTMLImageElement).style.width = "32px";
+                    }}
+                  />
                 ))
               ) : (
                 <img src="https://i.hizliresim.com/ag3gf4d.png" className="logo-img" alt="Logo" style={{ width: '36px', height: '36px', borderRadius: '8px' }} />

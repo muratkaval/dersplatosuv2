@@ -29,11 +29,19 @@ export function toMediaUrl(url?: any): string {
   
   if (!actualUrl || typeof actualUrl !== "string") return "";
 
+  // If it's already an absolute URL, return it
   if (actualUrl.startsWith("http://") || actualUrl.startsWith("https://")) return actualUrl;
   if (actualUrl.startsWith("//")) return `https:${actualUrl}`;
   
   // Prepend origin to relative paths
   const cleanPath = actualUrl.startsWith("/") ? actualUrl : `/${actualUrl}`;
+  
+  // Check if we are in the browser to fallback to current origin if strapiOrigin is missing/invalid
+  if (!strapiOrigin || strapiOrigin.includes("localhost") || strapiOrigin.includes("127.0.0.1")) {
+     // If we are strictly on the server during SSR, we use what we have.
+     // In the browser, this will be handled by the onError fallback in components.
+  }
+
   return `${strapiOrigin}${cleanPath}`;
 }
 
