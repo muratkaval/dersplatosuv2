@@ -17,6 +17,7 @@ export default function SeoForm({ initialData, token }: Props) {
   const [siteName, setSiteName] = useState(settings.siteName || "");
   const [ogTitle, setOgTitle] = useState(settings.ogTitle || "");
   const [ogDescription, setOgDescription] = useState(settings.ogDescription || "");
+  const [keywords, setKeywords] = useState(settings.keywords || "");
   
   // Script / Verification states
   const [googleSearchConsole, setGoogleSearchConsole] = useState(settings.googleSearchConsole || "");
@@ -27,6 +28,11 @@ export default function SeoForm({ initialData, token }: Props) {
   const [googleAnalyticsId, setGoogleAnalyticsId] = useState(settings.googleAnalyticsId || "");
   const [gtmId, setGtmId] = useState(settings.gtmId || "");
   const [facebookPixelId, setFacebookPixelId] = useState(settings.facebookPixelId || "");
+  
+  // Custom Script states
+  const [headerScripts, setHeaderScripts] = useState(settings.headerScripts || "");
+  const [bodyTopScripts, setBodyTopScripts] = useState(settings.bodyTopScripts || "");
+  const [bodyBottomScripts, setBodyBottomScripts] = useState(settings.bodyBottomScripts || "");
 
   // Media states
   const [shareImgPreview, setShareImgPreview] = useState(toMediaUrl(settings.shareImage?.url || settings.shareImage));
@@ -74,6 +80,10 @@ export default function SeoForm({ initialData, token }: Props) {
         facebookPixelId,
         shareImage: shareImageId,
         favicon: faviconId,
+        keywords,
+        headerScripts,
+        bodyTopScripts,
+        bodyBottomScripts,
       };
 
       // 3. Update single type
@@ -127,6 +137,12 @@ export default function SeoForm({ initialData, token }: Props) {
               <label>OG AÇIKLAMA</label>
               <textarea value={ogDescription} onChange={(e) => setOgDescription(e.target.value)} placeholder="Türkiye'nin en kapsamlı ücretsiz online eğitim platformu..." rows={4} />
               <small>Paylaşım kartında başlığın altında görünen açıklama metni.</small>
+            </div>
+
+            <div className="form-group">
+              <label>ANAHTAR KELİMELER (KEYWORDS)</label>
+              <textarea value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder="ders platosu, tyt, ayt, sınav hazırlık..." rows={2} />
+              <small>Arama motorları için anahtar kelimeler (virgül ile ayırın).</small>
             </div>
           </div>
 
@@ -236,6 +252,44 @@ export default function SeoForm({ initialData, token }: Props) {
                 </button>
                 <small style={{ fontSize: "0.75rem", marginTop: "8px", color: "var(--text-muted)", display: "block" }}>PNG, ICO veya SVG (Maks. 1MB).</small>
               </div>
+            </div>
+          </div>
+
+          {/* Section: Gelişmiş Kod Yönetimi */}
+          <div className="info-card" style={{ borderTop: "4px solid #ef4444" }}>
+            <div className="card-title" style={{ color: "#ef4444" }}><span className="ms">code</span> Gelişmiş Kod Yönetimi</div>
+            <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "16px" }}>
+              UYARI: Buraya eklediğiniz kodlar doğrudan siteye enjekte edilir. Hatalı kod girmemeye dikkat edin.
+            </p>
+
+            <div className="form-group">
+              <label>HEADER KODLARI (&lt;head&gt; içine)</label>
+              <textarea 
+                value={headerScripts} 
+                onChange={(e) => setHeaderScripts(e.target.value)} 
+                placeholder="<!-- Örn: Google Site Verification, Özel Meta Tagler -->" 
+                rows={4} 
+              />
+            </div>
+
+            <div className="form-group">
+              <label>BODY ÜST KODLARI (&lt;body&gt; başlangıcına)</label>
+              <textarea 
+                value={bodyTopScripts} 
+                onChange={(e) => setBodyTopScripts(e.target.value)} 
+                placeholder="<!-- Örn: GTM No-Script kodları -->" 
+                rows={3} 
+              />
+            </div>
+
+            <div className="form-group">
+              <label>BODY ALT KODLARI (&lt;body&gt; sonuna)</label>
+              <textarea 
+                value={bodyBottomScripts} 
+                onChange={(e) => setBodyBottomScripts(e.target.value)} 
+                placeholder="<!-- Örn: Canlı destek scriptleri -->" 
+                rows={4} 
+              />
             </div>
           </div>
 

@@ -12,7 +12,11 @@ export function SiteForm({ initialData, token }: Props) {
   // Strapi datayı flattenStrapi ile döndürdüğü için direkt initialData'yı kullanabiliriz
   const settings = initialData || {};
 
-  // Form states
+  const [siteName, setSiteName] = useState(settings.siteName || "");
+  const [ogTitle, setOgTitle] = useState(settings.ogTitle || "");
+  const [ogDescription, setOgDescription] = useState(settings.ogDescription || "");
+  const [keywords, setKeywords] = useState(settings.keywords || "");
+
   const [heroBadge, setHeroBadge] = useState(settings.heroBadge || "");
   const [heroTitle, setHeroTitle] = useState(settings.heroTitle || "");
   const [heroDescription, setHeroDescription] = useState(settings.heroDescription || "");
@@ -24,11 +28,6 @@ export function SiteForm({ initialData, token }: Props) {
   const [heroBtn1Link, setHeroBtn1Link] = useState(settings.heroBtn1Link || "");
   const [heroBtn2Text, setHeroBtn2Text] = useState(settings.heroBtn2Text || "");
   const [heroBtn2Link, setHeroBtn2Link] = useState(settings.heroBtn2Link || "");
-
-
-
-
-
 
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
@@ -55,9 +54,10 @@ export function SiteForm({ initialData, token }: Props) {
         heroBtn1Link,
         heroBtn2Text,
         heroBtn2Link,
-
-
-
+        siteName,
+        ogTitle,
+        ogDescription,
+        keywords
       };
 
       const _rawRes = await fetch("/api/admin/global-setting", {
@@ -114,6 +114,31 @@ export function SiteForm({ initialData, token }: Props) {
             <div className="form-group">
               <label>AÇIKLAMA METNİ</label>
               <textarea value={heroDescription} onChange={(e) => setHeroDescription(e.target.value)} placeholder="Alanında uzman youtuber öğretmenlerle sınava hazırlan..." rows={4} />
+            </div>
+          </div>
+
+          {/* Section: SEO Ayarları */}
+          <div className="info-card" style={{ borderTop: "4px solid #10b981" }}>
+            <div className="card-title" style={{ color: "#10b981" }}><span className="ms">search</span> SEO & Genel Ayarlar</div>
+            
+            <div className="form-group">
+              <label>SİTE ADI</label>
+              <input value={siteName} onChange={(e) => setSiteName(e.target.value)} placeholder="Örn: Ders Platosu" />
+            </div>
+
+            <div className="form-group">
+              <label>VARSAYILAN SEO BAŞLIĞI (TITLE)</label>
+              <input value={ogTitle} onChange={(e) => setOgTitle(e.target.value)} placeholder="Örn: Ders Platosu - TYT AYT Hazırlık" />
+            </div>
+
+            <div className="form-group">
+              <label>VARSAYILAN META AÇIKLAMASI (DESCRIPTION)</label>
+              <textarea value={ogDescription} onChange={(e) => setOgDescription(e.target.value)} placeholder="Sitenin arama sonuçlarında görünecek açıklaması..." rows={3} />
+            </div>
+
+            <div className="form-group">
+              <label>ANAHTAR KELİMELER (KEYWORDS - Virgül ile ayırın)</label>
+              <textarea value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder="ders platosu, tyt, ayt, sınav hazırlık..." rows={2} />
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PageContainer } from "../../components/site-layout";
-import { getInstructorBySlug, toMediaUrl } from "@/app/lib/strapi";
+import { getInstructorBySlug, toMediaUrl, getGlobalSettings } from "@/app/lib/strapi";
 import BookCard from "../../components/book-card";
 import "./hoca.css";
 import { Metadata } from "next";
@@ -10,19 +10,27 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dersplatosu.com";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const instructor = await getInstructorBySlug(slug);
+  const [instructor, settings] = await Promise.all([
+    getInstructorBySlug(slug),
+    getGlobalSettings()
+  ]);
   
-  if (!instructor) return { title: "Eğitmen Bulunamadı | Ders Platosu" };
+  const siteName = settings?.siteName || "Ders Platosu";
+  const globalKeywords = settings?.keywords ? settings.keywords.split(",").map((k: any) => k.trim()) : [];
+
+  if (!instructor) return { title: `Eğitmen Bulunamadı | ${siteName}` };
 
   const photoUrl = instructor.photo?.url ? toMediaUrl(instructor.photo.url) : undefined;
   const subjectName = (instructor.subjects?.[0]?.name || instructor.subjects?.data?.[0]?.attributes?.name || "YKS");
-  const title = `${instructor.name} – ${subjectName} Hocası | Ders Platosu`;
-  const description = `${instructor.name} hocamızın ücretsiz YouTube kampları, ${subjectName} kitapları ve eğitim içerikleri Ders Platosu'nda. TYT-AYT hazırlığında en iyi kaynaklar burada.`;
+  const title = `${instructor.name} – ${subjectName} Hocası | ${siteName}`;
+  const description = `${instructor.name} hocamızın ücretsiz YouTube kampları, ${subjectName} kitapları ve eğitim içerikleri ${siteName}'nda. TYT-AYT hazırlığında en iyi kaynaklar burada.`;
+
+  const localKeywords = [instructor.name, `${instructor.name} kampları`, `${subjectName} hoca`, "YKS kampları", "ücretsiz TYT"];
 
   return {
     title,
     description,
-    keywords: [instructor.name, `${instructor.name} kampları`, `${subjectName} hoca`, "YKS kampları", "ücretsiz TYT", "Ders Platosu"],
+    keywords: [...new Set([...localKeywords, ...globalKeywords])].filter(Boolean),
     alternates: { canonical: `${siteUrl}/hoca/${slug}` },
     openGraph: {
       title,
@@ -44,7 +52,12 @@ function extractYouTubeId(url: string) {
 
 export default async function HocaDetayPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const instructor = await getInstructorBySlug(slug);
+  const [instructor, settings] = await Promise.all([
+    getInstructorBySlug(slug),
+    getGlobalSettings()
+  ]);
+  
+  const siteName = settings?.siteName || "Ders Platosu";
 
   if (!instructor) {
     notFound();
@@ -85,7 +98,7 @@ export default async function HocaDetayPage({ params }: { params: Promise<{ slug
     "url": `${siteUrl}/hoca/${slug}`,
     "image": photoUrl || undefined,
     "jobTitle": `${subjectName} Öğretmeni`,
-    "worksFor": { "@type": "Organization", "name": "Ders Platosu", "url": siteUrl },
+    "worksFor": { "@type": "Organization", "name": siteName, "url": siteUrl },
     "sameAs": [instructor.youtube, instructor.instagram].filter(Boolean),
     "knowsAbout": [subjectName, "TYT", "AYT", "YKS"],
   };

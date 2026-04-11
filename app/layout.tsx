@@ -42,9 +42,9 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description: defaultDescription,
     applicationName: siteName,
-    keywords: [
-      "ders platosu", "tyt", "ayt", "yks", "online eğitim", "sınav hazırlık", "videolu soru çözümleri"
-    ],
+    keywords: settings.keywords 
+      ? settings.keywords.split(",").map((k: string) => k.trim())
+      : ["ders platosu", "tyt", "ayt", "yks", "online eğitim", "sınav hazırlık", "videolu soru çözümleri"],
     alternates: {
       canonical: "/",
     },
@@ -86,11 +86,19 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  let settings: any = {};
+  try {
+    const res = await getGlobalSettings();
+    settings = res?.attributes || res || {};
+  } catch (err) {
+    console.error("Layout fetch error:", err);
+  }
+
   return (
     <html
       lang="en"
@@ -108,8 +116,24 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" 
           rel="stylesheet" 
         />
+        {/* Dynamic Header Scripts */}
+        {settings.headerScripts && (
+          <div dangerouslySetInnerHTML={{ __html: settings.headerScripts }} />
+        )}
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {/* Dynamic Body Top Scripts */}
+        {settings.bodyTopScripts && (
+          <div dangerouslySetInnerHTML={{ __html: settings.bodyTopScripts }} />
+        )}
+        
+        {children}
+
+        {/* Dynamic Body Bottom Scripts */}
+        {settings.bodyBottomScripts && (
+          <div dangerouslySetInnerHTML={{ __html: settings.bodyBottomScripts }} />
+        )}
+      </body>
     </html>
   );
 }

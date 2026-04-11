@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { PageContainer } from "../../components/site-layout";
-import { getCampBySlug, toMediaUrl } from "@/app/lib/strapi";
+import { getCampBySlug, toMediaUrl, getGlobalSettings } from "@/app/lib/strapi";
 import "./kamplar.css";
 import CampView from "./camp-view";
 import { Metadata } from "next";
@@ -9,26 +9,31 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dersplatosu.com";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const camp = await getCampBySlug(slug);
+  const [camp, settings] = await Promise.all([
+    getCampBySlug(slug),
+    getGlobalSettings()
+  ]);
   
-  if (!camp) return { title: "Kamp Bulunamadı | Ders Platosu" };
+  const siteName = settings?.siteName || "Ders Platosu";
+  const globalKeywords = settings?.keywords ? settings.keywords.split(",").map((k: any) => k.trim()) : [];
+
+  if (!camp) return { title: `Kamp Bulunamadı | ${siteName}` };
 
   const coverUrl = camp.cover?.url ? toMediaUrl(camp.cover.url) : undefined;
   const instructors = camp.instructors || [];
   const instructorStr = instructors.map((i: any) => i.name).filter(Boolean).join(", ");
   const subject = camp.subject?.name || "YKS";
 
-  const title = `${camp.title} – Ücretsiz ${subject} Kampı | Ders Platosu`;
+  const title = `${camp.title} – Ücretsiz ${subject} Kampı | ${siteName}`;
   const description = `${camp.title}${instructorStr ? ` | ${instructorStr}` : ""} – Tüm ders videoları, kitaplar ve kaynaklarla ücretsiz ${subject} kampı. TYT-AYT hazırlığında en iyi kamp programı.`;
   
-  const keywords = [
+  const localKeywords = [
     camp.title,
     `${subject} kampı`,
     `ücretsiz ${subject}`,
     "TYT kamp",
     "AYT kamp",
     "YKS hazırlık",
-    "Ders Platosu",
     `${camp.title} izle`,
     instructorStr,
   ];
@@ -36,7 +41,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title,
     description,
-    keywords: keywords.filter(Boolean),
+    keywords: [...new Set([...localKeywords.filter(Boolean), ...globalKeywords])],
     alternates: { canonical: `${siteUrl}/kamplar/${slug}` },
     openGraph: {
       title,
@@ -50,7 +55,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function EgitimDetayPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const camp = await getCampBySlug(slug);
+  const [camp, settings] = await Promise.all([
+    getCampBySlug(slug),
+    getGlobalSettings()
+  ]);
+  
+  const siteName = settings?.siteName || "Ders Platosu";
 
   if (!camp) {
     notFound();
@@ -67,7 +77,7 @@ export default async function EgitimDetayPage({ params }: { params: Promise<{ sl
     "description": camp.description || `${camp.title} kampı, ücretsiz Ders Platosu eğitim platformunda.`,
     "provider": {
       "@type": "Organization",
-      "name": "Ders Platosu",
+      "name": siteName,
       "sameAs": siteUrl
     },
     "hasCourseInstance": {

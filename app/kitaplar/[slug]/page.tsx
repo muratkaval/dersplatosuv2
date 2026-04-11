@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PageContainer } from "@/app/components/site-layout";
-import { getBookBySlug, toMediaUrl } from "@/app/lib/strapi";
+import { getBookBySlug, toMediaUrl, getGlobalSettings } from "@/app/lib/strapi";
 import Book3D from "@/app/components/book-3d";
 import FlipBookNative from "@/app/components/flip-book-native";
 import FAQSection from "@/app/components/faq-section";
@@ -36,20 +36,27 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dersplatosu.com";
 
 export async function generateMetadata({ params }: Props): Promise<import("next").Metadata> {
   const { slug } = await params;
-  const book = await getBookBySlug(slug);
-  if (!book) return { title: "Kitap Bulunamadı | Ders Platosu" };
+  const [book, settings] = await Promise.all([
+    getBookBySlug(slug),
+    getGlobalSettings()
+  ]);
+  
+  const siteName = settings?.siteName || "Ders Platosu";
+  const globalKeywords = settings?.keywords ? settings.keywords.split(",").map((k: any) => k.trim()) : [];
+
+  if (!book) return { title: `Kitap Bulunamadı | ${siteName}` };
 
   const coverUrl = toMediaUrl(book.cover?.url || book.cover);
   const subjects: string[] = (book.subjects || []).map((s: any) => s.name).filter(Boolean);
   const subjectStr = subjects.length > 0 ? subjects.join(", ") + " " : "";
   const instructorNames = (book.instructors || []).map((i: any) => i.name).filter(Boolean).join(", ");
 
-  const title = `${book.title} – ${subjectStr}Soru Bankası | Ders Platosu`;
+  const title = `${book.title} – ${subjectStr}Soru Bankası | ${siteName}`;
   const description = book.description
     ? book.description.slice(0, 155)
     : `${book.title} kitabının video çözümleri${instructorNames ? `, ${instructorNames} tarafından hazırlanmış` : ""} TYT-AYT soru bankası. Örnek sayfaları incele, hemen sipariş ver.`;
 
-  const keywords = [
+  const localKeywords = [
     book.title,
     subjectStr.trim(),
     `${book.title} satın al`,
@@ -58,14 +65,13 @@ export async function generateMetadata({ params }: Props): Promise<import("next"
     "YKS soru bankası",
     "TYT kitap",
     "AYT kitap",
-    "video çözümlü kitap",
-    "Ders Platosu"
+    "video çözümlü kitap"
   ];
 
   return {
     title,
     description,
-    keywords: keywords.filter(Boolean),
+    keywords: [...new Set([...localKeywords.filter(Boolean), ...globalKeywords])],
     alternates: { canonical: `${siteUrl}/kitaplar/${slug}` },
     openGraph: {
       title,
@@ -85,7 +91,12 @@ export async function generateMetadata({ params }: Props): Promise<import("next"
 
 export default async function BookDetailPage({ params }: Props) {
   const { slug } = await params;
-  const book = await getBookBySlug(slug);
+  const [book, settings] = await Promise.all([
+    getBookBySlug(slug),
+    getGlobalSettings()
+  ]);
+  
+  const siteName = settings?.siteName || "Ders Platosu";
 
   if (!book) notFound();
 
@@ -135,7 +146,7 @@ export default async function BookDetailPage({ params }: Props) {
         "image": coverUrl || undefined,
         "description": book.description || undefined,
         "author": allInstructors.length > 0 ? allInstructors.map((i: any) => ({ "@type": "Person", "name": i.name })) : undefined,
-        "publisher": { "@type": "Organization", "name": "Ders Platosu", "url": siteUrl },
+        "publisher": { "@type": "Organization", "name": siteName, "url": siteUrl },
         "offers": book.buy_link ? {
           "@type": "Offer",
           "url": book.buy_link,

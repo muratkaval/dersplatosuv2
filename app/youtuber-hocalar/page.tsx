@@ -1,6 +1,20 @@
 import Link from "next/link";
 import { PageContainer } from "../components/site-layout";
-import { getInstructors, toMediaUrl } from "@/app/lib/strapi";
+import { getInstructors, toMediaUrl, getGlobalSettings } from "@/app/lib/strapi";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getGlobalSettings();
+  const siteName = settings?.siteName || "Ders Platosu";
+  const title = `Youtuber Hocalarımız | ${siteName}`;
+  const description = "Alanında uzman, Türkiye'nin en sevilen Youtuber öğretmenleri ile TYT ve AYT hazırlık kampları Ders Platosu'nda.";
+
+  return {
+    title,
+    description,
+    openGraph: { title, description }
+  };
+}
 
 export default async function YoutuberHocalarPage() {
   const instructors = await getInstructors();
