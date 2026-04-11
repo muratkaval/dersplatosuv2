@@ -17,6 +17,7 @@ export function toMediaUrl(url?: any): string {
 
   if (actualUrl.startsWith("http://") || actualUrl.startsWith("https://")) return actualUrl;
   if (actualUrl.startsWith("//")) return `https:${actualUrl}`;
+  if (actualUrl.startsWith("/uploads")) return actualUrl;
   if (!actualUrl.startsWith("/")) return `${strapiOrigin}/${actualUrl}`;
   return `${strapiOrigin}${actualUrl}`;
 }
