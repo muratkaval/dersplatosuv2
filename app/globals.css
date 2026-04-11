@@ -6,6 +6,8 @@
     --text: #f1f5f9;
     --hero-bg-1: #050b1f;
     --hero-bg-2: #0a1128;
+    --card-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    --card-shadow-hover: 0 30px 70px rgba(0,0,0,0.6);
 }
 
 :root, [data-theme="light"] {
@@ -15,6 +17,8 @@
     --text: #0f172a;
     --hero-bg-1: #f8faff;
     --hero-bg-2: #f0f4ff;
+    --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    --card-shadow-hover: 0 15px 40px rgba(0,0,0,0.15);
 }
 
 body {
@@ -365,6 +369,7 @@ body[data-theme="dark"] .filter-scroll-btn {
 .filter-scroll-btn:hover {
   background: #2563eb;
   border-color: #60a5fa;
+  color: #ffffff;
 }
 
 .filter-scroll-btn.left {

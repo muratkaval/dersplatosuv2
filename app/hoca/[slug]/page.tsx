@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PageContainer } from "../../components/site-layout";
 import { getInstructorBySlug, toMediaUrl } from "@/app/lib/strapi";
+import BookCard from "../../components/book-card";
 import "./hoca.css";
 import { Metadata } from "next";
 
@@ -166,37 +167,9 @@ export default async function HocaDetayPage({ params }: { params: Promise<{ slug
             <div className="hoca-section">
                 <div className="hoca-section-title">📚 Kitaplar</div>
                 <div className="books-grid-unified">
-                    {allBooks.map((book: any, idx: number) => {
-                        const bookCover = toMediaUrl(book.cover?.url || book.cover?.formats?.small?.url);
-                        
-                        return (
-                            <div key={book.id || idx} className="book-card-premium">
-                                <div className="book-card-cover-wrap">
-                                    <img 
-                                        className="book-card-cover" 
-                                        src={bookCover || 'https://via.placeholder.com/200x280?text=Kitap'} 
-                                        alt={book.title} 
-                                        loading="lazy" 
-                                    />
-                                </div>
-                                <div className="book-card-body">
-                                    <h4>{book.title || 'Kitap'}</h4>
-                                    <div className="book-card-btns">
-                                        {book.buy_link && (
-                                            <a href={book.buy_link} className="btn-book-buy" target="_blank" rel="noopener noreferrer">
-                                                📦 Satın Al ↗
-                                            </a>
-                                        )}
-                                        {book.slug && (
-                                            <Link href={`/kitaplar/${book.slug}`} className="btn-book-inspect">
-                                                🔎 Kitabı İncele
-                                            </Link>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })}
+                    {allBooks.map((book: any, idx: number) => (
+                        <BookCard key={book.id || idx} book={book} />
+                    ))}
                 </div>
             </div>
         )}

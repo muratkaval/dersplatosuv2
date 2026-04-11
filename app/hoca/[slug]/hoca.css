@@ -1,15 +1,24 @@
         /* ── Hoca Hero ── */
         .hoca-hero {
-            background: linear-gradient(135deg, #0b1629 0%, #1e3a8a 60%, #0b1629 100%);
+            background: linear-gradient(135deg, var(--hero-bg-1) 0%, var(--hero-bg-2) 100%);
             padding: calc(var(--nav-h, 64px) + 48px) 0 48px;
             position: relative;
             overflow: hidden;
+            border-bottom: 1px solid var(--border);
         }
         .hoca-hero::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse at 30% 50%, rgba(37,99,235,.22) 0%, transparent 65%);
+            background: radial-gradient(ellipse at 30% 50%, rgba(37,99,235,var(--hero-radial-opacity, 0.22)) 0%, transparent 65%);
+        }
+
+        :root, [data-theme="light"] {
+            --hero-radial-opacity: 0.1;
+        }
+
+        [data-theme="dark"] {
+            --hero-radial-opacity: 0.22;
         }
         .hoca-hero-inner {
             max-width: 1100px;
@@ -38,8 +47,8 @@
             height: 140px;
             border-radius: 50%;
             background: #fff;
-            border: 4px solid rgba(255,255,255,.2);
-            box-shadow: 0 8px 32px rgba(0,0,0,.4);
+            border: 4px solid var(--border);
+            box-shadow: var(--card-shadow);
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -62,8 +71,8 @@
             height: 140px;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid rgba(255,255,255,.2);
-            box-shadow: 0 8px 32px rgba(0,0,0,.4);
+            border: 4px solid var(--border);
+            box-shadow: var(--card-shadow);
         }
         .hoca-photo-fallback {
             width: 140px;
@@ -84,9 +93,9 @@
             display: inline-block;
             padding: 4px 14px;
             border-radius: 50px;
-            background: rgba(59,130,246,.18);
-            border: 1px solid rgba(59,130,246,.3);
-            color: #93c5fd;
+            background: rgba(37, 99, 235, 0.08);
+            color: var(--primary);
+            border: 1px solid rgba(37, 99, 235, 0.15);
             font-size: .75rem;
             font-weight: 700;
             letter-spacing: .05em;
@@ -96,7 +105,7 @@
         .hoca-hero h1 {
             font-size: 2.2rem;
             font-weight: 800;
-            color: #fff;
+            color: var(--text);
             line-height: 1.2;
             margin-bottom: 18px;
             letter-spacing: -.02em;
