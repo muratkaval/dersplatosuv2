@@ -79,9 +79,9 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     icons: {
-      icon: "/favicon.ico",
-      shortcut: "/favicon.ico",
-      apple: "/favicon.ico",
+      icon: settings.favicon ? toMediaUrl(settings.favicon?.url || settings.favicon) : "/favicon.ico",
+      shortcut: settings.favicon ? toMediaUrl(settings.favicon?.url || settings.favicon) : "/favicon.ico",
+      apple: settings.favicon ? toMediaUrl(settings.favicon?.url || settings.favicon) : "/favicon.ico",
     },
   };
 }
