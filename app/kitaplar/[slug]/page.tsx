@@ -290,54 +290,7 @@ export default async function BookDetailPage({ params }: Props) {
           </div>
         </section>
 
-        {/* ===================== LINKED CAMPS ===================== */}
-        {linkedCamps.length > 0 && (
-          <section className="book-section book-section-alt" id="camps-section">
-            <div className="book-section-inner">
-              <div className="book-section-header">
-                <div className="book-section-eyebrow">📚 Kamplar</div>
-                <h2 className="book-section-title">Bu Kitapla İlerleyen Kamplar</h2>
-                <p className="book-section-subtitle">
-                  Aşağıdaki hocalarımız bu kitabı ders materyali olarak kullanarak kamp yapıyor.
-                </p>
-              </div>
-
-              <div className="camps-linked-grid">
-                {linkedCamps.map((camp: any) => {
-                  const campCover = toMediaUrl(camp.cover?.url || camp.cover);
-                  const campInstructors: any[] = camp.instructors || [];
-                  return (
-                    <Link href={`/kamplar/${camp.slug}`} key={camp.id} className="camp-linked-card">
-                      <div className="camp-linked-thumb">
-                        <img
-                          src={campCover || "https://via.placeholder.com/400x180?text=Kamp"}
-                          alt={camp.title}
-                        />
-                        <span className="camp-linked-badge">Kamp</span>
-                      </div>
-                      <div className="camp-linked-body">
-                        <div className="camp-linked-title">{camp.title}</div>
-                        {campInstructors.length > 0 && (
-                          <div className="camp-linked-instructor">
-                            <img
-                              src={toMediaUrl(campInstructors[0].photo?.url || campInstructors[0].photo) || "https://via.placeholder.com/36"}
-                              alt={campInstructors[0].name}
-                              className="camp-instructor-avatar"
-                            />
-                            <span className="camp-instructor-name">{campInstructors[0].name}</span>
-                          </div>
-                        )}
-                        <div className="camp-linked-btn">
-                          Kampa Git →
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          </section>
-        )}
+        {/* Kamplar bölümü kaldırıldı */}
 
 
         {/* ===================== FLIPBOOK ===================== */}
