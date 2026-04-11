@@ -81,6 +81,13 @@ export type Instructor = {
   updatedAt?: string;
 };
 
+export type Subject = {
+  id: number;
+  documentId?: string;
+  name: string;
+  slug: string;
+};
+
 export type Book = {
   id: number;
   documentId?: string;
@@ -98,7 +105,7 @@ export type Book = {
   preview_link?: string;
   cover?: { url?: string } | null;
   demo_pdf?: { url?: string } | null;
-  subjects?: Array<{ id: number; name?: string }>;
+  subjects?: Subject[];
   instructors?: Array<{ id: number; name: string; photo?: { url?: string }; slug?: string }>;
   camps?: Array<{ id: number; title: string; slug: string; instructors?: Array<{ id: number; name: string; photo?: { url?: string }; slug?: string }>; cover?: { url?: string } | null }>;
   updatedAt?: string;

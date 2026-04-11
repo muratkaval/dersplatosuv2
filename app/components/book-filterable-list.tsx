@@ -3,21 +3,7 @@
 import { useState, useMemo } from "react";
 import BookCard from "./book-card";
 
-interface Subject {
-  id: number;
-  documentId?: string;
-  name: string;
-  slug: string;
-}
-
-interface Book {
-  id: number;
-  documentId?: string;
-  title: string;
-  slug?: string;
-  subjects?: Subject[];
-  [key: string]: any;
-}
+import { Book, Subject } from "@/app/lib/strapi";
 
 interface Props {
   initialBooks: Book[];
