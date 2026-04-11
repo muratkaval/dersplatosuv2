@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PageContainer } from "../../components/site-layout";
-import { getInstructorBySlug, toMediaUrl, getGlobalSettings } from "@/app/lib/strapi";
+import { getInstructorBySlug, toMediaUrl, toAbsoluteMediaUrl, getGlobalSettings } from "@/app/lib/strapi";
 import BookCard from "../../components/book-card";
 import "./hoca.css";
 import { Metadata } from "next";
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (!instructor) return { title: `Eğitmen Bulunamadı | ${siteName}` };
 
-  const photoUrl = instructor.photo?.url ? toMediaUrl(instructor.photo.url) : undefined;
+  const photoUrl = instructor.photo?.url ? toAbsoluteMediaUrl(instructor.photo.url) : undefined;
   const subjectName = (instructor.subjects?.[0]?.name || instructor.subjects?.data?.[0]?.attributes?.name || "YKS");
   const title = `${instructor.name} – ${subjectName} Hocası | ${siteName}`;
   const description = `${instructor.name} hocamızın ücretsiz YouTube kampları, ${subjectName} kitapları ve eğitim içerikleri ${siteName}'nda. TYT-AYT hazırlığında en iyi kaynaklar burada.`;

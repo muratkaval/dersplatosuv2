@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PageContainer } from "@/app/components/site-layout";
-import { getBookBySlug, toMediaUrl, getGlobalSettings } from "@/app/lib/strapi";
+import { getBookBySlug, toMediaUrl, toAbsoluteMediaUrl, getGlobalSettings } from "@/app/lib/strapi";
 import Book3D from "@/app/components/book-3d";
 import FlipBookNative from "@/app/components/flip-book-native";
 import BookStickyCTA from "@/app/components/book-sticky-cta";
@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<import("next"
 
   if (!book) return { title: `Kitap Bulunamadı | ${siteName}` };
 
-  const coverUrl = toMediaUrl(book.cover?.url || book.cover);
+  const coverUrl = toAbsoluteMediaUrl(book.cover?.url || book.cover);
   const subjects: string[] = (book.subjects || []).map((s: any) => s.name).filter(Boolean);
   const subjectStr = subjects.length > 0 ? subjects.join(", ") + " " : "";
   const instructorNames = (book.instructors || []).map((i: any) => i.name).filter(Boolean).join(", ");

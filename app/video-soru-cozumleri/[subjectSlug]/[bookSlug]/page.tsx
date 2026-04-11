@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageContainer } from "@/app/components/site-layout";
-import { getBookBySlug, getSubjectBySlug, getSolutionVideos, toMediaUrl } from "@/app/lib/strapi";
+import { getBookBySlug, getSubjectBySlug, getSolutionVideos, toMediaUrl, toAbsoluteMediaUrl } from "@/app/lib/strapi";
 import VideoPlayerView from "./video-player-view";
 import "../../soru-cozumleri.css";
 
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const subjectName = subject?.name || "";
   const title = `${bookTitle} Video Çözümleri | Ders Platosu`;
   const description = `${bookTitle} kitabının tüm sorularının video çözümleri. ${subjectName} branşı ve daha fazlası ücretsiz Ders Platosu'nda.`;
-  const coverUrl = book?.cover?.url ? toMediaUrl(book.cover.url) : undefined;
+  const coverUrl = book?.cover?.url ? toAbsoluteMediaUrl(book.cover.url) : undefined;
   
   const keywords = [
     bookTitle,

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { PageContainer } from "../../components/site-layout";
-import { getCampBySlug, toMediaUrl, getGlobalSettings } from "@/app/lib/strapi";
+import { getCampBySlug, toMediaUrl, toAbsoluteMediaUrl, getGlobalSettings } from "@/app/lib/strapi";
 import "./kamplar.css";
 import CampView from "./camp-view";
 import { Metadata } from "next";
@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (!camp) return { title: `Kamp Bulunamadı | ${siteName}` };
 
-  const coverUrl = camp.cover?.url ? toMediaUrl(camp.cover.url) : undefined;
+  const coverUrl = camp.cover?.url ? toAbsoluteMediaUrl(camp.cover.url) : undefined;
   const instructors = camp.instructors || [];
   const instructorStr = instructors.map((i: any) => i.name).filter(Boolean).join(", ");
   const subject = camp.subject?.name || "YKS";

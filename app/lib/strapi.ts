@@ -33,16 +33,19 @@ export function toMediaUrl(url?: any): string {
   if (actualUrl.startsWith("http://") || actualUrl.startsWith("https://")) return actualUrl;
   if (actualUrl.startsWith("//")) return `https:${actualUrl}`;
   
-  // Prepend origin to relative paths
-  const cleanPath = actualUrl.startsWith("/") ? actualUrl : `/${actualUrl}`;
-  
-  // Check if we are in the browser to fallback to current origin if strapiOrigin is missing/invalid
-  if (!strapiOrigin || strapiOrigin.includes("localhost") || strapiOrigin.includes("127.0.0.1")) {
-     // If we are strictly on the server during SSR, we use what we have.
-     // In the browser, this will be handled by the onError fallback in components.
-  }
+  // Return relative path. This relies on Next.js Rewrites (next.config.ts) 
+  // to proxy /uploads/... to the actual Strapi backend.
+  return actualUrl.startsWith("/") ? actualUrl : `/${actualUrl}`;
+}
 
-  return `${strapiOrigin}${cleanPath}`;
+export function toAbsoluteMediaUrl(url?: any): string {
+  const relative = toMediaUrl(url);
+  if (!relative) return "";
+  if (relative.startsWith("http")) return relative;
+  
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dersplatosu.com";
+  const cleanSiteUrl = siteUrl.endsWith("/") ? siteUrl.slice(0, -1) : siteUrl;
+  return `${cleanSiteUrl}${relative}`;
 }
 
 export function getCampThumbnail(camp: any): string {
