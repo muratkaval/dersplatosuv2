@@ -140,7 +140,7 @@ body[data-theme="dark"] .page-hero-eyebrow {
     align-items: center !important;
     justify-content: center !important;
     background: rgba(0,0,0,0.15);
-    opacity: 0.9 !important;
+    opacity: 0.8 !important; /* Slightly more subtle default */
     transition: all 0.3s ease;
     z-index: 20 !important;
     pointer-events: none;
@@ -153,6 +153,10 @@ body[data-theme="dark"] .page-hero-eyebrow {
 }
 
 .play-button-circle {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) scale(0.9) !important;
     width: 60px !important;
     height: 60px !important;
     background: #4289F7 !important;
@@ -162,13 +166,12 @@ body[data-theme="dark"] .page-hero-eyebrow {
     justify-content: center !important;
     color: white !important;
     box-shadow: 0 8px 30px rgba(66, 137, 247, 0.5) !important;
-    transform: scale(0.9);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
 }
 
 .course-card:hover .play-button-circle,
 .book-card-premium:hover .play-button-circle {
-    transform: scale(1.1);
+    transform: translate(-50%, -50%) scale(1.1) !important;
 }
 
 /* Force parent containers to be relative for centering */
