@@ -20,18 +20,6 @@ export default function CourseCard({ camp }: { camp: any }) {
           alt={camp.title} 
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} 
         />
-        <div className="play-overlay">
-          <div className="play-button-circle">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          </div>
-        </div>
-        {camp.subject?.name && camp.subject.name !== "Tümü" && (
-          <span className="course-tag">
-            {camp.subject.name}
-          </span>
-        )}
       </div>
       
       <div className="course-body" style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
