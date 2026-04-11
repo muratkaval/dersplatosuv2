@@ -57,6 +57,7 @@ export type Camp = {
     name: string;
     photo?: { url?: string; formats?: { thumbnail?: { url?: string } } } | null;
   }>;
+  updatedAt?: string;
 };
 
 export type Instructor = {
@@ -68,6 +69,7 @@ export type Instructor = {
   instagram?: string;
   photo?: { url?: string; formats?: { thumbnail?: { url?: string } } } | null;
   subjects?: Array<{ name?: string }>;
+  updatedAt?: string;
 };
 
 export type Book = {
@@ -90,6 +92,7 @@ export type Book = {
   subjects?: Array<{ id: number; name?: string }>;
   instructors?: Array<{ id: number; name: string; photo?: { url?: string }; slug?: string }>;
   camps?: Array<{ id: number; title: string; slug: string; instructors?: Array<{ id: number; name: string; photo?: { url?: string }; slug?: string }>; cover?: { url?: string } | null }>;
+  updatedAt?: string;
 };
 
 async function fetchStrapi<T>(pathAndQuery: string): Promise<T | null> {
