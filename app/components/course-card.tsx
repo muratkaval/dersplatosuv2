@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getCampThumbnail, toMediaUrl } from "@/app/lib/strapi";
+import Image from "next/image";
 
 export default function CourseCard({ camp }: { camp: any }) {
   const thumbnail = getCampThumbnail(camp);
@@ -14,11 +15,13 @@ export default function CourseCard({ camp }: { camp: any }) {
 
   return (
     <Link href={`/kamplar/${camp.slug}`} className="course-card">
-      <div className="course-thumb" style={{ aspectRatio: "16 / 9", height: "auto", position: "relative" }}>
-        <img 
+      <div className="course-thumb" style={{ aspectRatio: "16 / 9", height: "auto", position: "relative", overflow: "hidden" }}>
+        <Image 
           src={thumbnail} 
           alt={camp.title} 
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} 
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>
       
@@ -37,11 +40,13 @@ export default function CourseCard({ camp }: { camp: any }) {
               {normalizedInstructors.slice(0, 5).map((inst: any, idx: number) => {
                 const pUrl = toMediaUrl(inst.photo?.url || inst.photo?.formats?.thumbnail?.url);
                 return pUrl ? (
-                  <img 
+                  <Image 
                     key={inst.id || idx}
                     src={pUrl} 
                     className="avatar-stack-img" 
-                    alt={inst.name} 
+                    alt={inst.name}
+                    width={32}
+                    height={32}
                   />
                 ) : (
                   <div 
@@ -67,10 +72,12 @@ export default function CourseCard({ camp }: { camp: any }) {
                   {(() => {
                     const pUrl = toMediaUrl(firstInstructor.photo?.url || firstInstructor.photo?.formats?.thumbnail?.url);
                     return pUrl ? (
-                      <img 
+                      <Image 
                         src={pUrl} 
                         className="instructor-avatar-sm"
                         alt={firstInstructor.name}
+                        width={24}
+                        height={24}
                       />
                     ) : (
                       <div className="instructor-avatar-sm-fallback">👤</div>

@@ -2,6 +2,7 @@ import { PageContainer } from "./components/site-layout";
 import CourseCard from "./components/course-card";
 import BookCard from "@/app/components/book-card";
 import Link from "next/link";
+import Image from "next/image";
 import { getBooks, getCamps, getInstructors, toMediaUrl, getCampThumbnail, getGlobalSettings } from "@/app/lib/strapi";
 import InstructorScroll from "./components/instructor-scroll";
 
@@ -128,7 +129,15 @@ export default async function Home() {
             <div className="hero-visual">
               {camps[0] ? (
                 <Link href={`/kamplar/${camps[0].slug}`} className="hero-card course-card floating">
-                  <div className="course-thumb hero-course-thumb" style={{ background: `url('${getCampThumbnail(camps[0])}') center/cover no-repeat` }}>
+                  <div className="course-thumb hero-course-thumb relative overflow-hidden">
+                    <Image 
+                      src={getCampThumbnail(camps[0])}
+                      alt={camps[0].title}
+                      fill
+                      priority
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 400px"
+                    />
                     <div className="play-overlay">
                       <div className="play-button-circle">
                         <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
@@ -144,11 +153,13 @@ export default async function Home() {
                         {camps[0].instructors?.map((inst) => {
                           const pUrl = toMediaUrl(inst.photo?.formats?.thumbnail?.url || inst.photo?.url);
                           return pUrl ? (
-                            <img
+                            <Image
                               key={inst.id}
                               src={pUrl}
                               className="avatar-stack-img hero-instructor-avatar"
                               alt={inst.name}
+                              width={40}
+                              height={40}
                             />
                           ) : (
                             <div

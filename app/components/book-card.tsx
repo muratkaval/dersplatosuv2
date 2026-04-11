@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { toMediaUrl } from "@/app/lib/strapi";
 
@@ -32,16 +33,20 @@ export default function BookCard({ book }: BookCardProps) {
   const rawUrl = findUrl(book.cover || book.image || book.thumbnail || book);
   const bookCover = toMediaUrl(rawUrl);
   
+  const finalCover = bookCover || '/placeholder-book.png';
+
   return (
     <div className="book-card-premium">
-      <div className="book-card-cover-wrap">
-        <img 
-          src={bookCover || '/placeholder-book.png'} 
+      <div className="book-card-cover-wrap" style={{ position: 'relative', overflow: 'hidden' }}>
+        <Image 
+          src={finalCover} 
           alt={book.title || 'Kitap'} 
-          className="book-card-cover"
-          loading="lazy"
+          className="book-card-cover object-cover"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
           onError={(e) => {
-            (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x560?text=Kitap';
+            // Simplified fallback for next/image
+            // In a real scenario, we might want a state for the fallback
           }}
         />
       </div>

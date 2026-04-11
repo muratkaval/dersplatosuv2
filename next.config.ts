@@ -15,6 +15,44 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
+        protocol: "https",
+        hostname: "dersplatosu.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.youtube.com",
+      },
+      {
+        protocol: "https",
+        hostname: "youtube.com",
+      },
+      {
+        protocol: "https",
+        hostname: "i.hizliresim.com",
+      },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.dersplatosu.com",
+      },
+      // If the STRAPI_URL is on a domain like strapi.dersplatosu.com, it should be added too.
+      // Usually it's covered by the rewrites, but next/image needs the origin.
+      {
+        protocol: "https",
+        hostname: "strapi.dersplatosu.com",
+      }
+    ],
+  },
   async headers() {
     return [
       {
