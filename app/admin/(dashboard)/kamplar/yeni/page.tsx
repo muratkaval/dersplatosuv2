@@ -19,9 +19,11 @@ export default async function NewCampPage() {
     <>
       <div className="admin-topbar">
         <div className="topbar-title">
-          <Link href="/admin/kamplar" style={{ color: "#64748b", fontSize: "0.8rem", textDecoration: "none" }}>
-            ← Kamplar
-          </Link>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <Link href="/admin/kamplar" style={{ color: "var(--text-muted)", textDecoration: "none", fontSize: "0.8rem", display: "flex", alignItems: "center" }}>
+              <span className="ms" style={{ fontSize: "16px" }}>arrow_back</span> Geri
+            </Link>
+          </div>
           <h1><span className="ms">add_circle</span> Yeni Kamp</h1>
           <p>Yeni bir kamp kaydı oluşturun</p>
         </div>

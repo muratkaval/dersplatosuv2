@@ -24,9 +24,11 @@ export default async function EditBookPage({ params }: Props) {
     <>
       <div className="admin-topbar">
         <div className="topbar-title">
-          <Link href="/admin/kitaplar" style={{ color: "#64748b", fontSize: "0.8rem", textDecoration: "none" }}>
-            ← Kitaplar
-          </Link>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <Link href="/admin/kitaplar" style={{ color: "var(--text-muted)", textDecoration: "none", fontSize: "0.8rem", display: "flex", alignItems: "center" }}>
+              <span className="ms" style={{ fontSize: "16px" }}>arrow_back</span> Geri
+            </Link>
+          </div>
           <h1><span className="ms">edit</span> {book.title || "Kitabı Düzenle"}</h1>
           <p>Kitap bilgilerini ve ilişkilerini güncelleyin</p>
         </div>

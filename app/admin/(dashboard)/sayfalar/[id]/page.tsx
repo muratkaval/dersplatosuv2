@@ -25,10 +25,9 @@ export default async function SayfaDuzenlePage({ params }: { params: Promise<{ i
     <>
       <div className="admin-topbar">
         <div className="topbar-title">
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-            <Link href="/admin/sayfalar" className="btn btn-ghost btn-sm" style={{ padding: "4px 8px" }}>
-              <span className="ms" style={{ fontSize: "18px" }}>arrow_back</span>
-              Sayfalar
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <Link href="/admin/sayfalar" style={{ color: "var(--text-muted)", textDecoration: "none", fontSize: "0.8rem", display: "flex", alignItems: "center" }}>
+              <span className="ms" style={{ fontSize: "16px" }}>arrow_back</span> Geri
             </Link>
           </div>
           <h1><span className="ms">edit_document</span> {isNew ? "Yeni Sayfa" : "Sayfa Düzenle"}</h1>

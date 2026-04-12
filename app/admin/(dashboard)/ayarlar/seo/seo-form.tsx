@@ -128,15 +128,15 @@ export default function SeoForm({ initialData, token }: Props) {
             </div>
 
             <div className="form-group">
-              <label>OG BAŞLIK</label>
+              <label>SEO BAŞLIĞI (TITLE)</label>
               <input value={ogTitle} onChange={(e) => setOgTitle(e.target.value)} placeholder="Ders Platosu - En Kapsamlı Eğitim Platformu" />
-              <small>Paylaşım kartında görünen ana başlık.</small>
+              <small>Arama motoru ve paylaşımlarda görünen ana başlık.</small>
             </div>
 
             <div className="form-group">
-              <label>OG AÇIKLAMA</label>
+              <label>SEO AÇIKLAMASI (DESCRIPTION)</label>
               <textarea value={ogDescription} onChange={(e) => setOgDescription(e.target.value)} placeholder="Türkiye'nin en kapsamlı ücretsiz online eğitim platformu..." rows={4} />
-              <small>Paylaşım kartında başlığın altında görünen açıklama metni.</small>
+              <small>Arama motoru ve paylaşımlarda görünen açıklama metni.</small>
             </div>
 
             <div className="form-group">

@@ -18,6 +18,11 @@ export default async function KitaplarPage() {
     <>
       <div className="admin-topbar">
         <div className="topbar-title">
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <Link href="/admin" style={{ color: "var(--text-muted)", textDecoration: "none", fontSize: "0.8rem", display: "flex", alignItems: "center" }}>
+              <span className="ms" style={{ fontSize: "16px" }}>arrow_back</span> Dashboard
+            </Link>
+          </div>
           <h1><span className="ms">menu_book</span> Kitaplar</h1>
           <p>Tüm yayınlar ve soru bankaları</p>
         </div>

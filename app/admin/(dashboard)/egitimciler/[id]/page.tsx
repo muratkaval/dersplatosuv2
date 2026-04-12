@@ -22,9 +22,11 @@ export default async function EditInstructorPage({ params }: Props) {
     <>
       <div className="admin-topbar">
         <div className="topbar-title">
-          <Link href="/admin/egitimciler" style={{ color: "#64748b", fontSize: "0.8rem", textDecoration: "none" }}>
-            ← Eğitimciler
-          </Link>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <Link href="/admin/egitimciler" style={{ color: "var(--text-muted)", textDecoration: "none", fontSize: "0.8rem", display: "flex", alignItems: "center" }}>
+              <span className="ms" style={{ fontSize: "16px" }}>arrow_back</span> Geri
+            </Link>
+          </div>
           <h1><span className="ms">edit</span> {instructor.name || "Eğitimci Düzenle"}</h1>
           <p>Eğitimci bilgilerini ve profil fotoğrafını güncelleyin</p>
         </div>

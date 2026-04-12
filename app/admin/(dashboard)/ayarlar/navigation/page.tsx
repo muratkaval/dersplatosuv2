@@ -14,10 +14,9 @@ export default async function NavFooterPage() {
     <>
       <div className="admin-topbar">
         <div className="topbar-title">
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-            <Link href="/admin/ayarlar" className="btn btn-ghost btn-sm" style={{ padding: "4px 8px" }}>
-              <span className="ms" style={{ fontSize: "18px" }}>arrow_back</span>
-              Ayarlar
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <Link href="/admin/ayarlar" style={{ color: "var(--text-muted)", textDecoration: "none", fontSize: "0.8rem", display: "flex", alignItems: "center" }}>
+              <span className="ms" style={{ fontSize: "16px" }}>arrow_back</span> Geri
             </Link>
           </div>
           <h1><span className="ms">view_quilt</span> Header & Footer Düzenleme</h1>

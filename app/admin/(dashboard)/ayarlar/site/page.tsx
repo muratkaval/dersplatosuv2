@@ -14,19 +14,22 @@ export default async function SiteManagementPage() {
   const initialData = await getGlobalSettings();
 
   return (
-    <div className="admin-container">
-      <div className="topbar-title" style={{ marginBottom: "20px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-          <Link href="/admin/ayarlar" className="btn btn-ghost btn-sm" style={{ padding: "4px 8px" }}>
-            <span className="ms" style={{ fontSize: "18px" }}>arrow_back</span>
-            Ayarlar
-          </Link>
+    <>
+      <div className="admin-topbar">
+        <div className="topbar-title">
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <Link href="/admin/ayarlar" style={{ color: "var(--text-muted)", textDecoration: "none", fontSize: "0.8rem", display: "flex", alignItems: "center" }}>
+              <span className="ms" style={{ fontSize: "16px" }}>arrow_back</span> Ayarlar
+            </Link>
+          </div>
+          <h1><span className="ms">view_quilt</span> Site Düzenleme</h1>
+          <p>Ana sayfadaki metinleri ve butonları buradan düzenle.</p>
         </div>
-        <h1><span className="ms">dvr</span> Site Düzenleme</h1>
-        <p>Ana sayfadaki metinleri ve butonları buradan düzenle.</p>
       </div>
 
-      <SiteForm initialData={initialData} token={token || ""} />
-    </div>
+      <div className="admin-content">
+        <SiteForm initialData={initialData} token={token || ""} />
+      </div>
+    </>
   );
 }

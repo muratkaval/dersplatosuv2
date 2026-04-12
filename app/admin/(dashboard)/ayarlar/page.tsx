@@ -71,13 +71,21 @@ const settingsModules: SettingsModule[] = [
 
 export default function SettingsDashboard() {
   return (
-    <div className="settings-dashboard">
-      <div className="topbar-title" style={{ marginBottom: "32px" }}>
-        <h1><span className="ms">settings</span> Ayarlar</h1>
-        <p>Sistem yapılandırması, güvenlik ve site yönetim merkezine hoş geldiniz.</p>
+    <>
+      <div className="admin-topbar">
+        <div className="topbar-title">
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <Link href="/admin" style={{ color: "var(--text-muted)", textDecoration: "none", fontSize: "0.8rem", display: "flex", alignItems: "center" }}>
+              <span className="ms" style={{ fontSize: "16px" }}>arrow_back</span> Dashboard
+            </Link>
+          </div>
+          <h1><span className="ms">settings</span> Ayarlar</h1>
+          <p>Sistem yapılandırması, güvenlik ve site yönetim merkezine hoş geldiniz.</p>
+        </div>
       </div>
 
-      <div className="settings-grid">
+      <div className="admin-content">
+        <div className="settings-grid">
         {settingsModules.map((m) => {
           const CardContent = (
             <React.Fragment key={`content-${m.id}`}>
@@ -113,7 +121,8 @@ export default function SettingsDashboard() {
             </div>
           );
         })}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
