@@ -12,7 +12,7 @@ export default async function EgitimPage() {
         <div className="page-hero-inner">
           <div className="page-hero-eyebrow">Ders Platosu</div>
           <h1>Kamplarımız</h1>
-          <p>Ders Platosu hocaları ile kamplarına katılın.</p>
+          <p>Ders Platosu hocaları ile Özel Kamplara katılın.</p>
         </div>
       </section>
 
