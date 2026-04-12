@@ -13,8 +13,8 @@ export default async function KitaplarPage() {
       <section className="page-hero">
         <div className="page-hero-inner">
           <div className="page-hero-eyebrow">Ders Platosu</div>
-          <h1>Popüler <span>Kitaplarımız</span></h1>
-          <p>En güncel ve yeni nesil soru bankalarıyla sınavlara bir adım önde hazırlanın.</p>
+          <h1>Ders Platosu <span>Kitapları</span></h1>
+          <p>Ders Platosu hocaları ve yayınlar ile özel olarak hazırlanmışkitaplar</p>
         </div>
       </section>
 
