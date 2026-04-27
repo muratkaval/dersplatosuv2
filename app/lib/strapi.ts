@@ -324,7 +324,7 @@ export async function getBooks(featuredOnly = false): Promise<Book[]> {
 
 export async function getSubjects(): Promise<any[]> {
   const data = await fetchWithFallback<{ data: any[] }>([
-    `/subjects?populate=*&sort[0]=displayOrder:asc&sort[1]=name:asc&pagination[pageSize]=100`,
+    `/subjects?populate=*&sort[0]=sira:asc&sort[1]=name:asc&pagination[pageSize]=100`,
     `/subjects?sort=name:asc&pagination[pageSize]=100`
   ]);
 

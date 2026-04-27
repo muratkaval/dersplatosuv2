@@ -122,147 +122,17 @@ export default function CategoryManagement({ initialCamps, initialBooks, initial
     }
   }
 
-  const List = ({ title, items, type, icon, stateUpdater }: { title: string; items: Category[]; type: CatType; icon: string; stateUpdater: React.Dispatch<React.SetStateAction<Category[]>> }) => {
-    const sensors = useSensors(
-      useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-      useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-    );
-
-    const [hasUnsavedOrder, setHasUnsavedOrder] = useState(false);
-    const [savingOrder, setSavingOrder] = useState(false);
-
-    function handleDragEnd(event: DragEndEvent) {
-      const { active, over } = event;
-      if (!over || active.id === over.id) return;
-
-      const oldIndex = items.findIndex((i) => i.documentId === active.id);
-      const newIndex = items.findIndex((i) => i.documentId === over.id);
-
-      const newOrdered = arrayMove(items, oldIndex, newIndex);
-      // Geçici sıra ver
-      newOrdered.forEach((item, index) => {
-        item.sira = index + 1;
-      });
-
-      stateUpdater(newOrdered);
-      setHasUnsavedOrder(true);
-    }
-
-    async function handleSaveOrder() {
-      setSavingOrder(true);
-      try {
-        for (const item of items) {
-          await fetch(`/api/admin/${type}/${item.documentId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ sira: item.sira }),
-          });
-        }
-        showToast("Sıralama Kaydedildi ✓");
-        setHasUnsavedOrder(false);
-      } catch {
-        showToast("Sıralama güncellenemedi", "error");
-      } finally {
-        setSavingOrder(false);
-      }
-    }
-
-    return (
-      <div className="table-card" style={{ marginBottom: "24px" }}>
-        <div className="table-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <div>
-            <h3 style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-              <span className="ms">{icon}</span> {title}
-            </h3>
-            <div style={{ fontSize: "0.75rem", color: "#64748b" }}>
-              {items.length} Kayıt — Sürükleyerek sıralayın
-            </div>
-          </div>
-          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-            {hasUnsavedOrder && (
-              <button className="btn btn-success btn-sm" onClick={handleSaveOrder} disabled={savingOrder}>
-                <span className="ms">save</span> {savingOrder ? "Kaydediliyor..." : "Sıralamayı Kaydet"}
-              </button>
-            )}
-            <button className="btn btn-primary btn-sm" onClick={() => openNew(type)}>
-              <span className="ms">add</span> Yeni
-            </button>
-          </div>
-        </div>
-        <DndContext id={`dnd-${type}`} sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <table style={{ borderCollapse: "collapse", width: "100%" }}>
-            <thead>
-              <tr>
-                <th style={{ paddingLeft: "40px" }}>İsim</th>
-                <th style={{ textAlign: "center", width: "60px" }}>Sıra</th>
-                <th style={{ textAlign: "right", width: "100px" }}>İşlem</th>
-              </tr>
-            </thead>
-            <tbody>
-              <SortableContext items={items.map(i => i.documentId)} strategy={verticalListSortingStrategy}>
-                {items.map((item) => (
-                  <SortableCategoryRow key={item.documentId} item={item} type={type} openEdit={openEdit} handleDelete={handleDelete} />
-                ))}
-              </SortableContext>
-              {items.length === 0 && (
-                <tr>
-                  <td colSpan={3} style={{ textAlign: "center", padding: "24px", color: "var(--text-muted)" }}>Seçili grupta kayıt yok.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </DndContext>
-      </div>
-    );
-  };
-
-  function SortableCategoryRow({ item, type, openEdit, handleDelete }: any) {
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.documentId });
-    const style = { 
-      transform: CSS.Translate.toString(transform), 
-      transition, 
-      opacity: isDragging ? 0.5 : 1, 
-      zIndex: isDragging ? 1000 : 1,
-      background: isDragging ? "rgba(59,130,246,0.05)" : "transparent",
-      position: isDragging ? "relative" : "static"
-    } as any;
-
-    return (
-      <tr ref={setNodeRef} style={style}>
-        <td style={{ borderBottom: "1px solid #1a2536", padding: "14px 16px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <span className="ms" style={{ color: "#475569", cursor: "grab", fontSize: "18px" }} {...attributes} {...listeners}>drag_indicator</span>
-            <span style={{ fontWeight: 600, color: "#cbd5e1" }}>{item.name}</span>
-          </div>
-        </td>
-        <td style={{ textAlign: "center", borderBottom: "1px solid #1a2536", color: "#60a5fa", fontWeight: 700, padding: "14px 16px" }}>
-          {item.sira || "-"}
-        </td>
-        <td style={{ borderBottom: "1px solid #1a2536", padding: "14px 16px" }}>
-          <div className="td-actions" style={{ justifyContent: "flex-end" }}>
-            <button className="btn btn-ghost btn-sm btn-icon" onClick={() => openEdit(type, item)}>
-              <span className="ms">edit</span>
-            </button>
-            <button className="btn btn-danger btn-sm btn-icon" onClick={() => handleDelete(type, item.documentId)}>
-              <span className="ms">delete</span>
-            </button>
-          </div>
-        </td>
-      </tr>
-    );
-  }
-
   return (
     <>
       {toast && <div className={`toast show toast-${toast.type}`}>{toast.msg}</div>}
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", alignItems: "start" }}>
         <div>
-          <List title="Kamp Kategorileri" items={camps} type="categories" icon="camping" stateUpdater={setCamps} />
-          <List title="Kitap Kategorileri" items={books} type="book-categories" icon="menu_book" stateUpdater={setBooks} />
+          <CategoryList title="Kamp Kategorileri" items={camps} type="categories" icon="camping" stateUpdater={setCamps} openNew={openNew} openEdit={openEdit} handleDelete={handleDelete} showToast={showToast} />
+          <CategoryList title="Kitap Kategorileri" items={books} type="book-categories" icon="menu_book" stateUpdater={setBooks} openNew={openNew} openEdit={openEdit} handleDelete={handleDelete} showToast={showToast} />
         </div>
         <div>
-          <List title="Branşlar / Dersler" items={subjects} type="subjects" icon="local_offer" stateUpdater={setSubjects} />
+          <CategoryList title="Branşlar / Dersler" items={subjects} type="subjects" icon="local_offer" stateUpdater={setSubjects} openNew={openNew} openEdit={openEdit} handleDelete={handleDelete} showToast={showToast} />
         </div>
       </div>
 
@@ -294,6 +164,148 @@ export default function CategoryManagement({ initialCamps, initialBooks, initial
         </div>
       )}
     </>
+  );
+}
+
+interface ListProps {
+  title: string;
+  items: Category[];
+  type: CatType;
+  icon: string;
+  stateUpdater: React.Dispatch<React.SetStateAction<Category[]>>;
+  openNew: (type: CatType) => void;
+  openEdit: (type: CatType, cat: Category) => void;
+  handleDelete: (type: CatType, docId: string) => void;
+  showToast: (msg: string, type?: "success" | "error") => void;
+}
+
+function CategoryList({ title, items, type, icon, stateUpdater, openNew, openEdit, handleDelete, showToast }: ListProps) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const [hasUnsavedOrder, setHasUnsavedOrder] = useState(false);
+  const [savingOrder, setSavingOrder] = useState(false);
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = items.findIndex((i) => i.documentId === active.id);
+    const newIndex = items.findIndex((i) => i.documentId === over.id);
+
+    const newOrdered = arrayMove(items, oldIndex, newIndex);
+    // Geçici sıra ver
+    newOrdered.forEach((item, index) => {
+      item.sira = index + 1;
+    });
+
+    stateUpdater(newOrdered);
+    setHasUnsavedOrder(true);
+  }
+
+  async function handleSaveOrder() {
+    setSavingOrder(true);
+    try {
+      for (const item of items) {
+        await fetch(`/api/admin/${type}/${item.documentId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sira: item.sira }),
+        });
+      }
+      showToast("Sıralama Kaydedildi ✓");
+      setHasUnsavedOrder(false);
+    } catch {
+      showToast("Sıralama güncellenemedi", "error");
+    } finally {
+      setSavingOrder(false);
+    }
+  }
+
+  return (
+    <div className="table-card" style={{ marginBottom: "24px" }}>
+      <div className="table-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div>
+          <h3 style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <span className="ms">{icon}</span> {title}
+          </h3>
+          <div style={{ fontSize: "0.75rem", color: "#64748b" }}>
+            {items.length} Kayıt — Sürükleyerek sıralayın
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          {hasUnsavedOrder && (
+            <button className="btn btn-success btn-sm" onClick={handleSaveOrder} disabled={savingOrder}>
+              <span className="ms">save</span> {savingOrder ? "Kaydediliyor..." : "Sıralamayı Kaydet"}
+            </button>
+          )}
+          <button className="btn btn-primary btn-sm" onClick={() => openNew(type)}>
+            <span className="ms">add</span> Yeni
+          </button>
+        </div>
+      </div>
+      <DndContext id={`dnd-${type}`} sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <table style={{ borderCollapse: "collapse", width: "100%" }}>
+          <thead>
+            <tr>
+              <th style={{ paddingLeft: "40px" }}>İsim</th>
+              <th style={{ textAlign: "center", width: "60px" }}>Sıra</th>
+              <th style={{ textAlign: "right", width: "100px" }}>İşlem</th>
+            </tr>
+          </thead>
+          <tbody>
+            <SortableContext items={items.map(i => i.documentId)} strategy={verticalListSortingStrategy}>
+              {items.map((item) => (
+                <SortableCategoryRow key={item.documentId} item={item} type={type} openEdit={openEdit} handleDelete={handleDelete} />
+              ))}
+            </SortableContext>
+            {items.length === 0 && (
+              <tr>
+                <td colSpan={3} style={{ textAlign: "center", padding: "24px", color: "var(--text-muted)" }}>Seçili grupta kayıt yok.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </DndContext>
+    </div>
+  );
+}
+
+function SortableCategoryRow({ item, type, openEdit, handleDelete }: any) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.documentId });
+  const style = { 
+    transform: CSS.Translate.toString(transform), 
+    transition, 
+    opacity: isDragging ? 0.5 : 1, 
+    zIndex: isDragging ? 1000 : 1,
+    background: isDragging ? "rgba(59,130,246,0.05)" : "transparent",
+    position: isDragging ? "relative" : "static"
+  } as any;
+
+  return (
+    <tr ref={setNodeRef} style={style}>
+      <td style={{ borderBottom: "1px solid #1a2536", padding: "14px 16px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <span className="ms" style={{ color: "#475569", cursor: "grab", fontSize: "18px" }} {...attributes} {...listeners}>drag_indicator</span>
+          <span style={{ fontWeight: 600, color: "#cbd5e1" }}>{item.name}</span>
+        </div>
+      </td>
+      <td style={{ textAlign: "center", borderBottom: "1px solid #1a2536", color: "#60a5fa", fontWeight: 700, padding: "14px 16px" }}>
+        {item.sira || "-"}
+      </td>
+      <td style={{ borderBottom: "1px solid #1a2536", padding: "14px 16px" }}>
+        <div className="td-actions" style={{ justifyContent: "flex-end" }}>
+          <button className="btn btn-ghost btn-sm btn-icon" onClick={() => openEdit(type, item)}>
+            <span className="ms">edit</span>
+          </button>
+          <button className="btn btn-danger btn-sm btn-icon" onClick={() => handleDelete(type, item.documentId)}>
+            <span className="ms">delete</span>
+          </button>
+        </div>
+      </td>
+    </tr>
   );
 }
 

@@ -2,8 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
-const STRAPI = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1340";
+import { toMediaUrl } from "@/app/lib/strapi";
 
 export default function BookSelector({
   books,
@@ -16,14 +15,26 @@ export default function BookSelector({
   const [search, setSearch] = useState("");
   const [activeSubject, setActiveSubject] = useState<string>("Tümü");
 
-  // Collect unique subjects from all books
-  const subjectSet = new Set<string>();
+  // Collect unique subjects and their order from all books
+  const subjectMap = new Map<string, number>();
   books.forEach((b) => {
     (b.subjects || []).forEach((s: any) => {
-      if (s.name) subjectSet.add(s.name);
+      if (s.name) {
+        // Only keep the smallest sira if there are duplicates with different sira (though shouldn't happen)
+        const currentSira = subjectMap.get(s.name);
+        const newSira = s.sira ?? 999;
+        if (currentSira === undefined || newSira < currentSira) {
+          subjectMap.set(s.name, newSira);
+        }
+      }
     });
   });
-  const subjects = ["Tümü", ...Array.from(subjectSet).sort()];
+  const subjects = [
+    "Tümü",
+    ...Array.from(subjectMap.entries())
+      .sort((a, b) => a[1] - b[1])
+      .map((entry) => entry[0]),
+  ];
 
   // Filter books by search + active subject tab
   const filtered = books.filter((b) => {
@@ -122,9 +133,7 @@ export default function BookSelector({
         }}>
           {filtered.map((b) => {
             const isSelected = b.documentId === selectedBook;
-            const coverUrl = b.cover?.url
-              ? (b.cover.url.startsWith("http") ? b.cover.url : `${STRAPI}${b.cover.url}`)
-              : null;
+            const coverUrl = toMediaUrl(b.cover);
             const subjectNames = (b.subjects || []).map((s: any) => s.name).join(", ");
 
             return (

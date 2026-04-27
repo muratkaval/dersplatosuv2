@@ -18,8 +18,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-
-const STRAPI = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1340";
+import { toMediaUrl } from "@/app/lib/strapi";
 
 type Video = {
   documentId: string;
@@ -405,9 +404,7 @@ export default function BookVideos({
     }
   }
 
-  const coverUrl = book?.cover?.url
-    ? (book.cover.url.startsWith("http") ? book.cover.url : `${STRAPI}${book.cover.url}`)
-    : null;
+  const coverUrl = toMediaUrl(book?.cover);
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>

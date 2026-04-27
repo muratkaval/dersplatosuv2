@@ -51,7 +51,7 @@ export default async function SoruCozumleriPage({
 
   // ── Book selection view ───────────────────────────────────────
   const booksRes = await adminGet(
-    "/books?fields[0]=title&fields[1]=documentId&sort=title:asc&pagination[pageSize]=100&populate[cover][fields][0]=url&populate[subjects][fields][0]=name",
+    "/books?fields[0]=title&fields[1]=documentId&sort=title:asc&pagination[pageSize]=100&populate[cover][fields][0]=url&populate[subjects][fields][0]=name&populate[subjects][fields][1]=sira",
     token
   );
   const books = booksRes.data?.data || [];
