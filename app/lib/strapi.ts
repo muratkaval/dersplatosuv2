@@ -128,7 +128,7 @@ export type Book = {
   updatedAt?: string;
 };
 
-async function fetchStrapi<T>(pathAndQuery: string, options: NextFetchRequestConfig = { revalidate: 3600 }): Promise<T | null> {
+async function fetchStrapi<T>(pathAndQuery: string, options: NextFetchRequestConfig = { revalidate: 60 }): Promise<T | null> {
   try {
     const res = await fetch(`${strapiApiBase}${pathAndQuery}`, {
       headers: buildHeaders(),
