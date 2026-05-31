@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { getBooks, getCamps, getInstructors, toMediaUrl, getCampThumbnail, getGlobalSettings } from "@/app/lib/strapi";
 import InstructorScroll from "./components/instructor-scroll";
+import ExamCountdown from "./components/exam-countdown";
+import { getCountdowns } from "@/app/lib/strapi";
 
 function slugify(t: string = "") {
   return t.toLowerCase()
@@ -14,12 +16,15 @@ function slugify(t: string = "") {
 }
 
 export default async function Home() {
-  const [camps, instructors, featuredBooks, globalSettings] = await Promise.all([
+  const [camps, instructors, featuredBooks, globalSettings, countdowns] = await Promise.all([
     getCamps(),
     getInstructors(),
     getBooks(true),
-    getGlobalSettings()
+    getGlobalSettings(),
+    getCountdowns(),
   ]);
+
+  const homepageCountdown = countdowns.find((c) => c.showOnHomepage) ?? null;
 
   const site = globalSettings?.attributes || globalSettings || {};
 
@@ -193,6 +198,9 @@ export default async function Home() {
           </div>
         </section>
       </div>
+
+      {/* YKS / SINAV SAYACI */}
+      {homepageCountdown && <ExamCountdown countdown={homepageCountdown} />}
 
       {/* STATISTICS SECTION */}
       {site.statsItems && site.statsItems.length > 0 && (

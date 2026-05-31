@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { PageContainer } from "../components/site-layout";
-import { flattenStrapi } from "../lib/strapi";
+import { flattenStrapi, getCountdownBySlug, getCountdowns } from "../lib/strapi";
+import ExamCountdown from "../components/exam-countdown";
+import type { Metadata } from "next";
 
 async function getPageBySlug(slug: string) {
   const token = process.env.STRAPI_TOKEN || "";
@@ -21,20 +23,56 @@ async function getPageBySlug(slug: string) {
   }
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const page = await getPageBySlug(slug);
-  if (!page) return {};
-  return {
-    title: page.title,
-    description: page.title,
-  };
+export async function generateStaticParams() {
+  const countdowns = await getCountdowns();
+  return countdowns.map((c) => ({ slug: c.slug }));
 }
 
-export default async function StaticPage({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
-  const page = await getPageBySlug(slug);
 
+  const countdown = await getCountdownBySlug(slug);
+  if (countdown) {
+    return {
+      title: countdown.metaTitle || countdown.title,
+      description: countdown.metaDescription || countdown.description || countdown.title,
+    };
+  }
+
+  const page = await getPageBySlug(slug);
+  if (page) {
+    return {
+      title: page.title,
+      description: page.title,
+    };
+  }
+
+  return {};
+}
+
+export default async function SlugPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+
+  // 1) Countdown'u dene
+  const countdown = await getCountdownBySlug(slug);
+  if (countdown && countdown.enabled !== false) {
+    return (
+      <PageContainer>
+        <ExamCountdown countdown={countdown} />
+      </PageContainer>
+    );
+  }
+
+  // 2) Strapi pages'i dene
+  const page = await getPageBySlug(slug);
   if (!page) notFound();
 
   return (

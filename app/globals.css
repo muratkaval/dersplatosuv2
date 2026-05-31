@@ -428,3 +428,266 @@ body[data-theme="dark"] .mobile-menu {
     padding: 0 20px !important;
   }
 }
+
+/* ===== EXAM COUNTDOWN ===== */
+.exam-countdown-section {
+  padding: 64px 0 56px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+body[data-theme="dark"] .exam-countdown-section {
+  background: #050b1f;
+  border-bottom-color: #1e293b;
+}
+
+.exam-countdown-section .container,
+.exam-countdown-section > * {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.exam-countdown-header {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  margin-bottom: 40px;
+}
+
+.exam-countdown-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #0f172a;
+  margin-bottom: 12px;
+  letter-spacing: -0.03em;
+}
+
+body[data-theme="dark"] .exam-countdown-title { color: #f1f5f9; }
+
+.exam-countdown-desc {
+  color: #64748b;
+  font-size: 0.97rem;
+  line-height: 1.7;
+  max-width: 720px;
+}
+
+body[data-theme="dark"] .exam-countdown-desc { color: #94a3b8; }
+
+/* Rings */
+.exam-countdown-rings {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto 48px;
+  padding: 0 24px;
+}
+
+.exam-ring-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 24px;
+  min-width: 170px;
+  flex: 1;
+  max-width: 200px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body[data-theme="dark"] .exam-ring-wrap {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.exam-ring-wrap:hover {
+  transform: translateY(-4px);
+  border-color: #cbd5e1;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+}
+
+body[data-theme="dark"] .exam-ring-wrap:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.exam-ring-svg circle:first-child {
+  stroke: #f1f5f9;
+}
+
+body[data-theme="dark"] .exam-ring-svg circle:first-child {
+  stroke: rgba(255, 255, 255, 0.05);
+}
+
+.exam-ring-svg-wrap {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.exam-ring-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.exam-ring-progress {
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.exam-ring-inner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.exam-ring-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6366f1;
+}
+
+body[data-theme="dark"] .exam-ring-label { color: #818cf8; }
+
+.exam-ring-value {
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+body[data-theme="dark"] .exam-ring-value { color: #f8fafc; }
+
+/* Session Table */
+.exam-sessions {
+  max-width: 900px;
+  margin: 0 auto 48px;
+  padding: 0 24px;
+}
+
+.exam-sessions-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.exam-session-row {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+body[data-theme="dark"] .exam-session-row { border-bottom-color: #1e293b; }
+
+.exam-session-row:last-child {
+  border-bottom: none;
+}
+
+.exam-session-name,
+.exam-session-date,
+.exam-session-time {
+  padding: 12px 8px;
+  font-size: 0.95rem;
+  color: #334155;
+  vertical-align: middle;
+}
+
+body[data-theme="dark"] .exam-session-name,
+body[data-theme="dark"] .exam-session-date,
+body[data-theme="dark"] .exam-session-time {
+  color: #cbd5e1;
+}
+
+.exam-session-name {
+  font-weight: 700;
+  color: #0f172a;
+  width: 35%;
+}
+
+body[data-theme="dark"] .exam-session-name { color: #f1f5f9; }
+
+/* Bottom Section */
+.exam-countdown-bottom {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.exam-countdown-bottom-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+
+body[data-theme="dark"] .exam-countdown-bottom-title { color: #f1f5f9; }
+
+.exam-countdown-bottom-text {
+  color: #64748b;
+  font-size: 0.97rem;
+  line-height: 1.8;
+}
+
+body[data-theme="dark"] .exam-countdown-bottom-text { color: #ffffff; }
+body[data-theme="dark"] .exam-countdown-bottom-text p { color: #ffffff; }
+body[data-theme="dark"] .exam-countdown-bottom-text li { color: #ffffff; }
+body[data-theme="dark"] .exam-countdown-bottom-text strong { color: #ffffff; }
+body[data-theme="dark"] .exam-countdown-bottom-text em { color: #ffffff; }
+body[data-theme="dark"] .exam-countdown-bottom-text h3 { color: #ffffff; }
+body[data-theme="dark"] .exam-countdown-bottom-text h4 { color: #ffffff; }
+
+.exam-countdown-bottom-text p { margin-bottom: 12px; }
+.exam-countdown-bottom-text p:last-child { margin-bottom: 0; }
+.exam-countdown-bottom-text h3 { color: var(--text-color); font-size: 1.2rem; margin: 16px 0 8px; font-weight: 600; }
+.exam-countdown-bottom-text h4 { color: var(--text-color); font-size: 1.1rem; margin: 14px 0 6px; font-weight: 600; }
+.exam-countdown-bottom-text ul { padding-left: 20px; list-style: disc; margin-bottom: 12px; }
+.exam-countdown-bottom-text ol { padding-left: 20px; list-style: decimal; margin-bottom: 12px; }
+.exam-countdown-bottom-text a { color: var(--primary-color); text-decoration: underline; }
+.exam-countdown-bottom-text strong { font-weight: 600; color: var(--text-color); }
+
+.exam-countdown-expired {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #22c55e;
+  padding: 32px 0;
+}
+
+@media (max-width: 600px) {
+  .exam-countdown-rings {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: stretch;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding: 0 16px;
+  }
+  .exam-ring-wrap {
+    max-width: none;
+    min-width: 0;
+    padding: 20px 12px;
+    border-radius: 20px;
+  }
+  .exam-ring-svg-wrap { width: 100px; height: 100px; }
+  .exam-ring-value { font-size: 1.9rem; }
+  .exam-countdown-title { font-size: 1.7rem; }
+  .exam-countdown-bottom-title { font-size: 1.3rem; }
+  .exam-session-name,
+  .exam-session-date,
+  .exam-session-time { font-size: 0.85rem; padding: 10px 4px; }
+}

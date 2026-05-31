@@ -380,3 +380,52 @@ export async function getGlobalSettings(): Promise<any> {
   const data = await fetchStrapi<{ data: any }>(`/global-setting?populate=*`);
   return flattenStrapi(data?.data || null);
 }
+
+export type CountdownSession = {
+  id?: number;
+  sessionName?: string;
+  sessionDate?: string;
+  sessionTime?: string;
+};
+
+export type Countdown = {
+  id: number;
+  documentId?: string;
+  title: string;
+  slug: string;
+  targetDate: string;
+  description?: string;
+  bottomTitle?: string;
+  bottomText?: string;
+  sessions?: CountdownSession[];
+  enabled?: boolean;
+  showOnHomepage?: boolean;
+  displayOrder?: number;
+  metaTitle?: string;
+  metaDescription?: string;
+};
+
+export async function getCountdowns(): Promise<Countdown[]> {
+  const data = await fetchWithFallback<{ data: any[] }>([
+    `/countdowns?filters[enabled][$eq]=true&populate[sessions]=*&sort[0]=displayOrder:asc&pagination[pageSize]=50`,
+    `/countdowns?populate=*&sort[0]=displayOrder:asc&pagination[pageSize]=50`,
+  ]);
+  const items = flattenStrapi(data?.data || []);
+  return items.map((item: any) => ({
+    ...item,
+    slug: item.slug || slugify(item.title),
+  }));
+}
+
+export async function getCountdownBySlug(slug: string): Promise<Countdown | null> {
+  const data = await fetchWithFallback<{ data: any[] }>([
+    `/countdowns?filters[slug][$eq]=${slug}&populate=*`,
+    `/countdowns?filters[slug][$eq]=${slug}&populate[sessions]=*&populate[bottomText]=*`,
+  ]);
+  const raw = flattenStrapi(data?.data?.[0] || null);
+  if (!raw) return null;
+  return {
+    ...raw,
+    slug: raw.slug || slugify(raw.title),
+  };
+}
