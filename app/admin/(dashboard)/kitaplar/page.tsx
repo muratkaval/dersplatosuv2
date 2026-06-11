@@ -2,6 +2,7 @@ import { requireAdminToken } from "@/app/admin/lib/auth";
 import { adminGet } from "@/app/admin/lib/strapi-admin";
 import Link from "next/link";
 import BooksTable from "./books-table";
+import PageHeaderEditor from "../page-header-editor";
 
 export const metadata = { title: "Kitaplar | Admin" };
 
@@ -12,6 +13,9 @@ export default async function KitaplarPage() {
     token
   );
   
+  const gs = await adminGet("/global-setting", token);
+  const pageHeaders = gs.data?.data?.pageHeaders || {};
+
   const books = d.data?.data || [];
 
   return (
@@ -27,6 +31,7 @@ export default async function KitaplarPage() {
           <p>Tüm yayınlar ve soru bankaları</p>
         </div>
         <div className="topbar-actions">
+          <PageHeaderEditor pageKey="kitaplar" allHeaders={pageHeaders} defaults={{ title: "Ders Platosu", highlight: "Kitapları", subtitle: "Ders Platosu hocaları ve yayınlar ile özel olarak hazırlanmış kitaplar" }} />
           <Link href="/admin/kitaplar/yeni" className="btn btn-primary">
             <span className="ms">add</span>
             Yeni Kitap

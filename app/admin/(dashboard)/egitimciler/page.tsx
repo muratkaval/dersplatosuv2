@@ -2,6 +2,7 @@ import { requireAdminToken } from "@/app/admin/lib/auth";
 import { adminGet } from "@/app/admin/lib/strapi-admin";
 import Link from "next/link";
 import InstructorsTable from "./instructors-table";
+import PageHeaderEditor from "../page-header-editor";
 
 export const metadata = { title: "Eğitimciler | Admin" };
 
@@ -12,6 +13,9 @@ export default async function EgitimcilerPage() {
     token
   );
   
+  const gs = await adminGet("/global-setting", token);
+  const pageHeaders = gs.data?.data?.pageHeaders || {};
+
   const instructors = d.data?.data || [];
 
   return (
@@ -27,6 +31,7 @@ export default async function EgitimcilerPage() {
           <p>Sisteme kayıtlı youtuber hocalarımız</p>
         </div>
         <div className="topbar-actions">
+          <PageHeaderEditor pageKey="youtuber-hocalar" allHeaders={pageHeaders} defaults={{ title: "Youtuber", highlight: "Hocalarımız", subtitle: "Alanında uzman, deneyimli öğretmenlerle çalış ve başarı sağla" }} />
           <Link href="/admin/egitimciler/yeni" className="btn btn-primary">
             <span className="ms">person_add</span>
             Yeni Eğitimci

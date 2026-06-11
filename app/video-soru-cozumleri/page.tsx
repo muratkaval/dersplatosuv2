@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { PageContainer } from "../components/site-layout";
 import { getBooks, getSubjects } from "@/app/lib/strapi";
+import PageHero from "@/app/components/page-hero";
 import "./soru-cozumleri.css";
 
 export const metadata: Metadata = {
@@ -25,13 +26,7 @@ export default async function VideoSoruCozumleriPage() {
 
   return (
     <PageContainer>
-      <section className="page-hero">
-        <div className="page-hero-inner">
-          <div className="page-hero-eyebrow">Ders Platosu</div>
-          <h1>Video <span>Soru Çözümleri</span></h1>
-          <p>Anlamadığın soru kalmasın. Branşını seç, kitabını bul, videoyu izle.</p>
-        </div>
-      </section>
+      <PageHero pageKey="soru-cozumleri" title="Video" highlight="Soru Çözümleri" subtitle="Anlamadığın soru kalmasın. Branşını seç, kitabını bul, videoyu izle." />
 
       <section style={{ padding: "60px 0" }}>
         <div className="container">

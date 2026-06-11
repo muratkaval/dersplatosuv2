@@ -2,6 +2,7 @@ import { requireAdminToken } from "@/app/admin/lib/auth";
 import { adminGet } from "@/app/admin/lib/strapi-admin";
 import Link from "next/link";
 import CampsTable from "./camps-table";
+import PageHeaderEditor from "../page-header-editor";
 
 export const metadata = { title: "Kamplar | Admin" };
 
@@ -12,6 +13,9 @@ export default async function KamplarPage() {
     "/camps?populate[instructors][fields][0]=name&populate[categories][fields][0]=name&sort=createdAt:desc&pagination[pageSize]=100",
     token
   );
+
+  const gs = await adminGet("/global-setting", token);
+  const pageHeaders = gs.data?.data?.pageHeaders || {};
 
   const camps = (d.data?.data || []).map((item: any) => ({
     id: item.id,
@@ -35,6 +39,7 @@ export default async function KamplarPage() {
           <p>Sürükleyerek sıralayın, ardından "Sıralamayı Kaydet" butonuna basın</p>
         </div>
         <div className="topbar-actions">
+          <PageHeaderEditor pageKey="kamplar" allHeaders={pageHeaders} defaults={{ title: "Kamplarımız", subtitle: "Ders Platosu hocaları ile Özel Kamplara katılın." }} />
           <Link href="/admin/kamplar/yeni" className="btn btn-primary">
             <span className="ms">add</span>
             Yeni Kamp

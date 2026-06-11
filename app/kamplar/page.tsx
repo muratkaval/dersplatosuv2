@@ -2,19 +2,14 @@ import { PageContainer } from "../components/site-layout";
 import CourseCard from "../components/course-card";
 import { getCamps } from "@/app/lib/strapi";
 import CampFilter from "@/app/components/camp-filter";
+import PageHero from "@/app/components/page-hero";
 
 export default async function EgitimPage() {
   const camps = await getCamps();
 
   return (
     <PageContainer>
-      <section className="page-hero">
-        <div className="page-hero-inner">
-          <div className="page-hero-eyebrow">Ders Platosu</div>
-          <h1>Kamplarımız</h1>
-          <p>Ders Platosu hocaları ile Özel Kamplara katılın.</p>
-        </div>
-      </section>
+      <PageHero pageKey="kamplar" title="Kamplarımız" subtitle="Ders Platosu hocaları ile Özel Kamplara katılın." />
 
       <section className="courses-section" style={{ padding: "60px 0" }} id="dersler">
         <div className="container">

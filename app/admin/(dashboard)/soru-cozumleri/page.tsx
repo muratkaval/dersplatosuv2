@@ -2,6 +2,7 @@ import { requireAdminToken } from "@/app/admin/lib/auth";
 import { adminGet } from "@/app/admin/lib/strapi-admin";
 import Link from "next/link";
 import BookGrid from "./book-grid";
+import PageHeaderEditor from "../page-header-editor";
 import BookVideos from "./book-videos";
 
 export const metadata = { title: "Soru Çözümleri | Admin" };
@@ -55,6 +56,8 @@ export default async function SoruCozumleriPage({
     token
   );
   const books = booksRes.data?.data || [];
+  const gs = await adminGet("/global-setting", token);
+  const pageHeaders = gs.data?.data?.pageHeaders || {};
 
   return (
     <>
@@ -67,6 +70,9 @@ export default async function SoruCozumleriPage({
           </div>
           <h1><span className="ms">play_circle</span> Soru Çözümleri</h1>
           <p>Aşağıdan bir kitap seçerek çözüm videolarını yönetin</p>
+        </div>
+        <div className="topbar-actions">
+          <PageHeaderEditor pageKey="soru-cozumleri" allHeaders={pageHeaders} defaults={{ title: "Video", highlight: "Soru Çözümleri", subtitle: "Anlamadığın soru kalmasın. Branşını seç, kitabını bul, videoyu izle." }} />
         </div>
       </div>
 

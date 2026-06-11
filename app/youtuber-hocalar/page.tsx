@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PageContainer } from "../components/site-layout";
 import { getInstructors, toMediaUrl, getGlobalSettings } from "@/app/lib/strapi";
+import PageHero from "@/app/components/page-hero";
 import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -21,13 +22,7 @@ export default async function YoutuberHocalarPage() {
 
   return (
     <PageContainer>
-      <section className="page-hero">
-        <div className="page-hero-inner">
-          <div className="page-hero-eyebrow">Ders Platosu</div>
-          <h1>Youtuber <span>Hocalarımız</span></h1>
-          <p>Alanında uzman, deneyimli öğretmenlerle çalış ve başarı sağla</p>
-        </div>
-      </section>
+      <PageHero pageKey="youtuber-hocalar" title="Youtuber" highlight="Hocalarımız" subtitle="Alanında uzman, deneyimli öğretmenlerle çalış ve başarı sağla" />
 
       <section className="youtubers-section" id="youtubers" style={{ padding: "60px 0" }}>
         <div className="container">

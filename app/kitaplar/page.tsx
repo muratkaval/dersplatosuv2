@@ -1,6 +1,7 @@
 import { PageContainer } from "../components/site-layout";
 import { getBooks, getSubjects } from "../lib/strapi";
 import BookFilterableList from "../components/book-filterable-list";
+import PageHero from "@/app/components/page-hero";
 
 export default async function KitaplarPage() {
   const [books, subjects] = await Promise.all([
@@ -10,13 +11,7 @@ export default async function KitaplarPage() {
 
   return (
     <PageContainer>
-      <section className="page-hero">
-        <div className="page-hero-inner">
-          <div className="page-hero-eyebrow">Ders Platosu</div>
-          <h1>Ders Platosu <span>Kitapları</span></h1>
-          <p>Ders Platosu hocaları ve yayınlar ile özel olarak hazırlanmışkitaplar</p>
-        </div>
-      </section>
+      <PageHero pageKey="kitaplar" title="Ders Platosu" highlight="Kitapları" subtitle="Ders Platosu hocaları ve yayınlar ile özel olarak hazırlanmış kitaplar" />
 
       <section className="books-section" style={{ padding: "40px 0 80px" }}>
         <div className="container">
