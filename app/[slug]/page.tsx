@@ -12,7 +12,7 @@ async function getPageBySlug(slug: string) {
       `${strapiUrl}/api/pages?filters[slug][$eq]=${slug}&pagination[pageSize]=1`,
       {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
-        cache: "no-store",
+        next: { revalidate: 60 },
       }
     );
     if (!res.ok) return null;
