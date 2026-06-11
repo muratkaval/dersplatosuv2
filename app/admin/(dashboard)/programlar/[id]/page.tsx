@@ -10,8 +10,10 @@ export default async function ProgramDuzenlePage({ params }: { params: Promise<{
   const token = await requireAdminToken();
   const { id } = await params;
 
+  // Strapi v5 rejects `populate[field]=*` on a specific media/relation; use
+  // explicit `=true` and populate the media nested in the `weeks` component.
   const res = await adminGet(
-    `/programs/${id}?populate[cover]=*&populate[downloadPdf]=*&populate[subjects]=*&populate[weeks][populate]=*`,
+    `/programs/${id}?populate[cover]=true&populate[downloadPdf]=true&populate[subjects]=true&populate[weeks][populate][scheduleImage]=true&populate[weeks][populate][pdf]=true`,
     token
   );
   const program = res.data?.data;

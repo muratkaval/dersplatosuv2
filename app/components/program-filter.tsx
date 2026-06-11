@@ -34,7 +34,8 @@ function netLabel(p: Program): string | null {
   const hasMin = typeof p.netMin === "number";
   const hasMax = typeof p.netMax === "number";
   if (!hasMin && !hasMax) return null;
-  if (hasMax && (p.netMax as number) >= 9999) return `${p.netMin}+ net`;
+  // open-ended upper bound (stored as null or a sentinel) -> "N+ net"
+  if (hasMin && (!hasMax || (p.netMax as number) >= 9999)) return `${p.netMin}+ net`;
   if (hasMin && hasMax) return `${p.netMin}-${p.netMax} net`;
   return `${p.netMin ?? p.netMax} net`;
 }
@@ -84,11 +85,15 @@ export default function ProgramFilter({ programs, netBuckets, examOptions }: { p
         if (!has) return false;
       }
       if (bucketIdx !== null) {
+        // Each program is assigned exactly one net bucket in the admin (single
+        // select), so match the chosen bucket exactly rather than by overlap —
+        // otherwise a broad "0-40 net" program shows up under every bucket.
         const b = NETS[bucketIdx];
-        const bMax = b.max == null ? Infinity : b.max;
-        const min = typeof p.netMin === "number" ? p.netMin : 0;
-        const max = typeof p.netMax === "number" ? p.netMax : 9999;
-        if (max < b.min || min > bMax) return false;
+        const norm = (v: number | null | undefined) =>
+          v == null || v >= 9999 ? null : v;
+        const pMin = typeof p.netMin === "number" ? p.netMin : null;
+        const pMax = norm(typeof p.netMax === "number" ? p.netMax : null);
+        if (pMin !== b.min || pMax !== norm(b.max)) return false;
       }
       return true;
     });

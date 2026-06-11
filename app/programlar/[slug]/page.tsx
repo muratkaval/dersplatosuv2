@@ -9,7 +9,8 @@ function netLabel(p: Program): string | null {
   const hasMin = typeof p.netMin === "number";
   const hasMax = typeof p.netMax === "number";
   if (!hasMin && !hasMax) return null;
-  if (hasMax && (p.netMax as number) >= 9999) return `${p.netMin}+ net`;
+  // open-ended upper bound (stored as null or a sentinel) -> "N+ net"
+  if (hasMin && (!hasMax || (p.netMax as number) >= 9999)) return `${p.netMin}+ net`;
   if (hasMin && hasMax) return `${p.netMin}-${p.netMax} net`;
   return `${p.netMin ?? p.netMax} net`;
 }

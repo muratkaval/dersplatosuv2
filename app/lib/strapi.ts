@@ -456,9 +456,16 @@ export type Program = {
   updatedAt?: string;
 };
 
+// Strapi v5 rejects `populate[field]=*` on a specific media/relation (it tries
+// to expand the media's polymorphic `related` key -> 400 ValidationError).
+// Use explicit `=true` per field and populate the media nested inside the
+// `weeks` component by name, otherwise week images/PDFs never load.
+const PROGRAM_POPULATE =
+  "populate[cover]=true&populate[downloadPdf]=true&populate[subjects]=true&populate[weeks][populate][scheduleImage]=true&populate[weeks][populate][pdf]=true";
+
 export async function getPrograms(): Promise<Program[]> {
   const data = await fetchWithFallback<{ data: any[] }>([
-    "/programs?populate[cover]=*&populate[downloadPdf]=*&populate[subjects]=*&populate[weeks][populate]=*&sort[0]=displayOrder:asc&sort[1]=createdAt:desc&pagination[pageSize]=100",
+    `/programs?${PROGRAM_POPULATE}&sort[0]=displayOrder:asc&sort[1]=createdAt:desc&pagination[pageSize]=100`,
     "/programs?populate=*&sort[0]=displayOrder:asc&pagination[pageSize]=100",
   ]);
   const items = flattenStrapi(data?.data || []);
@@ -470,7 +477,7 @@ export async function getPrograms(): Promise<Program[]> {
 
 export async function getProgramBySlug(slug: string): Promise<Program | null> {
   const data = await fetchWithFallback<{ data: any[] }>([
-    `/programs?filters[slug][$eq]=${slug}&populate[cover]=*&populate[downloadPdf]=*&populate[subjects]=*&populate[weeks][populate]=*`,
+    `/programs?filters[slug][$eq]=${slug}&${PROGRAM_POPULATE}`,
     `/programs?filters[slug][$eq]=${slug}&populate=*`,
   ]);
   const raw = flattenStrapi(data?.data?.[0] || null);
