@@ -10,6 +10,7 @@ const DEFAULT_NAV: NavLink[] = [
   { label: "Ana Sayfa", href: "/" },
   { label: "Youtuber Hocalarımız", href: "/youtuber-hocalar" },
   { label: "Kamplar", href: "/kamplar" },
+  { label: "Programlar", href: "/programlar" },
   { label: "Kitaplarımız", href: "/kitaplar" },
   { label: "Soru Çözümleri", href: "/video-soru-cozumleri" },
 ];

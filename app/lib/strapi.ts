@@ -429,3 +429,54 @@ export async function getCountdownBySlug(slug: string): Promise<Countdown | null
     slug: raw.slug || slugify(raw.title),
   };
 }
+
+export type ProgramWeek = {
+  weekNo?: number;
+  title?: string;
+  scheduleImage?: { url?: string } | null;
+  pdf?: { url?: string } | null;
+  link?: string;
+};
+
+export type Program = {
+  id: number;
+  documentId?: string;
+  title: string;
+  slug: string;
+  examType?: string;
+  netMin?: number;
+  netMax?: number;
+  periodType?: string;
+  description?: string;
+  cover?: { url?: string } | null;
+  downloadPdf?: { url?: string } | null;
+  subjects?: Array<{ id?: number; name?: string; slug?: string }>;
+  weeks?: ProgramWeek[];
+  displayOrder?: number;
+  updatedAt?: string;
+};
+
+export async function getPrograms(): Promise<Program[]> {
+  const data = await fetchWithFallback<{ data: any[] }>([
+    "/programs?populate[cover]=*&populate[downloadPdf]=*&populate[subjects]=*&populate[weeks][populate]=*&sort[0]=displayOrder:asc&sort[1]=createdAt:desc&pagination[pageSize]=100",
+    "/programs?populate=*&sort[0]=displayOrder:asc&pagination[pageSize]=100",
+  ]);
+  const items = flattenStrapi(data?.data || []);
+  return items.map((item: any) => ({
+    ...item,
+    slug: item.slug || slugify(item.title),
+  }));
+}
+
+export async function getProgramBySlug(slug: string): Promise<Program | null> {
+  const data = await fetchWithFallback<{ data: any[] }>([
+    `/programs?filters[slug][$eq]=${slug}&populate[cover]=*&populate[downloadPdf]=*&populate[subjects]=*&populate[weeks][populate]=*`,
+    `/programs?filters[slug][$eq]=${slug}&populate=*`,
+  ]);
+  const raw = flattenStrapi(data?.data?.[0] || null);
+  if (!raw) return null;
+  return {
+    ...raw,
+    slug: raw.slug || slugify(raw.title),
+  };
+}
