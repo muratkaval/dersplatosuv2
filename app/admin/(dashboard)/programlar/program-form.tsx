@@ -70,7 +70,7 @@ function unitWordOf(p: string) {
 export default function ProgramForm({ program, subjects, exams, nets, books = [], categories }: Props) {
   const router = useRouter();
   const isEdit = !!program?.documentId;
-  const cats = (categories && categories.length ? categories : DEFAULT_CATEGORIES)
+  const cats: { name: string; options: string[] }[] = (categories && categories.length ? categories : DEFAULT_CATEGORIES)
     .map((c: any) => ({ name: String(c?.name || "").trim(), options: Array.isArray(c?.options) ? c.options.map((o: any) => String(o).trim()).filter(Boolean) : [] }))
     .filter((c) => c.name);
   const examOptions = Array.from(new Set([...cats.map((c) => c.name), ...(program?.examType ? [program.examType] : [])]));
