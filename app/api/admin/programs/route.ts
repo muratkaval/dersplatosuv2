@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { adminPost } from "@/app/admin/lib/strapi-admin";
 import { getAdminToken } from "@/app/admin/lib/auth";
 
@@ -15,6 +16,11 @@ export async function POST(req: NextRequest) {
       { status: res.status }
     );
   }
+
+  // Public /programlar verisi 60 sn cache'li (strapi.ts fetchStrapi revalidate:60).
+  // Yeni programın 1 dk beklemeden görünmesi için listeyi ve detay sayfalarını anında tazele.
+  revalidatePath("/programlar");
+  revalidatePath("/programlar/[slug]", "page");
 
   return NextResponse.json({ success: true, data: res.data });
 }

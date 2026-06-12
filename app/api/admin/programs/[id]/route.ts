@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { adminDelete, adminPut } from "@/app/admin/lib/strapi-admin";
 import { getAdminToken } from "@/app/admin/lib/auth";
+
+// Public /programlar verisi 60 sn cache'li (strapi.ts fetchStrapi revalidate:60).
+// Düzenleme/silme sonrası değişikliğin anında yansıması için cache'i tazele.
+function revalidateProgramPaths() {
+  revalidatePath("/programlar");
+  revalidatePath("/programlar/[slug]", "page");
+}
 
 export async function DELETE(
   req: NextRequest,
@@ -12,6 +20,7 @@ export async function DELETE(
   const { id } = await params;
   const res = await adminDelete(`/programs/${id}`, token);
   if (!res.ok) return NextResponse.json({ error: "Silinemedi" }, { status: res.status });
+  revalidateProgramPaths();
   return NextResponse.json({ success: true });
 }
 
@@ -33,5 +42,6 @@ export async function PUT(
     );
   }
 
+  revalidateProgramPaths();
   return NextResponse.json({ success: true, data: res.data });
 }
