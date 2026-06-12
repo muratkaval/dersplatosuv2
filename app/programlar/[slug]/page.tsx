@@ -65,7 +65,7 @@ export default async function ProgramDetailPage({
 
   return (
     <PageContainer>
-      <section className="page-hero" style={{ padding: "60px 0 30px" }}>
+      <section className="page-hero">
         <div className="page-hero-inner">
           <div className="page-hero-eyebrow">
             {program.examType || "Program"}
