@@ -447,6 +447,7 @@ export type Program = {
   netMin?: number;
   netMax?: number;
   periodType?: string;
+  videoUrl?: string;
   description?: string;
   cover?: { url?: string } | null;
   downloadPdf?: { url?: string } | null;

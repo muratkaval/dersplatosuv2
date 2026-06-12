@@ -16,6 +16,16 @@ function netLabel(p: Program): string | null {
   return `${p.netMin ?? p.netMax} net`;
 }
 
+function youtubeEmbed(input?: string): string | null {
+  if (!input) return null;
+  const s = input.trim();
+  const m = s.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/
+  );
+  const id = m ? m[1] : /^[a-zA-Z0-9_-]{11}$/.test(s) ? s : null;
+  return id ? `https://www.youtube.com/embed/${id}` : null;
+}
+
 export async function generateStaticParams() {
   const programs = await getPrograms();
   return programs.map((p) => ({ slug: p.slug }));
@@ -51,6 +61,7 @@ export default async function ProgramDetailPage({
     .slice()
     .sort((a, b) => (a.weekNo || 0) - (b.weekNo || 0));
   const unitWord = program.periodType === "Günlük" ? "Gün" : program.periodType === "Aylık" ? "Ay" : "Hafta";
+  const videoUrl = youtubeEmbed(program.videoUrl);
 
   return (
     <PageContainer>
@@ -111,6 +122,17 @@ export default async function ProgramDetailPage({
             </div>
           )}
         </div>
+
+        {videoUrl && (
+          <div className="program-video">
+            <iframe
+              src={videoUrl}
+              title="Program tanıtım videosu"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        )}
 
         {weeks.length > 0 ? (
           <>
@@ -184,6 +206,8 @@ export default async function ProgramDetailPage({
         body[data-theme="dark"] .weeks-heading-count{color:#93c5fd;background:rgba(96,165,250,0.16)}
 
         /* ---- week list (stacked, full width) ---- */
+        .program-video{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;margin:0 0 40px;box-shadow:0 12px 34px rgba(15,23,42,0.12)}
+        .program-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
         .weeks-list{display:flex;flex-direction:column;gap:16px}
 
         /* Bu programda kullanilacak kitaplar */

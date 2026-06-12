@@ -72,6 +72,7 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
   const [netMin, setNetMin] = useState<string>(program?.netMin?.toString() ?? "");
   const [netMax, setNetMax] = useState<string>(program?.netMax?.toString() ?? "");
   const [description, setDescription] = useState(program?.description || "");
+  const [videoUrl, setVideoUrl] = useState(program?.videoUrl || "");
   const [displayOrder, setDisplayOrder] = useState<string>(program?.displayOrder?.toString() ?? "");
   const [selSubjects, setSelSubjects] = useState<string[]>(
     (program?.subjects || []).map((s: any) => s.documentId || String(s.id))
@@ -188,6 +189,7 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
         netMin: netMin === "" ? null : Number(netMin),
         netMax: netMax === "" ? null : Number(netMax),
         description,
+        videoUrl,
         subjects: selSubjects,
         books: selBooks,
         weeks: weeksPayload,
@@ -278,6 +280,11 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
             <div className="form-group">
               <label>Açıklama</label>
               <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder="Programın kısa açıklaması" />
+            </div>
+
+            <div className="form-group">
+              <label>YouTube Video (opsiyonel)</label>
+              <input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://youtu.be/... — Haftalık Program üstünde gösterilir" />
             </div>
 
             <div style={{ display: "flex", gap: "12px" }}>
