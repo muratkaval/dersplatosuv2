@@ -3,36 +3,31 @@
 import { useState } from "react";
 
 interface Subj { id: number; documentId: string; name: string; }
-type NetBucket = { min: number; max: number | null };
+type Category = { name: string; options: string[] };
 
 interface Props {
   initialVideo: string;
-  initialExams: string[];
-  initialNets: NetBucket[];
+  initialCategories?: Category[];
   initialSubjects: Subj[];
 }
 
-const DEFAULT_NETS: NetBucket[] = [
-  { min: 0, max: 10 },
-  { min: 10, max: 20 },
-  { min: 20, max: 30 },
-  { min: 30, max: 40 },
-  { min: 40, max: null },
+const DEFAULT_CATEGORIES: Category[] = [
+  { name: "TYT", options: ["0-60 Net", "60-90 Net", "+90 Net"] },
+  { name: "AYT", options: ["Sayısal", "Eşit Ağırlık", "Sözel", "Dil (YDT)"] },
+  { name: "Maarif", options: ["9'dan 10'a Geçen", "10'dan 11'e Geçen"] },
+  { name: "TYT + 11. Sınıf", options: ["Sayısal", "Eşit Ağırlık", "Sözel"] },
 ];
-
-function bucketLabel(b: NetBucket) {
-  return b.max == null || b.max <= b.min ? `${b.min}+ net` : `${b.min}-${b.max} net`;
-}
 
 const inputStyle: React.CSSProperties = { padding: "11px 14px", background: "#060d1a", border: "1.5px solid #1e3a5f", color: "#e2e8f0", borderRadius: "8px", outline: "none", fontSize: "0.9rem" };
 
-export default function ProgramSettingsForm({ initialVideo, initialExams, initialNets, initialSubjects }: Props) {
+export default function ProgramSettingsForm({ initialVideo, initialCategories, initialSubjects }: Props) {
   const [video, setVideo] = useState(initialVideo || "");
-  const [exams, setExams] = useState<string[]>(Array.isArray(initialExams) ? initialExams : []);
-  const [newExam, setNewExam] = useState("");
-  const [nets, setNets] = useState<NetBucket[]>(Array.isArray(initialNets) && initialNets.length ? initialNets : DEFAULT_NETS);
-  const [newMin, setNewMin] = useState("");
-  const [newMax, setNewMax] = useState("");
+  const [categories, setCategories] = useState<Category[]>(
+    Array.isArray(initialCategories) && initialCategories.length
+      ? initialCategories.map((c) => ({ name: c?.name || "", options: Array.isArray(c?.options) ? c.options : [] }))
+      : DEFAULT_CATEGORIES
+  );
+  const [newOpt, setNewOpt] = useState<Record<number, string>>({});
   const [subjects, setSubjects] = useState<Subj[]>(initialSubjects);
   const [newSubject, setNewSubject] = useState("");
   const [saving, setSaving] = useState(false);
@@ -43,28 +38,21 @@ export default function ProgramSettingsForm({ initialVideo, initialExams, initia
     setTimeout(() => setToast(null), 3000);
   }
 
-  function addExam() {
-    const v = newExam.trim().toUpperCase();
+  // ── Ana kategori + alt seçenek ─────────────────────────────
+  function addCategory() { setCategories((p) => [...p, { name: "", options: [] }]); }
+  function removeCategory(idx: number) { setCategories((p) => p.filter((_, i) => i !== idx)); }
+  function updateCatName(idx: number, name: string) { setCategories((p) => p.map((c, i) => (i === idx ? { ...c, name } : c))); }
+  function addOption(idx: number) {
+    const v = (newOpt[idx] || "").trim();
     if (!v) return;
-    if (exams.includes(v)) { showToast("Bu sınav zaten ekli", "error"); return; }
-    setExams([...exams, v]);
-    setNewExam("");
+    setCategories((p) => p.map((c, i) => (i === idx ? (c.options.includes(v) ? c : { ...c, options: [...c.options, v] }) : c)));
+    setNewOpt((p) => ({ ...p, [idx]: "" }));
   }
-  function removeExam(e: string) {
-    setExams(exams.filter((x) => x !== e));
-  }
-
-  function addNet() {
-    if (newMin === "") return;
-    const min = Number(newMin);
-    const max = newMax === "" ? null : Number(newMax);
-    setNets([...nets, { min, max }].sort((a, b) => a.min - b.min));
-    setNewMin(""); setNewMax("");
-  }
-  function removeNet(idx: number) {
-    setNets(nets.filter((_, i) => i !== idx));
+  function removeOption(idx: number, oi: number) {
+    setCategories((p) => p.map((c, i) => (i === idx ? { ...c, options: c.options.filter((_, j) => j !== oi) } : c)));
   }
 
+  // ── Dersler ────────────────────────────────────────────────
   async function addSubject() {
     const name = newSubject.trim();
     if (!name) return;
@@ -97,10 +85,13 @@ export default function ProgramSettingsForm({ initialVideo, initialExams, initia
   async function handleSave() {
     setSaving(true);
     try {
+      const payloadCats = categories
+        .filter((c) => c.name.trim())
+        .map((c) => ({ name: c.name.trim(), options: c.options.map((o) => o.trim()).filter(Boolean) }));
       const res = await fetch("/api/admin/global-setting", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ programsPageVideo: video, programExams: exams, programNets: nets }),
+        body: JSON.stringify({ programsPageVideo: video, programCategoryOptions: payloadCats }),
       });
       if (!res.ok) {
         const d = await res.json().catch(() => ({}));
@@ -133,54 +124,45 @@ export default function ProgramSettingsForm({ initialVideo, initialExams, initia
             </div>
           </div>
 
-          {/* Sınavlar */}
+          {/* Ana Filtre & Alt Filtreler */}
           <div className="info-card">
-            <div className="card-title"><span className="ms">school</span> Sınavlar</div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "14px" }}>
-              {exams.length === 0 ? (
-                <span style={{ color: "#475569", fontSize: "0.85rem" }}>Henüz sınav yok. Aşağıdan ekleyin (örn. TYT, AYT, YDT).</span>
-              ) : (
-                exams.map((e) => (
-                  <span key={e} style={chip}>
-                    {e}
-                    <button type="button" onClick={() => removeExam(e)} className="btn btn-ghost btn-icon" style={{ width: "22px", height: "22px", padding: 0, color: "#93c5fd" }}>
-                      <span className="ms" style={{ fontSize: "15px" }}>close</span>
-                    </button>
-                  </span>
-                ))
-              )}
+            <div className="card-title"><span className="ms">filter_alt</span> Ana Filtre &amp; Alt Filtreler</div>
+            <p style={{ fontSize: "0.72rem", color: "#475569", margin: "-4px 0 14px" }}>
+              /programlar sayfasındaki ana kategori kutuları ve her birinin alt seçenekleri. Program eklerken kategori + alt seçenekler buradan seçilir.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              {categories.map((cat, idx) => (
+                <div key={idx} style={{ border: "1.5px solid #1a2536", borderRadius: "12px", background: "#060d1a", overflow: "hidden" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 12px", background: "rgba(255,255,255,0.03)", borderBottom: "1px solid #111d2e" }}>
+                    <span className="ms" style={{ color: "#60a5fa", fontSize: "18px", flexShrink: 0 }}>folder</span>
+                    <input value={cat.name} onChange={(e) => updateCatName(idx, e.target.value)} placeholder="Ana kategori (örn: TYT)" style={{ flex: 1, ...inputStyle, fontWeight: 700 }} />
+                    <button type="button" className="btn btn-danger btn-sm btn-icon" onClick={() => removeCategory(idx)}><span className="ms">delete</span></button>
+                  </div>
+                  <div style={{ padding: "12px" }}>
+                    {cat.options.length > 0 && (
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "10px" }}>
+                        {cat.options.map((o, oi) => (
+                          <span key={oi} style={chip}>
+                            {o}
+                            <button type="button" onClick={() => removeOption(idx, oi)} className="btn btn-ghost btn-icon" style={{ width: "22px", height: "22px", padding: 0, color: "#93c5fd" }}>
+                              <span className="ms" style={{ fontSize: "15px" }}>close</span>
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <input value={newOpt[idx] || ""} onChange={(e) => setNewOpt((p) => ({ ...p, [idx]: e.target.value }))} onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addOption(idx))} placeholder="Alt seçenek (örn: 0-60 Net)" style={{ flex: 1, ...inputStyle }} />
+                      <button type="button" className="btn btn-ghost" onClick={() => addOption(idx)}><span className="ms">add</span> Alt Ekle</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div style={{ display: "flex", gap: "8px" }}>
-              <input value={newExam} onChange={(e) => setNewExam(e.target.value)} onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addExam())} placeholder="Örn: YDT" style={{ flex: 1, ...inputStyle }} />
-              <button type="button" className="btn btn-ghost" onClick={addExam}><span className="ms">add</span> Ekle</button>
-            </div>
-            <p style={{ fontSize: "0.7rem", color: "#475569", marginTop: "8px" }}>Program eklerken bu listedeki sınavlardan seçilir. Değişiklik &quot;Kaydet&quot; ile kaydedilir.</p>
-          </div>
-
-          {/* Net Aralıkları */}
-          <div className="info-card">
-            <div className="card-title"><span className="ms">straighten</span> Net Aralıkları</div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "14px" }}>
-              {nets.length === 0 ? (
-                <span style={{ color: "#475569", fontSize: "0.85rem" }}>Henüz net aralığı yok.</span>
-              ) : (
-                nets.map((b, i) => (
-                  <span key={i} style={chip}>
-                    {bucketLabel(b)}
-                    <button type="button" onClick={() => removeNet(i)} className="btn btn-ghost btn-icon" style={{ width: "22px", height: "22px", padding: 0, color: "#93c5fd" }}>
-                      <span className="ms" style={{ fontSize: "15px" }}>close</span>
-                    </button>
-                  </span>
-                ))
-              )}
-            </div>
-            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-              <input type="number" value={newMin} onChange={(e) => setNewMin(e.target.value)} placeholder="Min" style={{ width: "80px", ...inputStyle }} />
-              <span style={{ color: "#475569" }}>–</span>
-              <input type="number" value={newMax} onChange={(e) => setNewMax(e.target.value)} placeholder="Max" style={{ width: "80px", ...inputStyle }} />
-              <button type="button" className="btn btn-ghost" onClick={addNet}><span className="ms">add</span> Ekle</button>
-            </div>
-            <p style={{ fontSize: "0.7rem", color: "#475569", marginTop: "8px" }}>Filtredeki net butonları. Max boş bırakılırsa &quot;40+&quot; gibi açık uçlu olur. &quot;Kaydet&quot; ile kaydedilir.</p>
+            <button type="button" className="btn btn-ghost" onClick={addCategory} style={{ marginTop: "14px", width: "100%", justifyContent: "center" }}>
+              <span className="ms">add</span> Ana Kategori Ekle
+            </button>
+            <p style={{ fontSize: "0.7rem", color: "#475569", marginTop: "10px" }}>Değişiklikler &quot;Kaydet&quot; ile geçerli olur.</p>
           </div>
         </div>
 
@@ -210,7 +192,7 @@ export default function ProgramSettingsForm({ initialVideo, initialExams, initia
       <div style={{ marginTop: "24px", display: "flex", justifyContent: "flex-end" }}>
         <button type="button" className="btn btn-primary" onClick={handleSave} disabled={saving}>
           <span className="ms">save</span>
-          {saving ? "Kaydediliyor..." : "Video, Sınav & Net Kaydet"}
+          {saving ? "Kaydediliyor..." : "Filtre Ayarlarını Kaydet"}
         </button>
       </div>
     </>

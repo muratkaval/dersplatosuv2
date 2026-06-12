@@ -15,6 +15,7 @@ export default async function YeniProgramPage() {
   const subjects = s.data?.data || [];
   const exams = gs.data?.data?.programExams || [];
   const nets = gs.data?.data?.programNets || [];
+  const categories = gs.data?.data?.programCategoryOptions || [];
   const books = bk.data?.data || [];
 
   return (
@@ -31,7 +32,7 @@ export default async function YeniProgramPage() {
       </div>
 
       <div className="admin-content">
-        <ProgramForm subjects={subjects} exams={exams} nets={nets} books={books} />
+        <ProgramForm subjects={subjects} exams={exams} nets={nets} books={books} categories={categories} />
       </div>
     </>
   );

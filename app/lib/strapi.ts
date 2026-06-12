@@ -454,6 +454,7 @@ export type Program = {
   subjects?: Array<{ id?: number; name?: string; slug?: string }>;
   weeks?: ProgramWeek[];
   books?: Book[];
+  subOptions?: string[];
   displayOrder?: number;
   updatedAt?: string;
 };

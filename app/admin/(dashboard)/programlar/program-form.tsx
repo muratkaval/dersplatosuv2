@@ -24,6 +24,7 @@ interface Props {
   exams?: string[];
   nets?: { min: number; max: number | null }[];
   books?: any[];
+  categories?: { name: string; options: string[] }[];
 }
 
 function slugify(t: string) {
@@ -50,6 +51,13 @@ const DEFAULT_NETS: { min: number; max: number | null }[] = [
   { min: 40, max: null },
 ];
 
+const DEFAULT_CATEGORIES: { name: string; options: string[] }[] = [
+  { name: "TYT", options: ["0-60 Net", "60-90 Net", "+90 Net"] },
+  { name: "AYT", options: ["Sayısal", "Eşit Ağırlık", "Sözel", "Dil (YDT)"] },
+  { name: "Maarif", options: ["9'dan 10'a Geçen", "10'dan 11'e Geçen"] },
+  { name: "TYT + 11. Sınıf", options: ["Sayısal", "Eşit Ağırlık", "Sözel"] },
+];
+
 function netRangeLabel(min: string, max: string) {
   if (min === "" && max === "") return "";
   return max === "" ? `${min}+ net` : `${min}-${max} net`;
@@ -59,10 +67,13 @@ function unitWordOf(p: string) {
   return p === "Günlük" ? "Gün" : p === "Aylık" ? "Ay" : "Hafta";
 }
 
-export default function ProgramForm({ program, subjects, exams, nets, books = [] }: Props) {
+export default function ProgramForm({ program, subjects, exams, nets, books = [], categories }: Props) {
   const router = useRouter();
   const isEdit = !!program?.documentId;
-  const examOptions = Array.from(new Set([...(exams || []), ...(program?.examType ? [program.examType] : [])]));
+  const cats = (categories && categories.length ? categories : DEFAULT_CATEGORIES)
+    .map((c: any) => ({ name: String(c?.name || "").trim(), options: Array.isArray(c?.options) ? c.options.map((o: any) => String(o).trim()).filter(Boolean) : [] }))
+    .filter((c) => c.name);
+  const examOptions = Array.from(new Set([...cats.map((c) => c.name), ...(program?.examType ? [program.examType] : [])]));
   const netOptions = nets && nets.length ? nets : DEFAULT_NETS;
 
   const [title, setTitle] = useState(program?.title || "");
@@ -79,6 +90,9 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
   );
   const [selBooks, setSelBooks] = useState<string[]>(
     (program?.books || []).map((b: any) => b.documentId || String(b.id))
+  );
+  const [selSubOptions, setSelSubOptions] = useState<string[]>(
+    Array.isArray(program?.subOptions) ? program.subOptions : []
   );
 
   const [coverFile, setCoverFile] = useState<File | null>(null);
@@ -119,6 +133,10 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
 
   function toggleBook(id: string) {
     setSelBooks((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  }
+
+  function toggleSubOption(o: string) {
+    setSelSubOptions((prev) => (prev.includes(o) ? prev.filter((x) => x !== o) : [...prev, o]));
   }
 
   function addWeek() {
@@ -192,6 +210,7 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
         videoUrl,
         subjects: selSubjects,
         books: selBooks,
+        subOptions: selSubOptions,
         weeks: weeksPayload,
         displayOrder: displayOrder === "" ? 99 : Number(displayOrder),
         ...(finalCoverId ? { cover: finalCoverId } : {}),
@@ -245,9 +264,9 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
 
             <div style={{ display: "flex", gap: "12px" }}>
               <div className="form-group" style={{ flex: 1 }}>
-                <label>Sınav</label>
+                <label>Ana Kategori</label>
                 {examOptions.length > 0 ? (
-                  <select value={examType} onChange={(e) => setExamType(e.target.value)} style={fieldStyle}>
+                  <select value={examType} onChange={(e) => { setExamType(e.target.value); setSelSubOptions([]); }} style={fieldStyle}>
                     {examOptions.map((ex) => (
                       <option key={ex} value={ex}>{ex}</option>
                     ))}
@@ -258,24 +277,34 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
                   </a>
                 )}
               </div>
-              <div className="form-group" style={{ flex: 1 }}>
-                <label>Net Aralığı</label>
-                <select
-                  value={`${netMin}|${netMax}`}
-                  onChange={(e) => { const parts = e.target.value.split("|"); setNetMin(parts[0] ?? ""); setNetMax(parts[1] ?? ""); }}
-                  style={fieldStyle}
-                >
-                  <option value="|">Seçiniz</option>
-                  {netOptions.map((b, i) => (
-                    <option key={i} value={`${b.min}|${b.max ?? ""}`}>{b.max == null ? `${b.min}+ net` : `${b.min}-${b.max} net`}</option>
-                  ))}
-                  {(netMin !== "" || netMax !== "") && !netOptions.some((b) => `${b.min}|${b.max ?? ""}` === `${netMin}|${netMax}`) && (
-                    <option value={`${netMin}|${netMax}`}>{netRangeLabel(netMin, netMax)} (özel)</option>
-                  )}
-                </select>
-              </div>
             </div>
-            <p style={{ fontSize: "0.7rem", color: "#475569", marginTop: "-8px" }}>Sınav ve net aralığı, Ayarlar&apos;dan yönetilen listeden seçilir.</p>
+
+            {(() => {
+              const opts = cats.find((c) => c.name === examType)?.options || [];
+              return (
+                <div className="form-group">
+                  <label>Alt Kategoriler (çoklu seçim)</label>
+                  {opts.length === 0 ? (
+                    <p style={{ fontSize: "0.78rem", color: "#64748b", margin: 0 }}>
+                      Bu kategori için alt seçenek yok. <a href="/admin/programlar/ayarlar" style={{ color: "#60a5fa" }}>Ayarlar&apos;dan ekle →</a>
+                    </p>
+                  ) : (
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                      {opts.map((o) => {
+                        const on = selSubOptions.includes(o);
+                        return (
+                          <button key={o} type="button" onClick={() => toggleSubOption(o)}
+                            style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "10px", border: on ? "1.5px solid #3b82f6" : "1.5px solid #1e3a5f", background: on ? "rgba(59,130,246,0.15)" : "transparent", color: on ? "#93c5fd" : "#94a3b8", cursor: "pointer", fontFamily: "inherit", fontSize: "0.85rem", fontWeight: on ? 700 : 500 }}>
+                            {on && <span className="ms" style={{ fontSize: "15px" }}>check</span>}{o}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+            <p style={{ fontSize: "0.7rem", color: "#475569", marginTop: "-4px" }}>Kategori ve alt kategoriler Ayarlar&apos;dan yönetilir. Program, seçtiğin alt kategorilerde görünür.</p>
 
             <div className="form-group">
               <label>Açıklama</label>

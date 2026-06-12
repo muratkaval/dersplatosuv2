@@ -30,15 +30,14 @@ export default async function ProgramAyarlarPage() {
             </Link>
           </div>
           <h1><span className="ms">tune</span> Program Ayarları</h1>
-          <p>Üst tanıtım videosu, sınavlar ve dersleri buradan yönetin.</p>
+          <p>Üst tanıtım videosu, filtre kategorileri ve dersleri buradan yönetin.</p>
         </div>
       </div>
 
       <div className="admin-content">
         <ProgramSettingsForm
           initialVideo={settings.programsPageVideo || ""}
-          initialExams={settings.programExams || []}
-          initialNets={settings.programNets || []}
+          initialCategories={settings.programCategoryOptions || []}
           initialSubjects={subjects}
         />
       </div>

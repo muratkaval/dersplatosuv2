@@ -27,6 +27,7 @@ export default async function ProgramDuzenlePage({ params }: { params: Promise<{
   const subjects = s.data?.data || [];
   const exams = gs.data?.data?.programExams || [];
   const nets = gs.data?.data?.programNets || [];
+  const categories = gs.data?.data?.programCategoryOptions || [];
   const books = bk.data?.data || [];
 
   return (
@@ -43,7 +44,7 @@ export default async function ProgramDuzenlePage({ params }: { params: Promise<{
       </div>
 
       <div className="admin-content">
-        <ProgramForm program={program} subjects={subjects} exams={exams} nets={nets} books={books} />
+        <ProgramForm program={program} subjects={subjects} exams={exams} nets={nets} books={books} categories={categories} />
       </div>
     </>
   );

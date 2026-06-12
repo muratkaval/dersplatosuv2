@@ -5,202 +5,155 @@ import Link from "next/link";
 import Image from "next/image";
 import { toMediaUrl, type Program } from "@/app/lib/strapi";
 
-type NetBucket = { min: number; max: number | null };
+type Category = { name: string; options: string[] };
 
-const DEFAULT_NETS: NetBucket[] = [
-  { min: 0, max: 10 },
-  { min: 10, max: 20 },
-  { min: 20, max: 30 },
-  { min: 30, max: 40 },
-  { min: 40, max: null },
+// Admin'den (programCategoryOptions) gelmezse varsayilan ana kategori + alt kategoriler.
+const DEFAULT_CATEGORIES: Category[] = [
+  { name: "TYT", options: ["0-60 Net", "60-90 Net", "+90 Net"] },
+  { name: "AYT", options: ["Sayısal", "Eşit Ağırlık", "Sözel", "Dil (YDT)"] },
+  { name: "Maarif", options: ["9'dan 10'a Geçen", "10'dan 11'e Geçen"] },
+  { name: "TYT + 11. Sınıf", options: ["Sayısal", "Eşit Ağırlık", "Sözel"] },
 ];
 
-function bucketLabel(b: NetBucket) {
-  return b.max == null || b.max <= b.min ? `${b.min}+ net` : `${b.min}-${b.max} net`;
-}
+export default function ProgramFilter({ programs, categories: catProp }: { programs: Program[]; categories?: Category[] }) {
+  const [selCat, setSelCat] = useState<string | null>(null);
+  const [selSub, setSelSub] = useState<string | null>(null);
 
-function slugify(t = "") {
-  return t.toLowerCase()
-    .replace(/ç/g, "c").replace(/ğ/g, "g").replace(/ı/g, "i")
-    .replace(/ö/g, "o").replace(/ş/g, "s").replace(/ü/g, "u")
-    .replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-}
+  const categories = useMemo<Category[]>(() => {
+    const raw = catProp && catProp.length ? catProp : DEFAULT_CATEGORIES;
+    return raw
+      .map((c: any) => ({
+        name: String(c?.name || "").trim(),
+        options: Array.isArray(c?.options) ? c.options.map((o: any) => String(o).trim()).filter(Boolean) : [],
+      }))
+      .filter((c) => c.name);
+  }, [catProp]);
 
-function subjSlug(s: any): string {
-  return s?.slug || slugify(s?.name || "");
-}
-
-function netLabel(p: Program): string | null {
-  const hasMin = typeof p.netMin === "number";
-  const hasMax = typeof p.netMax === "number";
-  if (!hasMin && !hasMax) return null;
-  // open-ended upper bound (stored as null or a sentinel) -> "N+ net"
-  if (hasMin && (!hasMax || (p.netMax as number) >= 9999)) return `${p.netMin}+ net`;
-  if (hasMin && hasMax) return `${p.netMin}-${p.netMax} net`;
-  return `${p.netMin ?? p.netMax} net`;
-}
-
-export default function ProgramFilter({ programs, netBuckets, examOptions }: { programs: Program[]; netBuckets?: NetBucket[]; examOptions?: string[] }) {
-  const [exam, setExam] = useState<string | null>(null);
-  const [subject, setSubject] = useState<string | null>(null);
-  const [bucketIdx, setBucketIdx] = useState<number | null>(null);
-
-  const NETS = useMemo(
-    () =>
-      (netBuckets && netBuckets.length ? netBuckets : DEFAULT_NETS).map((b) => {
-        const min = Number(b.min) || 0;
-        const max = b.max === null || b.max === undefined || (b.max as any) === "" ? null : Number(b.max);
-        return { min, max, label: bucketLabel({ min, max }) };
-      }),
-    [netBuckets]
-  );
-
-  const derivedExams = useMemo(() => {
-    const set = new Set<string>();
-    programs.forEach((p) => p.examType && set.add(p.examType));
-    return Array.from(set);
-  }, [programs]);
-  const examTypes = examOptions && examOptions.length ? examOptions : derivedExams;
-
-  const subjects = useMemo(() => {
-    const map = new Map<string, string>();
-    programs.forEach((p) => {
-      if (exam && p.examType !== exam) return;
-      (p.subjects || []).forEach((s: any) => {
-        const name = s?.name;
-        const slug = subjSlug(s);
-        if (name && slug) map.set(slug, name);
-      });
-    });
-    return Array.from(map.entries()).map(([slug, name]) => ({ slug, name }));
-  }, [programs, exam]);
+  const countFor = (name: string) => programs.filter((p) => p.examType === name).length;
+  const activeCat = categories.find((c) => c.name === selCat) || null;
 
   const filtered = useMemo(() => {
+    if (!selCat) return [];
     return programs.filter((p) => {
-      if (exam && p.examType !== exam) return false;
-      if (subject === "genel") {
-        if ((p.subjects || []).length > 0) return false;
-      } else if (subject) {
-        const has = (p.subjects || []).some((s: any) => subjSlug(s) === subject);
-        if (!has) return false;
-      }
-      if (bucketIdx !== null) {
-        // Each program is assigned exactly one net bucket in the admin (single
-        // select), so match the chosen bucket exactly rather than by overlap —
-        // otherwise a broad "0-40 net" program shows up under every bucket.
-        const b = NETS[bucketIdx];
-        const norm = (v: number | null | undefined) =>
-          v == null || v >= 9999 ? null : v;
-        const pMin = typeof p.netMin === "number" ? p.netMin : null;
-        const pMax = norm(typeof p.netMax === "number" ? p.netMax : null);
-        if (pMin !== b.min || pMax !== norm(b.max)) return false;
-      }
+      if (p.examType !== selCat) return false;
+      if (selSub && !((p.subOptions || []) as string[]).includes(selSub)) return false;
       return true;
     });
-  }, [programs, exam, subject, bucketIdx, NETS]);
+  }, [programs, selCat, selSub]);
 
   const Step = ({ no, label }: { no: number; label: string }) => (
-    <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "0 0 12px" }}>
-      <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: "26px", height: "26px", borderRadius: "50%", background: "var(--accent, #2563eb)", color: "#fff", fontSize: "0.85rem", fontWeight: 700, flexShrink: 0 }}>{no}</span>
-      <span style={{ fontWeight: 600, fontSize: "1.05rem" }}>{label}</span>
+    <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "0 0 14px" }}>
+      <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: "26px", height: "26px", borderRadius: "50%", background: "#2563eb", color: "#fff", fontSize: "0.85rem", fontWeight: 700, flexShrink: 0 }}>{no}</span>
+      <span style={{ fontWeight: 700, fontSize: "1.1rem" }}>{label}</span>
     </div>
   );
 
   return (
     <div className="program-filter">
-      <div style={{ marginBottom: "28px" }}>
-        <Step no={1} label="Sınavını seç" />
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-          {examTypes.map((e) => (
+      {/* 1 — Ana kategori */}
+      <div style={{ marginBottom: "30px" }}>
+        <Step no={1} label="Kategori seç" />
+        <div className="cat-grid">
+          {categories.map((c) => (
             <button
-              key={e}
+              key={c.name}
               type="button"
-              onClick={() => { setExam(exam === e ? null : e); setSubject(null); }}
-              className={`filter-pill ${exam === e ? "active" : ""}`}
+              onClick={() => { const next = selCat === c.name ? null : c.name; setSelCat(next); setSelSub(null); }}
+              className={`cat-box ${selCat === c.name ? "active" : ""}`}
             >
-              {e}
+              <span className="cat-box-title">{c.name}</span>
+              <span className="cat-box-count">{countFor(c.name)} program</span>
             </button>
           ))}
         </div>
       </div>
 
-      {subjects.length > 0 && (
-        <div style={{ marginBottom: "28px" }}>
-          <Step no={2} label="Branş seç" />
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-            <button type="button" onClick={() => setSubject(null)} className={`filter-pill ${subject === null ? "active" : ""}`}>Tümü</button>
-            <button type="button" onClick={() => setSubject("genel")} className={`filter-pill ${subject === "genel" ? "active" : ""}`}>Genel</button>
-            {subjects.map((s) => (
-              <button key={s.slug} type="button" onClick={() => setSubject(s.slug)} className={`filter-pill ${subject === s.slug ? "active" : ""}`}>{s.name}</button>
+      {/* 2 — Alt kategori */}
+      {activeCat && activeCat.options.length > 0 && (
+        <div style={{ marginBottom: "30px" }}>
+          <Step no={2} label="Alt kategori seç" />
+          <div className="sub-pills" style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+            <button type="button" onClick={() => setSelSub(null)} className={`filter-pill ${selSub === null ? "active" : ""}`}>Tümü</button>
+            {activeCat.options.map((o) => (
+              <button key={o} type="button" onClick={() => setSelSub(selSub === o ? null : o)} className={`filter-pill ${selSub === o ? "active" : ""}`}>{o}</button>
             ))}
           </div>
         </div>
       )}
 
-      <div style={{ marginBottom: "36px" }}>
-        <Step no={3} label="Net aralığını seç" />
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-          <button type="button" onClick={() => setBucketIdx(null)} className={`filter-pill ${bucketIdx === null ? "active" : ""}`}>Tümü</button>
-          {NETS.map((b, i) => (
-            <button key={b.label} type="button" onClick={() => setBucketIdx(bucketIdx === i ? null : i)} className={`filter-pill ${bucketIdx === i ? "active" : ""}`}>{b.label}</button>
-          ))}
-        </div>
-      </div>
-
-      <div style={{ color: "var(--text-muted)", fontSize: "0.95rem", marginBottom: "20px" }}>
-        {filtered.length} program bulundu
-      </div>
-
-      {filtered.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "60px 20px", color: "var(--text-muted)" }}>
-          Bu seçime uygun program bulunamadı. Filtreyi değiştirmeyi dene.
+      {/* Sonuçlar */}
+      {!selCat ? (
+        <div style={{ textAlign: "center", padding: "40px 20px", color: "var(--text-muted)" }}>
+          Başlamak için yukarıdan bir kategori seç.
         </div>
       ) : (
-        <div className="courses-grid">
-          {filtered.map((p) => {
-            const cover = toMediaUrl(p.cover?.url);
-            const pdf = toMediaUrl(p.downloadPdf?.url);
-            const subjectNames = (p.subjects || []).map((s: any) => s?.name).filter(Boolean).join(", ");
-            const weeks = p.weeks?.length || 0;
-            const net = netLabel(p);
-            return (
-              <div key={p.id} className="course-card" style={{ display: "flex", flexDirection: "column" }}>
-                <Link href={`/programlar/${p.slug}`} style={{ display: "block", color: "inherit", textDecoration: "none" }}>
-                  <div className="course-thumb" style={{ aspectRatio: "16 / 9", height: "auto", position: "relative", overflow: "hidden" }}>
-                    {cover ? (
-                      <Image src={cover} alt={p.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
-                    ) : (
-                      <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-secondary)", color: "var(--text-muted)" }}>
-                        <span className="ms" style={{ fontSize: "2.5rem" }}>school</span>
+        <>
+          <div style={{ color: "var(--text-muted)", fontSize: "0.95rem", marginBottom: "20px" }}>
+            {filtered.length} program bulundu
+          </div>
+          {filtered.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "60px 20px", color: "var(--text-muted)" }}>
+              Bu seçime uygun program bulunamadı. Başka bir alt kategori dene.
+            </div>
+          ) : (
+            <div className="courses-grid">
+              {filtered.map((p) => {
+                const cover = toMediaUrl(p.cover?.url);
+                const pdf = toMediaUrl(p.downloadPdf?.url);
+                const weeks = p.weeks?.length || 0;
+                const subs = (p.subOptions || []) as string[];
+                return (
+                  <div key={p.id} className="course-card" style={{ display: "flex", flexDirection: "column" }}>
+                    <Link href={`/programlar/${p.slug}`} style={{ display: "block", color: "inherit", textDecoration: "none" }}>
+                      <div className="course-thumb" style={{ aspectRatio: "16 / 9", height: "auto", position: "relative", overflow: "hidden" }}>
+                        {cover ? (
+                          <Image src={cover} alt={p.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
+                        ) : (
+                          <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-secondary)", color: "var(--text-muted)" }}>
+                            <span className="ms" style={{ fontSize: "2.5rem" }}>school</span>
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </Link>
+                    <div className="course-body" style={{ display: "flex", flexDirection: "column", flexGrow: 1, gap: "10px" }}>
+                      <Link href={`/programlar/${p.slug}`} style={{ color: "inherit", textDecoration: "none" }}>
+                        <h3 style={{ fontSize: "1.1rem", lineHeight: 1.4, margin: 0 }}>{p.title}</h3>
+                      </Link>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                        {p.examType && <span className="program-tag">{p.examType}</span>}
+                        {subs.map((o) => <span key={o} className="program-tag">{o}</span>)}
+                        {weeks > 0 && <span className="program-tag">{weeks} hafta</span>}
+                      </div>
+                      <div style={{ display: "flex", gap: "8px", marginTop: "auto" }}>
+                        <Link href={`/programlar/${p.slug}`} className="btn-outline" style={{ flex: 1, textAlign: "center" }}>İncele</Link>
+                        {pdf && (
+                          <a href={pdf} target="_blank" rel="noopener noreferrer" download className="btn-primary" style={{ flex: 1, textAlign: "center" }}>PDF İndir</a>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </Link>
-                <div className="course-body" style={{ display: "flex", flexDirection: "column", flexGrow: 1, gap: "10px" }}>
-                  <Link href={`/programlar/${p.slug}`} style={{ color: "inherit", textDecoration: "none" }}>
-                    <h3 style={{ fontSize: "1.1rem", lineHeight: 1.4, margin: 0 }}>{p.title}</h3>
-                  </Link>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                    {p.examType && <span className="program-tag">{p.examType}</span>}
-                    {subjectNames ? <span className="program-tag">{subjectNames}</span> : <span className="program-tag">Genel</span>}
-                    {net && <span className="program-tag">{net}</span>}
-                    {weeks > 0 && <span className="program-tag">{weeks} hafta</span>}
-                  </div>
-                  <div style={{ display: "flex", gap: "8px", marginTop: "auto" }}>
-                    <Link href={`/programlar/${p.slug}`} className="btn-outline" style={{ flex: 1, textAlign: "center" }}>İncele</Link>
-                    {pdf && (
-                      <a href={pdf} target="_blank" rel="noopener noreferrer" download className="btn-primary" style={{ flex: 1, textAlign: "center" }}>PDF İndir</a>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                );
+              })}
+            </div>
+          )}
+        </>
       )}
 
       <style>{`
-        /* 2-up modern program cards */
+        /* Ana kategori kutulari (2'li) */
+        .program-filter .cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+        .program-filter .cat-box{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:22px 26px;border-radius:18px;border:2px solid rgba(15,23,42,0.1);background:#fff;cursor:pointer;text-align:left;font-family:inherit;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background .18s ease}
+        .program-filter .cat-box:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(37,99,235,0.14);border-color:rgba(59,130,246,0.5)}
+        .program-filter .cat-box.active{border-color:#2563eb;background:linear-gradient(135deg,rgba(59,130,246,0.12),rgba(37,99,235,0.1));box-shadow:0 10px 26px rgba(37,99,235,0.18)}
+        .program-filter .cat-box-title{font-size:1.35rem;font-weight:800;color:#0f172a}
+        .program-filter .cat-box-count{font-size:0.85rem;font-weight:600;color:#64748b}
+        body[data-theme="dark"] .program-filter .cat-box{background:#0b1530;border-color:rgba(255,255,255,0.1)}
+        body[data-theme="dark"] .program-filter .cat-box.active{border-color:#60a5fa;background:linear-gradient(135deg,rgba(96,165,250,0.16),rgba(37,99,235,0.14))}
+        body[data-theme="dark"] .program-filter .cat-box-title{color:#f1f5f9}
+        body[data-theme="dark"] .program-filter .cat-box-count{color:#94a3b8}
+        @media (max-width:520px){.program-filter .cat-grid{grid-template-columns:1fr}}
+
+        /* 2-up modern program kartlari */
         .program-filter .courses-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px}
         .program-filter .course-card{background:#fff;border:1px solid rgba(15,23,42,0.08);border-radius:22px;overflow:hidden;box-shadow:0 8px 26px rgba(15,23,42,0.06);transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
         .program-filter .course-card:hover{transform:translateY(-6px);box-shadow:0 24px 50px rgba(37,99,235,0.16);border-color:rgba(59,130,246,0.4)}
@@ -223,6 +176,8 @@ export default function ProgramFilter({ programs, netBuckets, examOptions }: { p
         body[data-theme="dark"] .program-filter .course-card .btn-outline:hover{background:rgba(147,197,253,0.12);border-color:#93c5fd}
 
         .program-filter .filter-pill{padding:14px 28px;font-size:1.05rem;border-radius:14px}
+        .program-filter .sub-pills .filter-pill{flex:1 1 0;min-width:130px;text-align:center}
+        @media (max-width:520px){.program-filter .sub-pills .filter-pill{flex:1 1 40%}}
 
         @media (max-width:760px){.program-filter .courses-grid{grid-template-columns:1fr;gap:18px}}
       `}</style>

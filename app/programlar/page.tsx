@@ -58,7 +58,7 @@ export default async function ProgramlarPage() {
         )}
 
         <section style={{ paddingBottom: "60px" }}>
-          <ProgramFilter programs={programs} netBuckets={site.programNets || []} examOptions={site.programExams || []} />
+          <ProgramFilter programs={programs} categories={site.programCategoryOptions || []} />
         </section>
       </div>
 
