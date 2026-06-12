@@ -23,6 +23,7 @@ interface Props {
   subjects: any[];
   exams?: string[];
   nets?: { min: number; max: number | null }[];
+  books?: any[];
 }
 
 function slugify(t: string) {
@@ -58,7 +59,7 @@ function unitWordOf(p: string) {
   return p === "Günlük" ? "Gün" : p === "Aylık" ? "Ay" : "Hafta";
 }
 
-export default function ProgramForm({ program, subjects, exams, nets }: Props) {
+export default function ProgramForm({ program, subjects, exams, nets, books = [] }: Props) {
   const router = useRouter();
   const isEdit = !!program?.documentId;
   const examOptions = Array.from(new Set([...(exams || []), ...(program?.examType ? [program.examType] : [])]));
@@ -74,6 +75,9 @@ export default function ProgramForm({ program, subjects, exams, nets }: Props) {
   const [displayOrder, setDisplayOrder] = useState<string>(program?.displayOrder?.toString() ?? "");
   const [selSubjects, setSelSubjects] = useState<string[]>(
     (program?.subjects || []).map((s: any) => s.documentId || String(s.id))
+  );
+  const [selBooks, setSelBooks] = useState<string[]>(
+    (program?.books || []).map((b: any) => b.documentId || String(b.id))
   );
 
   const [coverFile, setCoverFile] = useState<File | null>(null);
@@ -110,6 +114,10 @@ export default function ProgramForm({ program, subjects, exams, nets }: Props) {
 
   function toggleSubject(id: string) {
     setSelSubjects((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  }
+
+  function toggleBook(id: string) {
+    setSelBooks((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   }
 
   function addWeek() {
@@ -181,6 +189,7 @@ export default function ProgramForm({ program, subjects, exams, nets }: Props) {
         netMax: netMax === "" ? null : Number(netMax),
         description,
         subjects: selSubjects,
+        books: selBooks,
         weeks: weeksPayload,
         displayOrder: displayOrder === "" ? 99 : Number(displayOrder),
         ...(finalCoverId ? { cover: finalCoverId } : {}),
@@ -305,6 +314,37 @@ export default function ProgramForm({ program, subjects, exams, nets }: Props) {
                         {selected && <span className="ms" style={{ fontSize: "14px", color: "#060d1a", fontWeight: "bold" }}>check</span>}
                       </span>
                       <span style={{ flex: 1 }}>{c.name}</span>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </div>
+
+          {/* Kitaplar (bu programda kullanilacak) */}
+          <div className="info-card">
+            <div className="card-title"><span className="ms">menu_book</span> Kitaplar (bu programda kullanılacak)</div>
+            <div style={{ maxHeight: "300px", overflowY: "auto", border: "1.5px solid #1a2536", borderRadius: "12px", background: "#060d1a" }}>
+              {books.length === 0 ? (
+                <div className="empty-state">Kitap bulunamadı.</div>
+              ) : (
+                books.map((b, idx) => {
+                  const id = b.documentId || String(b.id);
+                  const selected = selBooks.includes(id);
+                  const isLast = idx === books.length - 1;
+                  const cov = toMediaUrl(b.cover?.url);
+                  return (
+                    <button key={id} type="button" onClick={() => toggleBook(id)}
+                      style={{ display: "flex", alignItems: "center", gap: "12px", width: "100%", padding: "9px 14px", background: selected ? "rgba(251,191,36,0.10)" : "transparent", color: selected ? "#fbbf24" : "#94a3b8", border: "none", borderBottom: isLast ? "none" : "1px solid #111d2e", cursor: "pointer", fontFamily: "inherit", fontSize: "0.85rem", fontWeight: selected ? 600 : 400, textAlign: "left" }}>
+                      <span style={{ width: "18px", height: "18px", borderRadius: "5px", flexShrink: 0, border: selected ? "2px solid #fbbf24" : "2px solid #243249", background: selected ? "#fbbf24" : "transparent", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        {selected && <span className="ms" style={{ fontSize: "14px", color: "#060d1a", fontWeight: "bold" }}>check</span>}
+                      </span>
+                      {cov ? (
+                        <img src={cov} alt="" style={{ width: "30px", height: "40px", objectFit: "cover", borderRadius: "4px", flexShrink: 0 }} />
+                      ) : (
+                        <span className="ms" style={{ fontSize: "20px", opacity: 0.3, width: "30px", textAlign: "center", flexShrink: 0 }}>menu_book</span>
+                      )}
+                      <span style={{ flex: 1 }}>{b.title}</span>
                     </button>
                   );
                 })

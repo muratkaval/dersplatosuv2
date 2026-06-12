@@ -200,8 +200,31 @@ export default function ProgramFilter({ programs, netBuckets, examOptions }: { p
       )}
 
       <style>{`
-        .program-tag{font-size:0.78rem;padding:4px 10px;border-radius:6px;background:var(--bg-secondary,#f1f1f1);color:var(--text-muted,#666);white-space:nowrap}
+        /* 2-up modern program cards */
+        .program-filter .courses-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px}
+        .program-filter .course-card{background:#fff;border:1px solid rgba(15,23,42,0.08);border-radius:22px;overflow:hidden;box-shadow:0 8px 26px rgba(15,23,42,0.06);transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+        .program-filter .course-card:hover{transform:translateY(-6px);box-shadow:0 24px 50px rgba(37,99,235,0.16);border-color:rgba(59,130,246,0.4)}
+        .program-filter .course-body{padding:24px !important;gap:14px !important}
+        .program-filter .course-card h3{font-size:1.35rem !important;font-weight:800;color:#0f172a}
+        body[data-theme="dark"] .program-filter .course-card h3{color:#f1f5f9}
+
+        .program-tag{font-size:0.8rem;padding:5px 12px;border-radius:8px;background:rgba(15,23,42,0.06);color:#475569;white-space:nowrap;font-weight:600}
+        body[data-theme="dark"] .program-tag{background:rgba(255,255,255,0.07);color:#cbd5e1}
+
+        .program-filter .course-card .btn-primary,.program-filter .course-card .btn-outline{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:14px 18px;border-radius:13px;font-weight:700;font-size:0.96rem;line-height:1;cursor:pointer;text-decoration:none;border:1.5px solid transparent;transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
+        .program-filter .course-card .btn-primary{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;box-shadow:0 6px 16px rgba(37,99,235,0.28)}
+        .program-filter .course-card .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(37,99,235,0.4)}
+        .program-filter .course-card .btn-outline{background:transparent;color:#2563eb;border-color:rgba(37,99,235,0.4)}
+        .program-filter .course-card .btn-outline:hover{background:rgba(37,99,235,0.08);border-color:#2563eb}
+
+        body[data-theme="dark"] .program-filter .course-card{background:#0b1530;border-color:rgba(255,255,255,0.08);box-shadow:0 10px 30px rgba(0,0,0,0.4)}
+        body[data-theme="dark"] .program-filter .course-card:hover{border-color:rgba(96,165,250,0.5)}
+        body[data-theme="dark"] .program-filter .course-card .btn-outline{color:#93c5fd;border-color:rgba(147,197,253,0.4)}
+        body[data-theme="dark"] .program-filter .course-card .btn-outline:hover{background:rgba(147,197,253,0.12);border-color:#93c5fd}
+
         .program-filter .filter-pill{padding:14px 28px;font-size:1.05rem;border-radius:14px}
+
+        @media (max-width:760px){.program-filter .courses-grid{grid-template-columns:1fr;gap:18px}}
       `}</style>
     </div>
   );

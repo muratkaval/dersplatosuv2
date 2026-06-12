@@ -452,6 +452,7 @@ export type Program = {
   downloadPdf?: { url?: string } | null;
   subjects?: Array<{ id?: number; name?: string; slug?: string }>;
   weeks?: ProgramWeek[];
+  books?: Book[];
   displayOrder?: number;
   updatedAt?: string;
 };
@@ -476,14 +477,26 @@ export async function getPrograms(): Promise<Program[]> {
 }
 
 export async function getProgramBySlug(slug: string): Promise<Program | null> {
-  const data = await fetchWithFallback<{ data: any[] }>([
-    `/programs?filters[slug][$eq]=${slug}&${PROGRAM_POPULATE}`,
-    `/programs?filters[slug][$eq]=${slug}&populate=*`,
+  const [data, allBooks] = await Promise.all([
+    fetchWithFallback<{ data: any[] }>([
+      // Primary: full populate + the program's selected books (ids only; covers
+      // come from the merge below). Falls back to a books-less query so the page
+      // still renders if the books relation ever errors.
+      `/programs?filters[slug][$eq]=${slug}&${PROGRAM_POPULATE}&populate[books]=true`,
+      `/programs?filters[slug][$eq]=${slug}&${PROGRAM_POPULATE}`,
+      `/programs?filters[slug][$eq]=${slug}&populate=*`,
+    ]),
+    getBooks(),
   ]);
   const raw = flattenStrapi(data?.data?.[0] || null);
   if (!raw) return null;
+  // Merge selected books with full book data (cover, links, accent) like getCampBySlug.
+  const mergedBooks = (raw.books || [])
+    .map((rb: any) => allBooks.find((b) => b.id === rb.id || b.documentId === rb.documentId) || rb)
+    .filter(Boolean);
   return {
     ...raw,
     slug: raw.slug || slugify(raw.title),
+    books: mergedBooks,
   };
 }

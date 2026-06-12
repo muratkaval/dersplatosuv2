@@ -13,19 +13,21 @@ export default async function ProgramDuzenlePage({ params }: { params: Promise<{
   // Strapi v5 rejects `populate[field]=*` on a specific media/relation; use
   // explicit `=true` and populate the media nested in the `weeks` component.
   const res = await adminGet(
-    `/programs/${id}?populate[cover]=true&populate[downloadPdf]=true&populate[subjects]=true&populate[weeks][populate][scheduleImage]=true&populate[weeks][populate][pdf]=true`,
+    `/programs/${id}?populate[cover]=true&populate[downloadPdf]=true&populate[subjects]=true&populate[weeks][populate][scheduleImage]=true&populate[weeks][populate][pdf]=true&populate[books]=true`,
     token
   );
   const program = res.data?.data;
   if (!program) return notFound();
 
-  const [s, gs] = await Promise.all([
+  const [s, gs, bk] = await Promise.all([
     adminGet("/subjects?sort=name:asc&pagination[pageSize]=100", token),
     adminGet("/global-setting", token),
+    adminGet("/books?populate[cover]=true&sort=title:asc&pagination[pageSize]=100", token),
   ]);
   const subjects = s.data?.data || [];
   const exams = gs.data?.data?.programExams || [];
   const nets = gs.data?.data?.programNets || [];
+  const books = bk.data?.data || [];
 
   return (
     <>
@@ -41,7 +43,7 @@ export default async function ProgramDuzenlePage({ params }: { params: Promise<{
       </div>
 
       <div className="admin-content">
-        <ProgramForm program={program} subjects={subjects} exams={exams} nets={nets} />
+        <ProgramForm program={program} subjects={subjects} exams={exams} nets={nets} books={books} />
       </div>
     </>
   );
