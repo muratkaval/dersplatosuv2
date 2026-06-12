@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-interface NavLink { id: string; label: string; href: string; }
+interface NavLink { id: string; label: string; href: string; children?: NavLink[]; }
 interface FooterColumn { id: string; title: string; links: NavLink[]; }
 
 interface Props { initialData: any; }
@@ -43,7 +43,9 @@ const DEFAULT_FOOTER: FooterColumn[] = [
 
 export default function NavFooterForm({ initialData }: Props) {
   const [navLinks, setNavLinks] = useState<NavLink[]>(
-    initialData?.navLinks?.length ? initialData.navLinks.map((l: any) => ({ ...l, id: uid() })) : DEFAULT_NAV
+    initialData?.navLinks?.length
+      ? initialData.navLinks.map((l: any) => ({ ...l, id: uid(), children: (l.children || []).map((c: any) => ({ ...c, id: uid() })) }))
+      : DEFAULT_NAV
   );
   const [footerCols, setFooterCols] = useState<FooterColumn[]>(
     initialData?.footerColumns?.length
@@ -82,6 +84,16 @@ export default function NavFooterForm({ initialData }: Props) {
 
   function removeNavLink(id: string) {
     setNavLinks(prev => prev.filter(l => l.id !== id));
+  }
+
+  function addChild(parentId: string) {
+    setNavLinks(prev => prev.map(l => l.id === parentId ? { ...l, children: [...(l.children || []), { id: uid(), label: "", href: "" }] } : l));
+  }
+  function updateChild(parentId: string, childId: string, field: "label" | "href", val: string) {
+    setNavLinks(prev => prev.map(l => l.id === parentId ? { ...l, children: (l.children || []).map(c => c.id === childId ? { ...c, [field]: val } : c) } : l));
+  }
+  function removeChild(parentId: string, childId: string) {
+    setNavLinks(prev => prev.map(l => l.id === parentId ? { ...l, children: (l.children || []).filter(c => c.id !== childId) } : l));
   }
 
   // ── Nav drag ────────────────────────────────────────────────
@@ -147,7 +159,7 @@ export default function NavFooterForm({ initialData }: Props) {
   async function saveNav() {
     setNavSaving(true);
     try {
-      const payload = { navLinks: navLinks.map(({ label, href }) => ({ label, href })) };
+      const payload = { navLinks: navLinks.map(({ label, href, children }) => ({ label, href, ...(children && children.length ? { children: children.map(({ label, href }) => ({ label, href })) } : {}) })) };
       const res = await fetch("/api/admin/global-setting", {
         method: "PUT", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -249,33 +261,71 @@ export default function NavFooterForm({ initialData }: Props) {
 
           <div style={{ marginTop: "12px" }}>
             {navLinks.map((link) => (
-              <div
-                key={link.id}
-                style={rowStyle}
-                draggable
-                onDragStart={() => onNavDragStart(link.id)}
-                onDragOver={(e) => onNavDragOver(e, link.id)}
-                onDragEnd={() => setDragNav(null)}
-              >
-                <span className="ms" style={{ color: "#475569", fontSize: "18px", cursor: "grab", flexShrink: 0 }}>drag_indicator</span>
-                <input
-                  style={{ ...inputStyle, flex: 2 }}
-                  value={link.label}
-                  onChange={(e) => updateNavLink(link.id, "label", e.target.value)}
-                  placeholder="Link adı"
-                />
-                <input
-                  style={{ ...inputStyle, flex: 2 }}
-                  value={link.href}
-                  onChange={(e) => updateNavLink(link.id, "href", e.target.value)}
-                  placeholder="/sayfa"
-                />
-                <button
-                  onClick={() => removeNavLink(link.id)}
-                  style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", padding: "4px", borderRadius: "4px", flexShrink: 0 }}
+              <div key={link.id} style={{ marginBottom: "8px", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", background: "rgba(255,255,255,0.02)", overflow: "hidden" }}>
+                {/* Ust link (parent) */}
+                <div
+                  style={{ ...rowStyle, marginBottom: 0, border: "none", borderRadius: 0, background: "transparent" }}
+                  draggable
+                  onDragStart={() => onNavDragStart(link.id)}
+                  onDragOver={(e) => onNavDragOver(e, link.id)}
+                  onDragEnd={() => setDragNav(null)}
                 >
-                  <span className="ms" style={{ fontSize: "18px" }}>close</span>
-                </button>
+                  <span className="ms" style={{ color: "#475569", fontSize: "18px", cursor: "grab", flexShrink: 0 }}>drag_indicator</span>
+                  <input
+                    style={{ ...inputStyle, flex: 2 }}
+                    value={link.label}
+                    onChange={(e) => updateNavLink(link.id, "label", e.target.value)}
+                    placeholder="Link adı"
+                  />
+                  <input
+                    style={{ ...inputStyle, flex: 2 }}
+                    value={link.href}
+                    onChange={(e) => updateNavLink(link.id, "href", e.target.value)}
+                    placeholder="/sayfa (boş = sadece başlık)"
+                  />
+                  <button
+                    onClick={() => addChild(link.id)}
+                    title="Alt link ekle"
+                    style={{ background: "rgba(59,130,246,0.12)", border: "none", color: "#60a5fa", cursor: "pointer", padding: "5px", borderRadius: "6px", flexShrink: 0, display: "flex" }}
+                  >
+                    <span className="ms" style={{ fontSize: "18px" }}>subdirectory_arrow_right</span>
+                  </button>
+                  <button
+                    onClick={() => removeNavLink(link.id)}
+                    style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", padding: "4px", borderRadius: "4px", flexShrink: 0 }}
+                  >
+                    <span className="ms" style={{ fontSize: "18px" }}>close</span>
+                  </button>
+                </div>
+
+                {/* Alt linkler (children) */}
+                {(link.children || []).length > 0 && (
+                  <div style={{ padding: "2px 12px 10px 30px", display: "flex", flexDirection: "column", gap: "6px" }}>
+                    {(link.children || []).map((child) => (
+                      <div key={child.id} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <span className="ms" style={{ color: "#334155", fontSize: "16px", flexShrink: 0 }}>subdirectory_arrow_right</span>
+                        <input
+                          style={{ ...inputStyle, flex: 2 }}
+                          value={child.label}
+                          onChange={(e) => updateChild(link.id, child.id, "label", e.target.value)}
+                          placeholder="Alt link adı"
+                        />
+                        <input
+                          style={{ ...inputStyle, flex: 2 }}
+                          value={child.href}
+                          onChange={(e) => updateChild(link.id, child.id, "href", e.target.value)}
+                          placeholder="/sayfa"
+                        />
+                        <button
+                          onClick={() => removeChild(link.id, child.id)}
+                          style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", padding: "4px", borderRadius: "4px", flexShrink: 0 }}
+                        >
+                          <span className="ms" style={{ fontSize: "16px" }}>close</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>

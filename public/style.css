@@ -370,6 +370,83 @@ ul {
     border-bottom: 1px solid var(--border);
 }
 
+/* ===== Header acilir alt menu (dropdown) ===== */
+.nav-links { align-items: center; }
+.nav-dd { position: relative; display: flex; align-items: center; }
+.nav-dd-toggle { display: inline-flex; align-items: center; gap: 4px; }
+.nav-dd-caret { font-size: 0.62rem; opacity: 0.6; transition: transform var(--transition); }
+.nav-dd:hover .nav-dd-caret { transform: rotate(180deg); }
+.nav-dd-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 210px;
+    list-style: none;
+    margin: 0;
+    padding: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+    z-index: 1100;
+}
+.nav-dd:hover .nav-dd-menu,
+.nav-dd:focus-within .nav-dd-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+/* hover kopru: parent ile menu arasindaki bosluga girince kapanmasin */
+.nav-dd-menu::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 0;
+    right: 0;
+    height: 10px;
+}
+.nav-dd-item {
+    display: block;
+    padding: 9px 13px;
+    border-radius: 9px;
+    color: var(--text);
+    font-size: 0.88rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background var(--transition), color var(--transition);
+}
+.nav-dd-item:hover { background: rgba(37, 99, 235, 0.08); color: var(--primary); }
+[data-theme="dark"] .nav-dd-menu { box-shadow: 0 18px 46px rgba(0, 0, 0, 0.5); }
+
+/* mobil akordeon */
+.mobile-dd { display: flex; flex-direction: column; border-bottom: 1px solid var(--border); }
+.mobile-dd-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px 0;
+    color: var(--text);
+    font-weight: 500;
+    font-size: 1rem;
+    font-family: inherit;
+}
+.mobile-dd-caret { transition: transform var(--transition); font-size: 0.8rem; opacity: 0.7; }
+.mobile-dd-toggle.open .mobile-dd-caret { transform: rotate(180deg); }
+.mobile-dd-sub { display: flex; flex-direction: column; padding: 2px 0 8px 14px; }
+.mobile-dd-sub a { padding: 9px 0 !important; color: var(--text-muted) !important; border-bottom: none !important; font-size: 0.95rem; }
+.mobile-dd-sub a:hover { color: var(--primary) !important; }
+
 .hero-block {
     position: relative;
     background: radial-gradient(ellipse at 60% 0%, rgba(37, 99, 235, 0.08) 0%, transparent 60%),

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { toMediaUrl } from "@/app/lib/strapi";
 
-export interface NavLink { label: string; href: string; }
+export interface NavLink { label: string; href: string; children?: NavLink[]; }
 export interface FooterColumn { title: string; links: NavLink[]; }
 
 const DEFAULT_NAV: NavLink[] = [
@@ -44,6 +44,7 @@ export function SiteHeader({ navLinks: propLinks }: { navLinks?: NavLink[] }) {
   const [isDark, setIsDark] = useState(false);
   const [navLinks, setNavLinks] = useState<NavLink[]>(propLinks || DEFAULT_NAV);
   const [logos, setLogos] = useState<any[]>([]);
+  const [mobileExpanded, setMobileExpanded] = useState<number | null>(null);
 
   useEffect(() => {
     const theme = localStorage.getItem("theme");
@@ -88,9 +89,24 @@ export function SiteHeader({ navLinks: propLinks }: { navLinks?: NavLink[] }) {
           <span className="logo-text">Ders Platosu</span>
         </Link>
         <ul className="nav-links">
-          {navLinks.map((l, i) => (
-            <li key={i}><Link href={l.href} className="nav-link">{l.label}</Link></li>
-          ))}
+          {navLinks.map((l, i) => {
+            const kids = (l.children || []).filter((c) => c.label);
+            if (kids.length === 0) {
+              return <li key={i}><Link href={l.href || "#"} className="nav-link">{l.label}</Link></li>;
+            }
+            return (
+              <li key={i} className="nav-dd">
+                <Link href={l.href && l.href !== "#" ? l.href : "#"} className="nav-link nav-dd-toggle">
+                  {l.label}<span className="nav-dd-caret" aria-hidden>▾</span>
+                </Link>
+                <ul className="nav-dd-menu">
+                  {kids.map((c, j) => (
+                    <li key={j}><Link href={c.href || "#"} className="nav-dd-item">{c.label}</Link></li>
+                  ))}
+                </ul>
+              </li>
+            );
+          })}
         </ul>
         <div className="nav-actions">
           <button className="btn-icon" onClick={toggleTheme} title="Tema Değiştir">
@@ -117,7 +133,34 @@ export function SiteHeader({ navLinks: propLinks }: { navLinks?: NavLink[] }) {
         </button>
       </div>
       <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
-        {navLinks.map((l, i) => <Link key={i} href={l.href}>{l.label}</Link>)}
+        {navLinks.map((l, i) => {
+          const kids = (l.children || []).filter((c) => c.label);
+          if (kids.length === 0) {
+            return <Link key={i} href={l.href || "#"} onClick={() => setIsMobileMenuOpen(false)}>{l.label}</Link>;
+          }
+          const open = mobileExpanded === i;
+          return (
+            <div key={i} className="mobile-dd">
+              <button
+                type="button"
+                className={`mobile-dd-toggle ${open ? "open" : ""}`}
+                onClick={() => setMobileExpanded(open ? null : i)}
+              >
+                <span>{l.label}</span><span className="mobile-dd-caret" aria-hidden>▾</span>
+              </button>
+              {open && (
+                <div className="mobile-dd-sub">
+                  {l.href && l.href !== "#" && (
+                    <Link href={l.href} onClick={() => setIsMobileMenuOpen(false)}>{l.label} — Tümü</Link>
+                  )}
+                  {kids.map((c, j) => (
+                    <Link key={j} href={c.href || "#"} onClick={() => setIsMobileMenuOpen(false)}>{c.label}</Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </nav>
   );
