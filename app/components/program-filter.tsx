@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { toMediaUrl, periodUnitWord, programDurationCount, programCategories, type Program } from "@/app/lib/strapi";
@@ -18,6 +18,15 @@ const DEFAULT_CATEGORIES: Category[] = [
 export default function ProgramFilter({ programs, categories: catProp }: { programs: Program[]; categories?: Category[] }) {
   const [selCat, setSelCat] = useState<string | null>(null);
   const [selSub, setSelSub] = useState<string | null>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  // Mobilde bir ana kategori secilince, asagida acilan alt kategori + sonuclara yumusakca kaydir.
+  useEffect(() => {
+    if (!selCat) return;
+    if (window.matchMedia("(max-width: 760px)").matches) {
+      resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [selCat]);
 
   const categories = useMemo<Category[]>(() => {
     const raw = catProp && catProp.length ? catProp : DEFAULT_CATEGORIES;
@@ -67,6 +76,9 @@ export default function ProgramFilter({ programs, categories: catProp }: { progr
           ))}
         </div>
       </div>
+
+      {/* Mobilde kategori secilince buraya kaydirilir (alt kategori + sonuclar) */}
+      <div ref={resultsRef} aria-hidden style={{ scrollMarginTop: "16px" }} />
 
       {/* 2 — Alt kategori */}
       {activeCat && activeCat.options.length > 0 && (
