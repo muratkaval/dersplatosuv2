@@ -3,8 +3,9 @@ import CourseCard from "./components/course-card";
 import BookCard from "@/app/components/book-card";
 import Link from "next/link";
 import Image from "next/image";
-import { getBooks, getCamps, getInstructors, toMediaUrl, getCampThumbnail, getGlobalSettings } from "@/app/lib/strapi";
+import { getBooks, getCamps, getInstructors, toMediaUrl, getCampThumbnail, getGlobalSettings, type HeroSlide } from "@/app/lib/strapi";
 import InstructorScroll from "./components/instructor-scroll";
+import HeroShowcase from "./components/hero-showcase";
 import ExamCountdown from "./components/exam-countdown";
 import { getCountdowns } from "@/app/lib/strapi";
 
@@ -27,6 +28,9 @@ export default async function Home() {
   const homepageCountdown = countdowns.find((c) => c.showOnHomepage) ?? null;
 
   const site = globalSettings?.attributes || globalSettings || {};
+
+  const heroSlides: HeroSlide[] = Array.isArray(site.heroSlides) ? site.heroSlides : [];
+  const heroRotateSeconds = site.heroRotateSeconds || 6;
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dersplatosu.com";
   
@@ -91,6 +95,22 @@ export default async function Home() {
             <div className="hero-orb orb2"></div>
             <div className="hero-orb orb3"></div>
           </div>
+          {heroSlides.length > 0 ? (
+            <HeroShowcase
+              slides={heroSlides}
+              rotateSeconds={heroRotateSeconds}
+              floatingBadgeTop={site.floatingBadgeTop}
+              floatingBadgeBottom={site.floatingBadgeBottom}
+              fallback={{
+                eyebrow: site.heroBadge,
+                description: site.heroDescription,
+                btn1Text: site.heroBtn1Text,
+                btn1Link: site.heroBtn1Link,
+                btn2Text: site.heroBtn2Text,
+                btn2Link: site.heroBtn2Link,
+              }}
+            />
+          ) : (
           <div className="hero-inner">
             <div className="hero-content">
               <div className="hero-badge" id="heroBadge">{site.heroBadge || "✨ Türkiye'nin #1 Ücretsiz Eğitim Platformu"}</div>
@@ -196,6 +216,7 @@ export default async function Home() {
               </div>
             </div>
           </div>
+          )}
         </section>
       </div>
 

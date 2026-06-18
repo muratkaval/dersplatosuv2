@@ -68,6 +68,48 @@ export function getCampThumbnail(camp: any): string {
   return 'https://via.placeholder.com/640x360?text=KAMP';
 }
 
+// Ana sayfa hero vitrini slaytı (snapshot). image bir medya URL'i (mutlak/göreli) ya da harici link.
+export type HeroSlide = {
+  kind?: "Kamp" | "Kitap" | "Öğretmen" | "Program" | "Özel";
+  // Sol içerik
+  eyebrow?: string;       // .hero-badge pill (boşsa global site.heroBadge'e düşer)
+  title: string;          // gradient parse (<...> + \n)
+  description?: string;   // .hero-desc
+  btn1Text?: string;
+  btn1Link?: string;
+  btn2Text?: string;
+  btn2Link?: string;
+  // Sağ kart
+  image: string;
+  imageLink?: string;     // kart tıklama hedefi (yoksa btn1Link -> link)
+  subtitle?: string;      // kart altı küçük satır
+  badge?: string;         // kart köşe rozeti
+  link: string;           // legacy/son fallback
+};
+
+// Admin "Hero Vitrini" editöründe bir kamp/kitap/program seçilince slaytı ön-doldurur.
+export function slideFromEntity(kind: "Kamp" | "Kitap" | "Öğretmen" | "Program", e: any): HeroSlide {
+  const make = (title: string, link: string, image: string, subtitle: string): HeroSlide => ({
+    kind,
+    eyebrow: kind,
+    title,
+    description: subtitle || "",
+    btn1Text: "İncele",
+    btn1Link: link,
+    btn2Text: "",
+    btn2Link: "",
+    image,
+    imageLink: link,
+    subtitle,
+    badge: kind,
+    link,
+  });
+  if (kind === "Kamp") return make(e?.title || "", e?.slug ? `/kamplar/${e.slug}` : "/kamplar", getCampThumbnail(e), e?.subject?.name || "");
+  if (kind === "Kitap") return make(e?.title || "", e?.slug ? `/kitaplar/${e.slug}` : (e?.buy_link || "/kitaplar"), toMediaUrl(e?.cover?.url), "");
+  if (kind === "Öğretmen") return make(e?.name || "", e?.slug ? `/hoca/${e.slug}` : "/youtuber-hocalar", toMediaUrl(e?.photo?.url || e?.photo?.formats?.thumbnail?.url), e?.subjects?.[0]?.name || "Öğretmen");
+  return make(e?.title || "", e?.slug ? `/programlar/${e.slug}` : "/programlar", toMediaUrl(e?.cover?.url), e?.examType || "");
+}
+
 export type Camp = {
   id: number;
   documentId?: string;
