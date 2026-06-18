@@ -7,7 +7,7 @@ export { SiteHeader, SiteFooter };
 // navLinks only come back with that token, and `revalidate` (NOT no-store) so the
 // route stays static/ISR — a no-store fetch here would make every page dynamic and
 // re-trigger the "static to dynamic at runtime" 500 on routes like /[slug].
-async function getNavData(): Promise<{ navLinks?: NavLink[]; footerColumns?: FooterColumn[] }> {
+async function getNavData(): Promise<{ navLinks?: NavLink[]; footerColumns?: FooterColumn[]; logo?: any[] }> {
   const token = (process.env.STRAPI_TOKEN || "").trim();
   const base = (process.env.STRAPI_URL || "http://localhost:1340").replace(/\/api\/?$/, "");
   try {
@@ -21,6 +21,7 @@ async function getNavData(): Promise<{ navLinks?: NavLink[]; footerColumns?: Foo
     return {
       navLinks: Array.isArray(d.navLinks) && d.navLinks.length ? d.navLinks : undefined,
       footerColumns: Array.isArray(d.footerColumns) && d.footerColumns.length ? d.footerColumns : undefined,
+      logo: Array.isArray(d.logo) ? d.logo : (d.logo ? [d.logo] : undefined),
     };
   } catch {
     return {};
@@ -35,20 +36,19 @@ export async function PageContainer({ children, navLinks, footerColumns }: {
   let nav = navLinks;
   let cols = footerColumns;
 
-  // Fetch nav server-side so the menu/footer render correctly on first paint
-  // (no client-side fetch flash). Falls back to the components' built-in defaults
-  // if the CMS returns nothing.
-  if (!nav || !cols) {
-    const data = await getNavData();
-    if (!nav) nav = data.navLinks;
-    if (!cols) cols = data.footerColumns;
-  }
+  // Fetch nav + logolar server-side so the menu/footer render correctly on first
+  // paint (no client-side fetch flash). Logolar prop olarak geçilir; aksi halde
+  // SiteFooter/SiteHeader prop varlığında client fetch'i atladığı için logo gelmezdi.
+  const data = await getNavData();
+  if (!nav) nav = data.navLinks;
+  if (!cols) cols = data.footerColumns;
+  const logos = data.logo;
 
   return (
     <>
-      <SiteHeader navLinks={nav} />
+      <SiteHeader navLinks={nav} logos={logos} />
       <main>{children}</main>
-      <SiteFooter footerColumns={cols} />
+      <SiteFooter footerColumns={cols} logos={logos} />
     </>
   );
 }

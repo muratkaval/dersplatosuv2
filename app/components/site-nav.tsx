@@ -39,11 +39,11 @@ const DEFAULT_FOOTER: FooterColumn[] = [
   },
 ];
 
-export function SiteHeader({ navLinks: propLinks }: { navLinks?: NavLink[] }) {
+export function SiteHeader({ navLinks: propLinks, logos: propLogos }: { navLinks?: NavLink[]; logos?: any[] }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [navLinks, setNavLinks] = useState<NavLink[]>(propLinks || DEFAULT_NAV);
-  const [logos, setLogos] = useState<any[]>([]);
+  const [logos, setLogos] = useState<any[]>(propLogos || []);
   const [mobileExpanded, setMobileExpanded] = useState<number | null>(null);
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export function SiteHeader({ navLinks: propLinks }: { navLinks?: NavLink[] }) {
       document.body.setAttribute('data-theme', 'dark');
     }
     if (!propLinks) {
-      fetch("/api/nav").then(r => r.json()).then(d => {
+      fetch("/api/nav", { cache: "no-store" }).then(r => r.json()).then(d => {
         if (d?.navLinks?.length) setNavLinks(d.navLinks);
         if (d?.logo) {
           setLogos(Array.isArray(d.logo) ? d.logo : [d.logo]);
@@ -166,18 +166,14 @@ export function SiteHeader({ navLinks: propLinks }: { navLinks?: NavLink[] }) {
   );
 }
 
-export function SiteFooter({ footerColumns: propCols }: { footerColumns?: FooterColumn[] }) {
+export function SiteFooter({ footerColumns: propCols, logos: propLogos }: { footerColumns?: FooterColumn[]; logos?: any[] }) {
   const [cols, setCols] = useState<FooterColumn[]>(propCols || DEFAULT_FOOTER);
-  const [footerTitle, setFooterTitle] = useState("Ders Platosu");
-  const [footerDescription, setFooterDescription] = useState("Türkiye'nin en büyük ücretsiz TYT ve AYT eğitim platformu.");
-  const [logos, setLogos] = useState<any[]>([]);
+  const [logos, setLogos] = useState<any[]>(propLogos || []);
 
   useEffect(() => {
     if (!propCols) {
-      fetch("/api/nav").then(r => r.json()).then(d => {
+      fetch("/api/nav", { cache: "no-store" }).then(r => r.json()).then(d => {
         if (d?.footerColumns?.length) setCols(d.footerColumns);
-        if (d?.footer_title) setFooterTitle(d.footer_title);
-        if (d?.footer_description) setFooterDescription(d.footer_description);
         if (d?.logo) {
           setLogos(Array.isArray(d.logo) ? d.logo : [d.logo]);
         }
@@ -190,26 +186,24 @@ export function SiteFooter({ footerColumns: propCols }: { footerColumns?: Footer
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", alignItems: "center", marginBottom: "12px" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", alignItems: "center" }}>
               {logos.length > 0 ? (
                 logos.map((l, i) => (
                   <img
                     key={i}
                     src={toMediaUrl(l)}
                     alt="Logo"
-                    style={{ height: '32px', width: 'auto', borderRadius: '4px' }}
+                    style={{ height: '42px', width: 'auto', borderRadius: '4px' }}
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = "https://i.hizliresim.com/ag3gf4d.png";
-                      (e.target as HTMLImageElement).style.width = "32px";
+                      (e.target as HTMLImageElement).style.width = "42px";
                     }}
                   />
                 ))
               ) : (
-                <img src="https://i.hizliresim.com/ag3gf4d.png" className="logo-img" alt="Logo" style={{ width: '36px', height: '36px', borderRadius: '8px' }} />
+                <img src="https://i.hizliresim.com/ag3gf4d.png" className="logo-img" alt="Logo" style={{ width: '42px', height: '42px', borderRadius: '8px' }} />
               )}
-              <span className="logo-text" style={{ fontWeight: '800', fontSize: '1.2rem', marginLeft: "4px" }}>{footerTitle}</span>
             </div>
-            <p style={{ color: 'var(--text-muted)', fontSize: "0.95rem", lineHeight: "1.5" }}>{footerDescription}</p>
           </div>
           {cols.map((col, ci) => (
             <div key={ci} className="footer-col">
