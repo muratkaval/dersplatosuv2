@@ -76,7 +76,7 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
   function addSlideFrom(opt: any) {
     if (!opt) return;
     const { id: _id, ...slide } = opt;
-    setHeroSlides((p) => [...p, { ...slide, _uid: uid() }]);
+    setHeroSlides((p) => [...p, { ...slide, refId: _id, _uid: uid() }]);
   }
   function addCustomSlide() {
     setHeroSlides((p) => [...p, { kind: "Özel", eyebrow: "", title: "", description: "", btn1Text: "", btn1Link: "", btn2Text: "", btn2Link: "", subtitle: "", badge: "", image: "", imageLink: "", link: "", _uid: uid() }]);
@@ -84,7 +84,7 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
   // Sağ kartı bir kamp/kitap/öğretmen/program içeriğiyle doldurur (sol metni/butonları değiştirmez).
   function setCardFromEntity(u: string, opt: any) {
     if (!opt) return;
-    setHeroSlides((p) => p.map((s) => (s._uid === u ? { ...s, kind: opt.kind, image: opt.image || "", imageLink: opt.imageLink || opt.link || "", subtitle: opt.subtitle || "", badge: opt.badge || "", _imageFile: undefined } : s)));
+    setHeroSlides((p) => p.map((s) => (s._uid === u ? { ...s, kind: opt.kind, refId: opt.id, image: opt.image || "", imageLink: opt.imageLink || opt.link || "", subtitle: opt.subtitle || "", badge: opt.badge || "", _imageFile: undefined } : s)));
   }
   // İki kademeli seçici: türe göre öğe listesi + tür etiketi.
   function optionsFor(type: string): any[] {
@@ -161,6 +161,7 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
         }
         cleanSlides.push({
           kind: s.kind || "Özel",
+          refId: s.refId || "",
           eyebrow: s.eyebrow || "",
           title: s.title || "",
           description: s.description || "",
@@ -329,11 +330,17 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
                                 )}
                               </div>
                               <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
-                                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                                  <input style={{ ...fieldStyle, flex: 1 }} value={s.image && !String(s.image).startsWith("blob") ? s.image : ""} onChange={(e) => setSlideImageUrl(s._uid, e.target.value)} placeholder="Görsel URL (veya yükle →)" />
-                                  <input type="file" accept="image/*" id={`slide-img-${s._uid}`} style={{ display: "none" }} onChange={(e) => { const f = e.target.files?.[0]; if (f) setSlideImageFile(s._uid, f); }} />
-                                  <label htmlFor={`slide-img-${s._uid}`} className="btn btn-ghost btn-sm" style={{ cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}><span className="ms">upload</span> Yükle</label>
-                                </div>
+                                {s.refId ? (
+                                  <div style={{ ...fieldStyle, flex: 1, color: "#94a3b8", display: "flex", alignItems: "center", gap: "6px" }}>
+                                    <span className="ms" style={{ fontSize: "16px", color: "#34d399" }}>link</span> Kapak: {s.kind} içeriğinden otomatik gelir (canlı)
+                                  </div>
+                                ) : (
+                                  <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                                    <input style={{ ...fieldStyle, flex: 1 }} value={s.image && !String(s.image).startsWith("blob") ? s.image : ""} onChange={(e) => setSlideImageUrl(s._uid, e.target.value)} placeholder="Görsel URL (veya yükle →)" />
+                                    <input type="file" accept="image/*" id={`slide-img-${s._uid}`} style={{ display: "none" }} onChange={(e) => { const f = e.target.files?.[0]; if (f) setSlideImageFile(s._uid, f); }} />
+                                    <label htmlFor={`slide-img-${s._uid}`} className="btn btn-ghost btn-sm" style={{ cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}><span className="ms">upload</span> Yükle</label>
+                                  </div>
+                                )}
                                 <input style={fieldStyle} value={s.imageLink || ""} onChange={(e) => updateSlide(s._uid, "imageLink", e.target.value)} placeholder="Kart linki (boş = 1. buton linki)" />
                               </div>
                             </div>

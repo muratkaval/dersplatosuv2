@@ -80,7 +80,8 @@ export type HeroSlide = {
   btn2Text?: string;
   btn2Link?: string;
   // Sağ kart
-  image: string;
+  refId?: string;         // entity referansı (documentId) -> kapak CANLI çözülür (resolveHeroSlides)
+  image: string;          // snapshot/yedek kapak (Özel slaytta elle girilir)
   imageLink?: string;     // kart tıklama hedefi (yoksa btn1Link -> link)
   subtitle?: string;      // kart altı küçük satır
   badge?: string;         // kart köşe rozeti
@@ -108,6 +109,29 @@ export function slideFromEntity(kind: "Kamp" | "Kitap" | "Öğretmen" | "Program
   if (kind === "Kitap") return make(e?.title || "", e?.slug ? `/kitaplar/${e.slug}` : (e?.buy_link || "/kitaplar"), toMediaUrl(e?.cover?.url), "");
   if (kind === "Öğretmen") return make(e?.name || "", e?.slug ? `/hoca/${e.slug}` : "/youtuber-hocalar", toMediaUrl(e?.photo?.url || e?.photo?.formats?.thumbnail?.url), e?.subjects?.[0]?.name || "Öğretmen");
   return make(e?.title || "", e?.slug ? `/programlar/${e.slug}` : "/programlar", toMediaUrl(e?.cover?.url), e?.examType || "");
+}
+
+// Entity-bağlı slaytların KAPAĞINI canlı çözer (snapshot yerine içeriğin güncel kapağı).
+// Yalnız referans verilen türler için ilgili listeyi çeker (fetch'ler zaten cache'li).
+export async function resolveHeroSlides(slides: HeroSlide[]): Promise<HeroSlide[]> {
+  if (!Array.isArray(slides) || slides.length === 0) return [];
+  const need = new Set(slides.filter((s) => s.refId && s.kind && s.kind !== "Özel").map((s) => s.kind));
+  if (need.size === 0) return slides;
+  const [camps, books, programs, instructors] = await Promise.all([
+    need.has("Kamp") ? getCamps() : Promise.resolve([] as any[]),
+    need.has("Kitap") ? getBooks() : Promise.resolve([] as any[]),
+    need.has("Program") ? getPrograms() : Promise.resolve([] as any[]),
+    need.has("Öğretmen") ? getInstructors() : Promise.resolve([] as any[]),
+  ]);
+  const listFor = (kind?: string): any[] =>
+    kind === "Kamp" ? camps : kind === "Kitap" ? books : kind === "Program" ? programs : kind === "Öğretmen" ? instructors : [];
+  return slides.map((s) => {
+    if (!s.refId || !s.kind || s.kind === "Özel") return s;
+    const ent = listFor(s.kind).find((e) => String(e.documentId) === s.refId || String(e.id) === s.refId);
+    if (!ent) return s;
+    const liveImage = slideFromEntity(s.kind as "Kamp" | "Kitap" | "Öğretmen" | "Program", ent).image;
+    return liveImage ? { ...s, image: liveImage } : s;
+  });
 }
 
 export type Camp = {

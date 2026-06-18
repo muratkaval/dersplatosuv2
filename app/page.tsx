@@ -3,7 +3,7 @@ import CourseCard from "./components/course-card";
 import BookCard from "@/app/components/book-card";
 import Link from "next/link";
 import Image from "next/image";
-import { getBooks, getCamps, getInstructors, toMediaUrl, getCampThumbnail, getGlobalSettings, type HeroSlide } from "@/app/lib/strapi";
+import { getBooks, getCamps, getInstructors, toMediaUrl, getCampThumbnail, getGlobalSettings, resolveHeroSlides, type HeroSlide } from "@/app/lib/strapi";
 import InstructorScroll from "./components/instructor-scroll";
 import HeroShowcase from "./components/hero-showcase";
 import ExamCountdown from "./components/exam-countdown";
@@ -29,7 +29,7 @@ export default async function Home() {
 
   const site = globalSettings?.attributes || globalSettings || {};
 
-  const heroSlides: HeroSlide[] = Array.isArray(site.heroSlides) ? site.heroSlides : [];
+  const heroSlides: HeroSlide[] = await resolveHeroSlides(Array.isArray(site.heroSlides) ? site.heroSlides : []);
   const heroRotateSeconds = site.heroRotateSeconds || 6;
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dersplatosu.com";

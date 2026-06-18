@@ -98,6 +98,7 @@ export default function HeroShowcase({ slides, rotateSeconds = 6, floatingBadgeT
   );
 
   return (
+    <>
     <div
       className="hero-inner"
       aria-roledescription="carousel"
@@ -160,9 +161,11 @@ export default function HeroShowcase({ slides, rotateSeconds = 6, floatingBadgeT
         </div>
       </div>
 
-      {/* Noktalar (hero'nun alt-ortasında) */}
+    </div>
+
+      {/* Noktalar: hero'nun ALTINDA, ortada — absolute değil ki mobilde yüzen rozetle çakışmasın */}
       {count > 1 ? (
-        <div style={{ position: "absolute", bottom: "8px", left: 0, right: 0, display: "flex", justifyContent: "center", gap: "8px", zIndex: 22 }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: "12px", margin: "18px 0 6px", position: "relative", zIndex: 22 }}>
           {slides.map((_, i) => (
             <button
               key={i}
@@ -170,11 +173,11 @@ export default function HeroShowcase({ slides, rotateSeconds = 6, floatingBadgeT
               onClick={() => setIndex(i)}
               aria-label={`${i + 1}. slayt`}
               aria-current={i === active}
-              style={{ height: "8px", width: i === active ? "24px" : "8px", borderRadius: "999px", border: "none", padding: 0, cursor: "pointer", background: i === active ? "var(--primary, #2563eb)" : "rgba(148,163,184,0.5)", transition: "all 0.25s ease" }}
+              style={{ height: "9px", width: i === active ? "28px" : "9px", borderRadius: "999px", border: "none", padding: 0, cursor: "pointer", background: i === active ? "var(--primary, #2563eb)" : "rgba(148,163,184,0.5)", transition: "all 0.25s ease" }}
             />
           ))}
         </div>
       ) : null}
-    </div>
+    </>
   );
 }
