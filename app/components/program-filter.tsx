@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { toMediaUrl, periodUnitWord, programDurationCount, type Program } from "@/app/lib/strapi";
+import { toMediaUrl, periodUnitWord, programDurationCount, programCategories, type Program } from "@/app/lib/strapi";
 
 type Category = { name: string; options: string[] };
 
@@ -29,13 +29,13 @@ export default function ProgramFilter({ programs, categories: catProp }: { progr
       .filter((c) => c.name);
   }, [catProp]);
 
-  const countFor = (name: string) => programs.filter((p) => p.examType === name).length;
+  const countFor = (name: string) => programs.filter((p) => programCategories(p).includes(name)).length;
   const activeCat = categories.find((c) => c.name === selCat) || null;
 
   const filtered = useMemo(() => {
     if (!selCat) return [];
     return programs.filter((p) => {
-      if (p.examType !== selCat) return false;
+      if (!programCategories(p).includes(selCat)) return false;
       if (selSub && !((p.subOptions || []) as string[]).includes(selSub)) return false;
       return true;
     });
@@ -121,7 +121,7 @@ export default function ProgramFilter({ programs, categories: catProp }: { progr
                         <h3 style={{ fontSize: "1.1rem", lineHeight: 1.4, margin: 0 }}>{p.title}</h3>
                       </Link>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                        {p.examType && <span className="program-tag">{p.examType}</span>}
+                        {programCategories(p).map((c) => <span key={c} className="program-tag">{c}</span>)}
                         {subs.map((o) => <span key={o} className="program-tag">{o}</span>)}
                         {durCount > 0 && <span className="program-tag">{durCount} {unit}</span>}
                       </div>

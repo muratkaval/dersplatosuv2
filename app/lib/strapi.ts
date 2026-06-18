@@ -444,6 +444,7 @@ export type Program = {
   title: string;
   slug: string;
   examType?: string;
+  examTypes?: string[];
   netMin?: number;
   netMax?: number;
   periodType?: string;
@@ -472,6 +473,13 @@ export function programDurationCount(p: Pick<Program, "durationCount" | "weeks">
   return typeof p.durationCount === "number" && p.durationCount > 0
     ? p.durationCount
     : p.weeks?.length || 0;
+}
+
+// Bir programın ait olduğu ana kategoriler. Çoklu examTypes varsa o, yoksa
+// geriye dönük tekil examType. Filtre/kart/detay/admin ortak kullanır.
+export function programCategories(p: Pick<Program, "examType" | "examTypes">): string[] {
+  if (Array.isArray(p.examTypes) && p.examTypes.length) return p.examTypes.filter(Boolean);
+  return p.examType ? [p.examType] : [];
 }
 
 // Strapi v5 rejects `populate[field]=*` on a specific media/relation (it tries

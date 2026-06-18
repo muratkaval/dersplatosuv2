@@ -3,7 +3,7 @@ import { adminGet } from "@/app/admin/lib/strapi-admin";
 import Link from "next/link";
 import ProgramlarTable from "./programlar-table";
 import PageHeaderEditor from "../page-header-editor";
-import { periodUnitWord, programDurationCount } from "@/app/lib/strapi";
+import { periodUnitWord, programDurationCount, programCategories } from "@/app/lib/strapi";
 
 export const metadata = { title: "Programlar | Admin" };
 
@@ -25,7 +25,7 @@ export default async function ProgramlarPage() {
       documentId: item.documentId || String(item.id),
       title: item.title,
       slug: item.slug,
-      examType: item.examType,
+      examType: programCategories(item).join(", "),
       netMin: item.netMin,
       netMax: item.netMax,
       subjects: (item.subjects || []).map((s: any) => s.name).filter(Boolean),

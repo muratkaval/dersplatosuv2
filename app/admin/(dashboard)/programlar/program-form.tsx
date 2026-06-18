@@ -70,12 +70,14 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
   const cats: { name: string; options: string[] }[] = (categories && categories.length ? categories : DEFAULT_CATEGORIES)
     .map((c: any) => ({ name: String(c?.name || "").trim(), options: Array.isArray(c?.options) ? c.options.map((o: any) => String(o).trim()).filter(Boolean) : [] }))
     .filter((c) => c.name);
-  const examOptions = Array.from(new Set([...cats.map((c) => c.name), ...(program?.examType ? [program.examType] : [])]));
+  const examOptions = Array.from(new Set([...cats.map((c) => c.name), ...(program?.examTypes?.length ? program.examTypes : (program?.examType ? [program.examType] : []))]));
   const netOptions = nets && nets.length ? nets : DEFAULT_NETS;
 
   const [title, setTitle] = useState(program?.title || "");
   const [slug, setSlug] = useState(program?.slug || "");
-  const [examType, setExamType] = useState(program?.examType || examOptions[0] || "");
+  const [selExamTypes, setSelExamTypes] = useState<string[]>(
+    program?.examTypes?.length ? program.examTypes : (program?.examType ? [program.examType] : [])
+  );
   const [periodType, setPeriodType] = useState(program?.periodType || "Haftalık");
   const [netMin, setNetMin] = useState<string>(program?.netMin?.toString() ?? "");
   const [netMax, setNetMax] = useState<string>(program?.netMax?.toString() ?? "");
@@ -144,6 +146,14 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
     setSelSubOptions((prev) => (prev.includes(o) ? prev.filter((x) => x !== o) : [...prev, o]));
   }
 
+  function toggleExamType(name: string) {
+    const next = selExamTypes.includes(name) ? selExamTypes.filter((x) => x !== name) : [...selExamTypes, name];
+    setSelExamTypes(next);
+    // Seçili kategorilerin hiçbirine ait olmayan alt seçenekleri ayıkla.
+    const valid = new Set(next.flatMap((n) => cats.find((c) => c.name === n)?.options || []));
+    setSelSubOptions((prev) => prev.filter((o) => valid.has(o)));
+  }
+
   function addWeek() {
     const nextNo = weeks.length > 0 ? Math.max(...weeks.map((w) => w.weekNo)) + 1 : 1;
     setWeeks([...weeks, { id: `w-${Date.now()}`, weekNo: nextNo, title: `${nextNo}. ${periodUnitWord(periodType)}`, imageFile: null, imageUrl: "", imageId: null, pdfFile: null, pdfName: "", pdfId: null, link: "", contentType: "image" }]);
@@ -164,7 +174,7 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
 
   async function handleSave() {
     if (!title.trim()) { showToast("Başlık zorunludur", "error"); return; }
-    if (!examType) { showToast("Sınav türü zorunludur", "error"); return; }
+    if (selExamTypes.length === 0) { showToast("En az bir ana kategori seçin", "error"); return; }
 
     setSaving(true);
     try {
@@ -207,7 +217,8 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
       const payload: any = {
         title,
         slug: slug || slugify(title),
-        examType,
+        examType: selExamTypes[0] || "",
+        examTypes: selExamTypes,
         periodType,
         netMin: netMin === "" ? null : Number(netMin),
         netMax: netMax === "" ? null : Number(netMax),
@@ -271,13 +282,19 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
 
             <div style={{ display: "flex", gap: "12px" }}>
               <div className="form-group" style={{ flex: 1 }}>
-                <label>Ana Kategori</label>
+                <label>Ana Kategori (çoklu seçim)</label>
                 {examOptions.length > 0 ? (
-                  <select value={examType} onChange={(e) => { setExamType(e.target.value); setSelSubOptions([]); }} style={fieldStyle}>
-                    {examOptions.map((ex) => (
-                      <option key={ex} value={ex}>{ex}</option>
-                    ))}
-                  </select>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                    {examOptions.map((ex) => {
+                      const on = selExamTypes.includes(ex);
+                      return (
+                        <button key={ex} type="button" onClick={() => toggleExamType(ex)}
+                          style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "10px", border: on ? "1.5px solid #3b82f6" : "1.5px solid #1e3a5f", background: on ? "rgba(59,130,246,0.15)" : "transparent", color: on ? "#93c5fd" : "#94a3b8", cursor: "pointer", fontFamily: "inherit", fontSize: "0.85rem", fontWeight: on ? 700 : 500 }}>
+                          {on && <span className="ms" style={{ fontSize: "15px" }}>check</span>}{ex}
+                        </button>
+                      );
+                    })}
+                  </div>
                 ) : (
                   <a href="/admin/programlar/ayarlar" style={{ display: "block", padding: "10px", borderRadius: "6px", border: "1px dashed #1e3a5f", color: "#60a5fa", fontSize: "0.82rem", textDecoration: "none" }}>
                     Önce Ayarlar&apos;dan sınav ekleyin →
@@ -287,7 +304,7 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
             </div>
 
             {(() => {
-              const opts = cats.find((c) => c.name === examType)?.options || [];
+              const opts = Array.from(new Set(selExamTypes.flatMap((n) => cats.find((c) => c.name === n)?.options || [])));
               return (
                 <div className="form-group">
                   <label>Alt Kategoriler (çoklu seçim)</label>

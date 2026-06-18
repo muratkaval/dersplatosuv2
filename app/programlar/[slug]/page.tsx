@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { PageContainer } from "@/app/components/site-layout";
-import { getProgramBySlug, getPrograms, toMediaUrl, periodUnitWord, programDurationCount, type Program } from "@/app/lib/strapi";
+import { getProgramBySlug, getPrograms, toMediaUrl, periodUnitWord, programDurationCount, programCategories, type Program } from "@/app/lib/strapi";
 import Link from "next/link";
 import WeekCard from "@/app/components/week-card";
 import BookCard from "@/app/components/book-card";
@@ -69,7 +69,7 @@ export default async function ProgramDetailPage({
       <section className="page-hero">
         <div className="page-hero-inner">
           <div className="page-hero-eyebrow">
-            {program.examType || "Program"}
+            {programCategories(program).join(" · ") || "Program"}
             {subjectNames ? ` · ${subjectNames}` : ""}
           </div>
           <h1>{program.title}</h1>
@@ -80,12 +80,12 @@ export default async function ProgramDetailPage({
       <div className="container program-detail" style={{ maxWidth: "1040px", paddingBottom: "80px" }}>
         <div className="program-infocard">
           <div className="program-stats">
-            {program.examType && (
+            {programCategories(program).length > 0 && (
               <div className="pstat">
                 <span className="pstat-icon ms">school</span>
                 <span className="pstat-text">
                   <span className="pstat-label">Sınav</span>
-                  <span className="pstat-value">{program.examType}</span>
+                  <span className="pstat-value">{programCategories(program).join(" · ")}</span>
                 </span>
               </div>
             )}
