@@ -455,6 +455,7 @@ export type Program = {
   subjects?: Array<{ id?: number; name?: string; slug?: string }>;
   weeks?: ProgramWeek[];
   books?: Book[];
+  instructors?: Instructor[];
   subOptions?: string[];
   displayOrder?: number;
   updatedAt?: string;
@@ -493,26 +494,31 @@ export async function getPrograms(): Promise<Program[]> {
 }
 
 export async function getProgramBySlug(slug: string): Promise<Program | null> {
-  const [data, allBooks] = await Promise.all([
+  const [data, allBooks, allInstructors] = await Promise.all([
     fetchWithFallback<{ data: any[] }>([
-      // Primary: full populate + the program's selected books (ids only; covers
-      // come from the merge below). Falls back to a books-less query so the page
-      // still renders if the books relation ever errors.
-      `/programs?filters[slug][$eq]=${slug}&${PROGRAM_POPULATE}&populate[books]=true`,
+      // Primary: full populate + the program's selected books/instructors (ids
+      // only; covers/photos come from the merge below). Falls back to a lean
+      // query so the page still renders if a relation ever errors.
+      `/programs?filters[slug][$eq]=${slug}&${PROGRAM_POPULATE}&populate[books]=true&populate[instructors]=true`,
       `/programs?filters[slug][$eq]=${slug}&${PROGRAM_POPULATE}`,
       `/programs?filters[slug][$eq]=${slug}&populate=*`,
     ]),
     getBooks(),
+    getInstructors(),
   ]);
   const raw = flattenStrapi(data?.data?.[0] || null);
   if (!raw) return null;
-  // Merge selected books with full book data (cover, links, accent) like getCampBySlug.
+  // Merge selected books/instructors with full data (cover, links, photo) like getCampBySlug.
   const mergedBooks = (raw.books || [])
     .map((rb: any) => allBooks.find((b) => b.id === rb.id || b.documentId === rb.documentId) || rb)
+    .filter(Boolean);
+  const mergedInstructors = (raw.instructors || [])
+    .map((ri: any) => allInstructors.find((i) => i.id === ri.id || i.documentId === ri.documentId) || ri)
     .filter(Boolean);
   return {
     ...raw,
     slug: raw.slug || slugify(raw.title),
     books: mergedBooks,
+    instructors: mergedInstructors,
   };
 }

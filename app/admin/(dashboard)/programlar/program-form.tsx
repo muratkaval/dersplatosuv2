@@ -24,6 +24,7 @@ interface Props {
   exams?: string[];
   nets?: { min: number; max: number | null }[];
   books?: any[];
+  instructors?: any[];
   categories?: { name: string; options: string[] }[];
 }
 
@@ -63,7 +64,7 @@ function netRangeLabel(min: string, max: string) {
   return max === "" ? `${min}+ net` : `${min}-${max} net`;
 }
 
-export default function ProgramForm({ program, subjects, exams, nets, books = [], categories }: Props) {
+export default function ProgramForm({ program, subjects, exams, nets, books = [], instructors = [], categories }: Props) {
   const router = useRouter();
   const isEdit = !!program?.documentId;
   const cats: { name: string; options: string[] }[] = (categories && categories.length ? categories : DEFAULT_CATEGORIES)
@@ -87,6 +88,9 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
   );
   const [selBooks, setSelBooks] = useState<string[]>(
     (program?.books || []).map((b: any) => b.documentId || String(b.id))
+  );
+  const [selInstructors, setSelInstructors] = useState<string[]>(
+    (program?.instructors || []).map((i: any) => i.documentId || String(i.id))
   );
   const [selSubOptions, setSelSubOptions] = useState<string[]>(
     Array.isArray(program?.subOptions) ? program.subOptions : []
@@ -130,6 +134,10 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
 
   function toggleBook(id: string) {
     setSelBooks((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  }
+
+  function toggleInstructor(id: string) {
+    setSelInstructors((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   }
 
   function toggleSubOption(o: string) {
@@ -207,6 +215,7 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
         videoUrl,
         subjects: selSubjects,
         books: selBooks,
+        instructors: selInstructors,
         subOptions: selSubOptions,
         weeks: weeksPayload,
         displayOrder: displayOrder === "" ? 99 : Number(displayOrder),
@@ -386,6 +395,37 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
                         <span className="ms" style={{ fontSize: "20px", opacity: 0.3, width: "30px", textAlign: "center", flexShrink: 0 }}>menu_book</span>
                       )}
                       <span style={{ flex: 1 }}>{b.title}</span>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </div>
+
+          {/* Hocalar (programi anlatan) */}
+          <div className="info-card">
+            <div className="card-title"><span className="ms">groups</span> Hocalar (programı anlatan)</div>
+            <div style={{ maxHeight: "300px", overflowY: "auto", border: "1.5px solid #1a2536", borderRadius: "12px", background: "#060d1a" }}>
+              {instructors.length === 0 ? (
+                <div className="empty-state">Hoca bulunamadı.</div>
+              ) : (
+                instructors.map((ins, idx) => {
+                  const id = ins.documentId || String(ins.id);
+                  const selected = selInstructors.includes(id);
+                  const isLast = idx === instructors.length - 1;
+                  const photo = toMediaUrl(ins.photo?.url);
+                  return (
+                    <button key={id} type="button" onClick={() => toggleInstructor(id)}
+                      style={{ display: "flex", alignItems: "center", gap: "12px", width: "100%", padding: "9px 14px", background: selected ? "rgba(16,185,129,0.10)" : "transparent", color: selected ? "#34d399" : "#94a3b8", border: "none", borderBottom: isLast ? "none" : "1px solid #111d2e", cursor: "pointer", fontFamily: "inherit", fontSize: "0.85rem", fontWeight: selected ? 600 : 400, textAlign: "left" }}>
+                      <span style={{ width: "18px", height: "18px", borderRadius: "5px", flexShrink: 0, border: selected ? "2px solid #34d399" : "2px solid #243249", background: selected ? "#34d399" : "transparent", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        {selected && <span className="ms" style={{ fontSize: "14px", color: "#060d1a", fontWeight: "bold" }}>check</span>}
+                      </span>
+                      {photo ? (
+                        <img src={photo} alt="" style={{ width: "34px", height: "34px", borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
+                      ) : (
+                        <span className="ms" style={{ fontSize: "20px", opacity: 0.3, width: "34px", textAlign: "center", flexShrink: 0 }}>person</span>
+                      )}
+                      <span style={{ flex: 1 }}>{ins.name}</span>
                     </button>
                   );
                 })

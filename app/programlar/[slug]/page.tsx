@@ -164,6 +164,33 @@ export default async function ProgramDetailPage({
           </p>
         )}
 
+        {(program.instructors || []).length > 0 && (
+          <section className="program-instructors">
+            <h2 className="weeks-heading"><span className="ms">groups</span> Program Hocaları</h2>
+            <div className="program-instructors-grid">
+              {(program.instructors || []).map((inst: any) => {
+                const photo = toMediaUrl(inst.photo?.url);
+                const inner = (
+                  <>
+                    {photo ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={photo} alt={inst.name} className="pi-photo" />
+                    ) : (
+                      <span className="pi-photo pi-photo-empty ms">person</span>
+                    )}
+                    <span className="pi-name">{inst.name}</span>
+                  </>
+                );
+                return inst.slug ? (
+                  <Link key={inst.id} href={`/hoca/${inst.slug}`} className="pi-card">{inner}</Link>
+                ) : (
+                  <div key={inst.id} className="pi-card">{inner}</div>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
         {(program.books || []).length > 0 && (
           <section className="program-books">
             <h2 className="weeks-heading"><span className="ms">menu_book</span> Bu Programda Kullanılacak Kitaplar</h2>
@@ -210,6 +237,19 @@ export default async function ProgramDetailPage({
         .program-video{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;margin:0 0 40px;box-shadow:0 12px 34px rgba(15,23,42,0.12)}
         .program-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
         .weeks-list{display:flex;flex-direction:column;gap:16px}
+
+        /* Program hocalari */
+        .program-instructors{margin-top:56px;padding-top:36px;border-top:1px solid rgba(148,163,184,0.18)}
+        .program-instructors .weeks-heading{margin-bottom:22px}
+        .program-instructors-grid{display:flex;flex-wrap:wrap;gap:20px}
+        .pi-card{display:flex;flex-direction:column;align-items:center;gap:10px;width:104px;text-decoration:none;color:inherit}
+        .pi-photo{width:84px;height:84px;border-radius:50%;object-fit:cover;border:2px solid rgba(37,99,235,0.25);background:#0f172a}
+        .ms.pi-photo-empty{display:flex;align-items:center;justify-content:center;font-size:42px;color:#94a3b8}
+        .pi-name{font-size:0.92rem;font-weight:700;text-align:center;color:#0f172a;line-height:1.3}
+        .pi-card:hover .pi-photo{border-color:#2563eb}
+        body[data-theme="dark"] .pi-name{color:#f1f5f9}
+        body[data-theme="dark"] .pi-photo{border-color:rgba(96,165,250,0.3)}
+        body[data-theme="dark"] .pi-card:hover .pi-photo{border-color:#60a5fa}
 
         /* Bu programda kullanilacak kitaplar */
         .program-books{margin-top:56px;padding-top:36px;border-top:1px solid rgba(148,163,184,0.18)}

@@ -12,7 +12,7 @@ interface ProgramRow {
   netMin: number | null;
   netMax: number | null;
   subjects: string[];
-  weeksCount: number;
+  duration: string;
 }
 
 interface Props {
@@ -70,7 +70,7 @@ export default function ProgramlarTable({ initialPrograms }: Props) {
                 <th>Sınav</th>
                 <th>Net</th>
                 <th>Branş</th>
-                <th>Hafta</th>
+                <th>Süre</th>
                 <th>İşlem</th>
               </tr>
             </thead>
@@ -93,7 +93,7 @@ export default function ProgramlarTable({ initialPrograms }: Props) {
                   <td style={{ color: "#94a3b8" }}>
                     {p.subjects.length > 0 ? p.subjects.join(", ") : "Genel"}
                   </td>
-                  <td style={{ color: "#94a3b8" }}>{p.weeksCount}</td>
+                  <td style={{ color: "#94a3b8" }}>{p.duration}</td>
                   <td>
                     <div className="td-actions">
                       <Link href={`/admin/programlar/${p.documentId}`} className="btn btn-ghost btn-sm btn-icon">

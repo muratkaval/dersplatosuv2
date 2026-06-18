@@ -3,6 +3,7 @@ import { adminGet } from "@/app/admin/lib/strapi-admin";
 import Link from "next/link";
 import ProgramlarTable from "./programlar-table";
 import PageHeaderEditor from "../page-header-editor";
+import { periodUnitWord, programDurationCount } from "@/app/lib/strapi";
 
 export const metadata = { title: "Programlar | Admin" };
 
@@ -17,17 +18,20 @@ export default async function ProgramlarPage() {
   const gs = await adminGet("/global-setting", token);
   const pageHeaders = gs.data?.data?.pageHeaders || {};
 
-  const programs = (d.data?.data || []).map((item: any) => ({
-    id: item.id,
-    documentId: item.documentId || String(item.id),
-    title: item.title,
-    slug: item.slug,
-    examType: item.examType,
-    netMin: item.netMin,
-    netMax: item.netMax,
-    subjects: (item.subjects || []).map((s: any) => s.name).filter(Boolean),
-    weeksCount: item.weeks?.length || 0,
-  }));
+  const programs = (d.data?.data || []).map((item: any) => {
+    const count = programDurationCount(item);
+    return {
+      id: item.id,
+      documentId: item.documentId || String(item.id),
+      title: item.title,
+      slug: item.slug,
+      examType: item.examType,
+      netMin: item.netMin,
+      netMax: item.netMax,
+      subjects: (item.subjects || []).map((s: any) => s.name).filter(Boolean),
+      duration: count > 0 ? `${count} ${periodUnitWord(item.periodType).toLowerCase()}` : "—",
+    };
+  });
 
   return (
     <>

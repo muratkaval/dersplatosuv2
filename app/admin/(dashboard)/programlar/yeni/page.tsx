@@ -7,16 +7,18 @@ export const metadata = { title: "Yeni Program Ekle | Admin" };
 
 export default async function YeniProgramPage() {
   const token = await requireAdminToken();
-  const [s, gs, bk] = await Promise.all([
+  const [s, gs, bk, ins] = await Promise.all([
     adminGet("/subjects?sort=name:asc&pagination[pageSize]=100", token),
     adminGet("/global-setting", token),
     adminGet("/books?populate[cover]=true&sort=title:asc&pagination[pageSize]=100", token),
+    adminGet("/instructors?populate[photo]=true&sort=displayOrder:asc&pagination[pageSize]=100", token),
   ]);
   const subjects = s.data?.data || [];
   const exams = gs.data?.data?.programExams || [];
   const nets = gs.data?.data?.programNets || [];
   const categories = gs.data?.data?.programCategoryOptions || [];
   const books = bk.data?.data || [];
+  const instructors = ins.data?.data || [];
 
   return (
     <>
@@ -32,7 +34,7 @@ export default async function YeniProgramPage() {
       </div>
 
       <div className="admin-content">
-        <ProgramForm subjects={subjects} exams={exams} nets={nets} books={books} categories={categories} />
+        <ProgramForm subjects={subjects} exams={exams} nets={nets} books={books} categories={categories} instructors={instructors} />
       </div>
     </>
   );
