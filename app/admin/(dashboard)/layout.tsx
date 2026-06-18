@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getAdminToken, logoutAction } from "@/app/admin/lib/auth";
 import Link from "next/link";
 import AdminNav from "./admin-nav";
+import AdminMobileToggle from "./admin-mobile-toggle";
 import type { Metadata } from "next";
 import "./admin.css";
 
@@ -26,6 +27,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="admin-layout">
+      {/* Mobil hamburger + arka plan (yalnız ≤768px görünür) */}
+      <AdminMobileToggle />
+
       {/* Sidebar */}
       <aside className="admin-sidebar">
         <div className="sidebar-brand">

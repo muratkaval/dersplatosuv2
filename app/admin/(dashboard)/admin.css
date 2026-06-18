@@ -200,11 +200,16 @@ body {
 /* ===== MAIN CONTENT ===== */
 .admin-main {
   flex: 1;
+  min-width: 0; /* flex cocugu kucuelebilsin -> yatay tasma olmasin */
   overflow-y: auto;
   background: var(--bg-base);
   display: flex;
   flex-direction: column;
 }
+
+/* Mobil menu dugmesi + arka plan (varsayilan gizli; <=768px'te gorunur) */
+.admin-mobile-toggle { display: none; }
+.admin-sidebar-backdrop { display: none; }
 
 .admin-topbar {
   padding: 20px 28px 16px;
@@ -721,6 +726,52 @@ tbody tr:hover { background: rgba(59, 130, 246, 0.06) !important; }
 
 @media (max-width: 1000px) {
   .form-grid-seo { grid-template-columns: 1fr; }
+}
+
+/* ===== MOBIL (telefon) — off-canvas sidebar ===== */
+@media (max-width: 768px) {
+  /* Sidebar ekran disinda; hamburger ile kayar */
+  .admin-sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    width: min(82vw, 270px);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 60;
+  }
+  body.admin-sidebar-open .admin-sidebar { transform: translateX(0); box-shadow: 0 0 40px rgba(0,0,0,0.6); }
+  /* Off-canvas acikken tam metinli goster (<=900px gizlemelerini geri al) */
+  .admin-sidebar .nav-link span:last-child { display: inline !important; }
+  .sidebar-brand span { display: block !important; }
+  .sidebar-brand strong span:last-child { display: inline !important; }
+
+  .admin-mobile-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    position: fixed; top: 10px; left: 10px; z-index: 62;
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--bg-card); border: 1px solid var(--border); color: var(--text); cursor: pointer;
+  }
+  body.admin-sidebar-open .admin-sidebar-backdrop {
+    display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 58;
+  }
+
+  /* Icerik tam genislik + tasma yok */
+  .admin-main { min-width: 0; }
+  .admin-topbar { flex-direction: column; align-items: stretch; gap: 12px; padding: 12px 14px 12px 56px; }
+  .topbar-actions { flex-wrap: wrap; }
+  .topbar-actions > * { flex: 1 1 auto; justify-content: center; }
+  .admin-content { padding: 14px 14px 60px; }
+  .info-card { padding: 14px !important; }
+
+  /* Genis tablolar yatay kaysin */
+  .table-card { overflow-x: auto; }
+  .table-card table { min-width: 600px; }
+
+  /* 2 kolonlu form gridleri tek kolona (inline grid'ler dahil) */
+  .admin-2col-grid { grid-template-columns: 1fr !important; }
+  .form-grid { grid-template-columns: 1fr !important; }
+  .form-grid-seo { grid-template-columns: 1fr !important; }
+  .admin-content [style*="grid-template-columns: 1fr 1fr"],
+  .admin-content [style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
 }
 
 /* ===== GLOBAL SCROLLBAR ===== */

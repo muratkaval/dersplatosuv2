@@ -261,7 +261,7 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
     <>
       {toast && <div className={`toast show toast-${toast.type}`}>{toast.msg}</div>}
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", alignItems: "start" }}>
+      <div className="admin-2col-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", alignItems: "start" }}>
         {/* Sol */}
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <div className="info-card">
