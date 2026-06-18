@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { toMediaUrl } from "@/app/lib/strapi";
+import { toMediaUrl, periodUnitWord } from "@/app/lib/strapi";
 
 interface WeekItem {
   id: string;
@@ -63,10 +63,6 @@ function netRangeLabel(min: string, max: string) {
   return max === "" ? `${min}+ net` : `${min}-${max} net`;
 }
 
-function unitWordOf(p: string) {
-  return p === "Günlük" ? "Gün" : p === "Aylık" ? "Ay" : "Hafta";
-}
-
 export default function ProgramForm({ program, subjects, exams, nets, books = [], categories }: Props) {
   const router = useRouter();
   const isEdit = !!program?.documentId;
@@ -85,6 +81,7 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
   const [description, setDescription] = useState(program?.description || "");
   const [videoUrl, setVideoUrl] = useState(program?.videoUrl || "");
   const [displayOrder, setDisplayOrder] = useState<string>(program?.displayOrder?.toString() ?? "");
+  const [durationCount, setDurationCount] = useState<string>(program?.durationCount?.toString() ?? "");
   const [selSubjects, setSelSubjects] = useState<string[]>(
     (program?.subjects || []).map((s: any) => s.documentId || String(s.id))
   );
@@ -141,7 +138,7 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
 
   function addWeek() {
     const nextNo = weeks.length > 0 ? Math.max(...weeks.map((w) => w.weekNo)) + 1 : 1;
-    setWeeks([...weeks, { id: `w-${Date.now()}`, weekNo: nextNo, title: `${nextNo}. ${unitWordOf(periodType)}`, imageFile: null, imageUrl: "", imageId: null, pdfFile: null, pdfName: "", pdfId: null, link: "", contentType: "image" }]);
+    setWeeks([...weeks, { id: `w-${Date.now()}`, weekNo: nextNo, title: `${nextNo}. ${periodUnitWord(periodType)}`, imageFile: null, imageUrl: "", imageId: null, pdfFile: null, pdfName: "", pdfId: null, link: "", contentType: "image" }]);
   }
 
   function updateWeek(id: string, field: keyof WeekItem, value: any) {
@@ -213,6 +210,7 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
         subOptions: selSubOptions,
         weeks: weeksPayload,
         displayOrder: displayOrder === "" ? 99 : Number(displayOrder),
+        durationCount: durationCount === "" ? null : Number(durationCount),
         ...(finalCoverId ? { cover: finalCoverId } : {}),
         ...(finalPdfId ? { downloadPdf: finalPdfId } : {}),
       };
@@ -329,7 +327,14 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
                   <option value="Aylık">Aylık</option>
                 </select>
               </div>
+              <div className="form-group" style={{ width: "150px", marginBottom: 0 }}>
+                <label>Süre ({periodUnitWord(periodType).toLowerCase()})</label>
+                <input type="number" min={0} value={durationCount} onChange={(e) => setDurationCount(e.target.value)} placeholder="otomatik" />
+              </div>
             </div>
+            <p style={{ fontSize: "0.7rem", color: "#475569", marginTop: "8px" }}>
+              Boş bırakırsan kartda aşağıdaki içerik sayısı kadar görünür. Tüm haftaları tek dosyaya eklediysen gerçek {periodUnitWord(periodType).toLowerCase()} sayısını buraya yaz.
+            </p>
           </div>
 
           {/* Branş */}
@@ -427,7 +432,7 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
           <div className="info-card">
             <div className="card-title" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span><span className="ms">view_week</span> {periodType} Programlar ({weeks.length})</span>
-              <button type="button" className="btn btn-ghost btn-sm" onClick={addWeek} style={{ padding: "4px 8px" }}><span className="ms">add</span> {unitWordOf(periodType)} Ekle</button>
+              <button type="button" className="btn btn-ghost btn-sm" onClick={addWeek} style={{ padding: "4px 8px" }}><span className="ms">add</span> {periodUnitWord(periodType)} Ekle</button>
             </div>
 
             {weeks.length === 0 ? (

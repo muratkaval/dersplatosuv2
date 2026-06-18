@@ -447,6 +447,7 @@ export type Program = {
   netMin?: number;
   netMax?: number;
   periodType?: string;
+  durationCount?: number;
   videoUrl?: string;
   description?: string;
   cover?: { url?: string } | null;
@@ -458,6 +459,19 @@ export type Program = {
   displayOrder?: number;
   updatedAt?: string;
 };
+
+// "Haftalık"/"Günlük"/"Aylık" -> birim kelimesi. Kart, detay ve admin formu ortak kullanır.
+export function periodUnitWord(periodType?: string): string {
+  return periodType === "Günlük" ? "Gün" : periodType === "Aylık" ? "Ay" : "Hafta";
+}
+
+// İlan edilen süre: elle girilen durationCount > 0 ise o, yoksa içerik (weeks) satır sayısı.
+// Tüm haftalar tek dosyaya konunca satır sayısı 1 olur; o zaman durationCount devreye girer.
+export function programDurationCount(p: Pick<Program, "durationCount" | "weeks">): number {
+  return typeof p.durationCount === "number" && p.durationCount > 0
+    ? p.durationCount
+    : p.weeks?.length || 0;
+}
 
 // Strapi v5 rejects `populate[field]=*` on a specific media/relation (it tries
 // to expand the media's polymorphic `related` key -> 400 ValidationError).

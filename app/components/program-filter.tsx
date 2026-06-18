@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { toMediaUrl, type Program } from "@/app/lib/strapi";
+import { toMediaUrl, periodUnitWord, programDurationCount, type Program } from "@/app/lib/strapi";
 
 type Category = { name: string; options: string[] };
 
@@ -100,7 +100,8 @@ export default function ProgramFilter({ programs, categories: catProp }: { progr
               {filtered.map((p) => {
                 const cover = toMediaUrl(p.cover?.url);
                 const pdf = toMediaUrl(p.downloadPdf?.url);
-                const weeks = p.weeks?.length || 0;
+                const durCount = programDurationCount(p);
+                const unit = periodUnitWord(p.periodType).toLowerCase();
                 const subs = (p.subOptions || []) as string[];
                 return (
                   <div key={p.id} className="course-card" style={{ display: "flex", flexDirection: "column" }}>
@@ -122,7 +123,7 @@ export default function ProgramFilter({ programs, categories: catProp }: { progr
                       <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
                         {p.examType && <span className="program-tag">{p.examType}</span>}
                         {subs.map((o) => <span key={o} className="program-tag">{o}</span>)}
-                        {weeks > 0 && <span className="program-tag">{weeks} hafta</span>}
+                        {durCount > 0 && <span className="program-tag">{durCount} {unit}</span>}
                       </div>
                       <div style={{ display: "flex", gap: "8px", marginTop: "auto" }}>
                         <Link href={`/programlar/${p.slug}`} className="btn-outline" style={{ flex: 1, textAlign: "center" }}>İncele</Link>

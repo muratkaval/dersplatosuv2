@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type Props = {
   index: number;
@@ -17,6 +17,16 @@ type Props = {
 // issues inside transformed/overflow-hidden card containers.
 export default function WeekCard({ index, weekNo, title, img, pdf, link, unitWord }: Props) {
   const [open, setOpen] = useState(false);
+  // Mobil tarayıcılar PDF'i iframe içinde render etmez (boş/bozuk kutu çıkar);
+  // bu yüzden mobilde gömülü önizleme yerine "tam ekran aç" kartı gösteririz.
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const apply = () => setIsMobile(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
   const label = title || `${weekNo || index + 1}. ${unitWord}`;
   // Prefer PDF for the inline preview ("tüm alan PDF olarak açılsın"); fall back
   // to the schedule image when there is no PDF.
@@ -65,6 +75,21 @@ export default function WeekCard({ index, weekNo, title, img, pdf, link, unitWor
                 (previewType === "image" ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img src={previewSrc} alt={label} className="week-preview-img" />
+                ) : isMobile ? (
+                  <div className="week-preview-doc">
+                    <span className="ms week-preview-doc-icon">picture_as_pdf</span>
+                    <p className="week-preview-doc-hint">
+                      Programı tam ekranda büyük ve net gör — yakınlaştırıp rahatça inceleyebilirsin.
+                    </p>
+                    <a
+                      href={previewSrc}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-primary week-preview-open"
+                    >
+                      <span className="ms">open_in_new</span> Tam ekran aç
+                    </a>
+                  </div>
                 ) : (
                   <div className="week-preview-pdf">
                     <iframe src={previewSrc} title={label} />

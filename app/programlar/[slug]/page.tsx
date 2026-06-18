@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { PageContainer } from "@/app/components/site-layout";
-import { getProgramBySlug, getPrograms, toMediaUrl, type Program } from "@/app/lib/strapi";
+import { getProgramBySlug, getPrograms, toMediaUrl, periodUnitWord, programDurationCount, type Program } from "@/app/lib/strapi";
 import Link from "next/link";
 import WeekCard from "@/app/components/week-card";
 import BookCard from "@/app/components/book-card";
@@ -60,7 +60,8 @@ export default async function ProgramDetailPage({
   const weeks = (program.weeks || [])
     .slice()
     .sort((a, b) => (a.weekNo || 0) - (b.weekNo || 0));
-  const unitWord = program.periodType === "Günlük" ? "Gün" : program.periodType === "Aylık" ? "Ay" : "Hafta";
+  const unitWord = periodUnitWord(program.periodType);
+  const durationCount = programDurationCount(program);
   const videoUrl = youtubeEmbed(program.videoUrl);
 
   return (
@@ -104,12 +105,12 @@ export default async function ProgramDetailPage({
                 </span>
               </div>
             )}
-            {weeks.length > 0 && (
+            {durationCount > 0 && (
               <div className="pstat">
                 <span className="pstat-icon ms">calendar_month</span>
                 <span className="pstat-text">
                   <span className="pstat-label">Süre</span>
-                  <span className="pstat-value">{weeks.length} {unitWord.toLowerCase()}</span>
+                  <span className="pstat-value">{durationCount} {unitWord.toLowerCase()}</span>
                 </span>
               </div>
             )}
@@ -139,7 +140,7 @@ export default async function ProgramDetailPage({
             <h2 className="weeks-heading">
               <span className="ms">calendar_month</span>
               {program.periodType || "Haftalık"} Program
-              <span className="weeks-heading-count">{weeks.length} {unitWord.toLowerCase()}</span>
+              <span className="weeks-heading-count">{durationCount} {unitWord.toLowerCase()}</span>
             </h2>
 
             <div className="weeks-list">
@@ -238,6 +239,14 @@ export default async function ProgramDetailPage({
         .week-preview-pdf{display:flex;flex-direction:column;gap:12px}
         .week-preview-pdf iframe{width:100%;height:74vh;border:0;border-radius:12px;background:#fff}
         .week-preview-open{align-self:flex-start}
+        /* Mobil: iframe yerine temiz belge karti (tarayici PDF'i iframe'de gostermez) */
+        .week-preview-doc{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:32px 18px;border-radius:12px;background:rgba(37,99,235,0.05);border:1px dashed rgba(37,99,235,0.3)}
+        .week-preview-doc .btn-primary{align-self:stretch;justify-content:center}
+        .ms.week-preview-doc-icon{font-size:54px;color:#2563eb}
+        .week-preview-doc-hint{margin:0;font-size:0.92rem;color:#64748b;max-width:320px;line-height:1.5}
+        body[data-theme="dark"] .week-preview-doc{background:rgba(96,165,250,0.08);border-color:rgba(96,165,250,0.35)}
+        body[data-theme="dark"] .ms.week-preview-doc-icon{color:#60a5fa}
+        body[data-theme="dark"] .week-preview-doc-hint{color:#94a3b8}
 
         /* ---- buttons (content-width, flex) ---- */
         .program-detail .btn-primary,.program-detail .btn-outline{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 18px;border-radius:12px;font-weight:700;font-size:0.92rem;line-height:1;white-space:nowrap;cursor:pointer;text-decoration:none;border:1.5px solid transparent;transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
