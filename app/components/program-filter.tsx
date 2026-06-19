@@ -61,7 +61,7 @@ export default function ProgramFilter({ programs, categories: catProp }: { progr
     <div className="program-filter">
       {/* 1 — Ana kategori */}
       <div style={{ marginBottom: "30px" }}>
-        <Step no={1} label="Kategori seç" />
+        <Step no={1} label="Branş seç" />
         <div className="cat-grid">
           {categories.map((c) => (
             <button
