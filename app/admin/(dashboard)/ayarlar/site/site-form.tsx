@@ -84,7 +84,11 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
   // Sağ kartı bir kamp/kitap/öğretmen/program içeriğiyle doldurur (sol metni/butonları değiştirmez).
   function setCardFromEntity(u: string, opt: any) {
     if (!opt) return;
-    setHeroSlides((p) => p.map((s) => (s._uid === u ? { ...s, kind: opt.kind, refId: opt.id, image: opt.image || "", imageLink: opt.imageLink || opt.link || "", subtitle: opt.subtitle || "", badge: opt.badge || "", _imageFile: undefined } : s)));
+    setHeroSlides((p) => p.map((s) => (s._uid === u ? { ...s, kind: opt.kind, refId: opt.id, image: opt.image || "", imageOverride: false, imageLink: opt.imageLink || opt.link || "", subtitle: opt.subtitle || "", badge: opt.badge || "", _imageFile: undefined } : s)));
+  }
+  // Sağ kartı entity bağından koparıp "kendi görselin" (elle resim) moduna alır (sol metni/butonları değiştirmez).
+  function setCardToImage(u: string) {
+    setHeroSlides((p) => p.map((s) => (s._uid === u ? { ...s, kind: "Özel", rotateAll: false, refId: "", image: "", imageLink: "", subtitle: "", badge: "", _imageFile: undefined } : s)));
   }
   // İki kademeli seçici: türe göre öğe listesi + tür etiketi.
   function optionsFor(type: string): any[] {
@@ -93,6 +97,14 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
   function labelFor(type: string): string {
     return type === "kamp" ? "Kamp" : type === "kitap" ? "Kitap" : type === "ogretmen" ? "Öğretmen" : type === "program" ? "Program" : "";
   }
+  // Mevcut slaytı "o türün hepsi sırayla" moduna al (belirli öğe yok).
+  function setCardRotateAll(u: string, type: string) {
+    setHeroSlides((p) => p.map((s) => (s._uid === u ? { ...s, kind: labelFor(type), rotateAll: true, refId: "", image: "", imageLink: "", subtitle: "", badge: "", _imageFile: undefined } : s)));
+  }
+  // Yeni "tür → tümü sırayla" slaytı ekle.
+  function addRotateAllSlide(type: string) {
+    setHeroSlides((p) => [...p, { kind: labelFor(type), rotateAll: true, eyebrow: "", title: "", description: "", btn1Text: "", btn1Link: "", btn2Text: "", btn2Link: "", subtitle: "", badge: "", image: "", imageLink: "", link: "", refId: "", _uid: uid() }]);
+  }
   function removeSlide(u: string) {
     setHeroSlides((p) => p.filter((s) => s._uid !== u));
   }
@@ -100,11 +112,12 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
     setHeroSlides((p) => p.map((s) => (s._uid === u ? { ...s, [field]: val } : s)));
   }
   function setSlideImageUrl(u: string, url: string) {
-    setHeroSlides((p) => p.map((s) => (s._uid === u ? { ...s, image: url, _imageFile: undefined } : s)));
+    // URL girilince "kapak override" açılır; alan boşaltılırsa içeriğin canlı kapağına geri döner.
+    setHeroSlides((p) => p.map((s) => (s._uid === u ? { ...s, image: url, imageOverride: !!url, _imageFile: undefined } : s)));
   }
   function setSlideImageFile(u: string, file: File) {
     const blob = URL.createObjectURL(file);
-    setHeroSlides((p) => p.map((s) => (s._uid === u ? { ...s, image: blob, _imageFile: file } : s)));
+    setHeroSlides((p) => p.map((s) => (s._uid === u ? { ...s, image: blob, imageOverride: true, _imageFile: file } : s)));
   }
   function moveSlide(u: string, dir: number) {
     setHeroSlides((p) => {
@@ -162,6 +175,7 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
         cleanSlides.push({
           kind: s.kind || "Özel",
           refId: s.refId || "",
+          rotateAll: !!s.rotateAll,
           eyebrow: s.eyebrow || "",
           title: s.title || "",
           description: s.description || "",
@@ -172,6 +186,7 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
           subtitle: s.subtitle || "",
           badge: s.badge || "",
           image,
+          imageOverride: !!s.imageOverride,
           imageLink: s.imageLink || "",
           link: s.link || "",
         });
@@ -307,47 +322,57 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
                             <label style={grpLabel}>SAĞ GÖRSEL KARTI</label>
                             <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", alignItems: "center", marginBottom: "2px" }}>
                               <span style={{ fontSize: "0.72rem", color: "#64748b", flexShrink: 0 }}>Hazır içerik:</span>
-                              <select value={cardType[s._uid] || ""} onChange={(e) => setCardType((m) => ({ ...m, [s._uid]: e.target.value }))} style={selStyle}>
+                              <select value={cardType[s._uid] || ""} onChange={(e) => { const v = e.target.value; if (v === "resim") { setCardToImage(s._uid); setCardType((m) => ({ ...m, [s._uid]: "" })); } else setCardType((m) => ({ ...m, [s._uid]: v })); }} style={selStyle}>
                                 <option value="" style={optStyle}>Tür seç…</option>
                                 <option value="kamp" style={optStyle}>Kamp</option>
                                 <option value="kitap" style={optStyle}>Kitap</option>
                                 <option value="ogretmen" style={optStyle}>Öğretmen</option>
                                 <option value="program" style={optStyle}>Program</option>
+                                <option value="resim" style={optStyle}>🖼️ Resim (kendi görselin)</option>
                               </select>
                               {cardType[s._uid] ? (
-                                <select defaultValue="" onChange={(e) => { const opt = optionsFor(cardType[s._uid]).find((x: any) => x.id === e.target.value); if (opt) setCardFromEntity(s._uid, opt); e.target.value = ""; }} style={{ ...selStyle, flex: 1, minWidth: "200px" }}>
+                                <select defaultValue="" onChange={(e) => { const v = e.target.value; if (v === "__ALL__") setCardRotateAll(s._uid, cardType[s._uid]); else { const opt = optionsFor(cardType[s._uid]).find((x: any) => x.id === v); if (opt) setCardFromEntity(s._uid, opt); } e.target.value = ""; }} style={{ ...selStyle, flex: 1, minWidth: "200px" }}>
                                   <option value="" style={optStyle}>{labelFor(cardType[s._uid])} seç…</option>
+                                  <option value="__ALL__" style={optStyle}>⟳ Tümünü sırayla göster</option>
                                   {optionsFor(cardType[s._uid]).map((o: any) => <option key={o.id} value={o.id} style={optStyle}>{o.title}</option>)}
                                 </select>
                               ) : null}
                             </div>
-                            <div style={{ display: "flex", gap: "10px" }}>
-                              <div style={{ width: "92px", height: "56px", borderRadius: "6px", overflow: "hidden", flexShrink: 0, background: "rgba(255,255,255,0.05)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                {preview ? (
-                                  <img src={preview} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                                ) : (
-                                  <span className="ms" style={{ opacity: 0.3 }}>image</span>
-                                )}
+                            {s.rotateAll ? (
+                              <div style={{ ...fieldStyle, color: "#93c5fd", display: "flex", alignItems: "center", gap: "8px", lineHeight: 1.4 }}>
+                                <span className="ms" style={{ fontSize: "18px", color: "#34d399", flexShrink: 0 }}>autorenew</span>
+                                <span><strong>{s.kind}</strong> içeriğinin TÜMÜ sırayla gösterilecek (kapaklar otomatik/canlı). Yeni eklenenler otomatik katılır.</span>
                               </div>
-                              <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
-                                {s.refId ? (
-                                  <div style={{ ...fieldStyle, flex: 1, color: "#94a3b8", display: "flex", alignItems: "center", gap: "6px" }}>
-                                    <span className="ms" style={{ fontSize: "16px", color: "#34d399" }}>link</span> Kapak: {s.kind} içeriğinden otomatik gelir (canlı)
+                            ) : (
+                              <>
+                                <div style={{ display: "flex", gap: "10px" }}>
+                                  <div style={{ width: "92px", height: "56px", borderRadius: "6px", overflow: "hidden", flexShrink: 0, background: "rgba(255,255,255,0.05)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                    {preview ? (
+                                      <img src={preview} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                    ) : (
+                                      <span className="ms" style={{ opacity: 0.3 }}>image</span>
+                                    )}
                                   </div>
-                                ) : (
-                                  <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                                    <input style={{ ...fieldStyle, flex: 1 }} value={s.image && !String(s.image).startsWith("blob") ? s.image : ""} onChange={(e) => setSlideImageUrl(s._uid, e.target.value)} placeholder="Görsel URL (veya yükle →)" />
-                                    <input type="file" accept="image/*" id={`slide-img-${s._uid}`} style={{ display: "none" }} onChange={(e) => { const f = e.target.files?.[0]; if (f) setSlideImageFile(s._uid, f); }} />
-                                    <label htmlFor={`slide-img-${s._uid}`} className="btn btn-ghost btn-sm" style={{ cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}><span className="ms">upload</span> Yükle</label>
+                                  <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
+                                    {s.refId ? (
+                                      <div style={{ fontSize: "0.72rem", color: "#94a3b8", display: "flex", alignItems: "center", gap: "6px" }}>
+                                        <span className="ms" style={{ fontSize: "15px", color: "#34d399" }}>link</span> Başlık &amp; link: {s.kind} içeriğinden (canlı). Kapağı değiştirmek istersen ↓
+                                      </div>
+                                    ) : null}
+                                    <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                                      <input style={{ ...fieldStyle, flex: 1 }} value={(!s.refId || s.imageOverride) && s.image && !String(s.image).startsWith("blob") ? s.image : ""} onChange={(e) => setSlideImageUrl(s._uid, e.target.value)} placeholder={s.refId ? "Kendi kapağın (boş = içeriğin kapağı)" : "Görsel URL (veya yükle →)"} />
+                                      <input type="file" accept="image/*" id={`slide-img-${s._uid}`} style={{ display: "none" }} onChange={(e) => { const f = e.target.files?.[0]; if (f) setSlideImageFile(s._uid, f); }} />
+                                      <label htmlFor={`slide-img-${s._uid}`} className="btn btn-ghost btn-sm" style={{ cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}><span className="ms">upload</span> Yükle</label>
+                                    </div>
+                                    <input style={fieldStyle} value={s.imageLink || ""} onChange={(e) => updateSlide(s._uid, "imageLink", e.target.value)} placeholder="Kart linki (boş = 1. buton linki)" />
                                   </div>
-                                )}
-                                <input style={fieldStyle} value={s.imageLink || ""} onChange={(e) => updateSlide(s._uid, "imageLink", e.target.value)} placeholder="Kart linki (boş = 1. buton linki)" />
-                              </div>
-                            </div>
-                            <div style={{ display: "flex", gap: "8px" }}>
-                              <input style={{ ...fieldStyle, flex: 1 }} value={s.subtitle || ""} onChange={(e) => updateSlide(s._uid, "subtitle", e.target.value)} placeholder="Kart alt yazısı (opsiyonel)" />
-                              <input style={{ ...fieldStyle, width: "130px", flex: "0 0 auto" }} value={s.badge || ""} onChange={(e) => updateSlide(s._uid, "badge", e.target.value)} placeholder="Rozet" />
-                            </div>
+                                </div>
+                                <div style={{ display: "flex", gap: "8px" }}>
+                                  <input style={{ ...fieldStyle, flex: 1 }} value={s.subtitle || ""} onChange={(e) => updateSlide(s._uid, "subtitle", e.target.value)} placeholder="Kart alt yazısı (opsiyonel)" />
+                                  <input style={{ ...fieldStyle, width: "130px", flex: "0 0 auto" }} value={s.badge || ""} onChange={(e) => updateSlide(s._uid, "badge", e.target.value)} placeholder="Rozet" />
+                                </div>
+                              </>
+                            )}
                           </div>
                         </div>
                       ) : null}
@@ -367,8 +392,9 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
                 <option value="program" style={optStyle}>Program</option>
               </select>
               {addType ? (
-                <select defaultValue="" onChange={(e) => { const opt = optionsFor(addType).find((x: any) => x.id === e.target.value); if (opt) { addSlideFrom(opt); setAddType(""); } e.target.value = ""; }} style={{ ...selStyle, flex: 1, minWidth: "220px" }}>
+                <select defaultValue="" onChange={(e) => { const v = e.target.value; if (v === "__ALL__") { addRotateAllSlide(addType); setAddType(""); } else { const opt = optionsFor(addType).find((x: any) => x.id === v); if (opt) { addSlideFrom(opt); setAddType(""); } } e.target.value = ""; }} style={{ ...selStyle, flex: 1, minWidth: "220px" }}>
                   <option value="" style={optStyle}>{labelFor(addType)} seç…</option>
+                  <option value="__ALL__" style={optStyle}>⟳ Tümünü sırayla göster</option>
                   {optionsFor(addType).map((o: any) => <option key={o.id} value={o.id} style={optStyle}>{o.title}</option>)}
                 </select>
               ) : null}

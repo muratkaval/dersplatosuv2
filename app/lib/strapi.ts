@@ -81,7 +81,10 @@ export type HeroSlide = {
   btn2Link?: string;
   // Sağ kart
   refId?: string;         // entity referansı (documentId) -> kapak CANLI çözülür (resolveHeroSlides)
+  rotateAll?: boolean;    // tür seçili ama belirli öğe yok -> o türün TÜMÜ sırayla (render'da açılır)
+  cardTitle?: string;     // sağ kart başlığı = içeriğin ADI (render'da canlı set edilir)
   image: string;          // snapshot/yedek kapak (Özel slaytta elle girilir)
+  imageOverride?: boolean; // bağlı kartta (refId) kapağı içeriğin CANLI görseli yerine elle yüklenenle değiştir
   imageLink?: string;     // kart tıklama hedefi (yoksa btn1Link -> link)
   subtitle?: string;      // kart altı küçük satır
   badge?: string;         // kart köşe rozeti
@@ -115,7 +118,10 @@ export function slideFromEntity(kind: "Kamp" | "Kitap" | "Öğretmen" | "Program
 // Yalnız referans verilen türler için ilgili listeyi çeker (fetch'ler zaten cache'li).
 export async function resolveHeroSlides(slides: HeroSlide[]): Promise<HeroSlide[]> {
   if (!Array.isArray(slides) || slides.length === 0) return [];
-  const need = new Set(slides.filter((s) => s.refId && s.kind && s.kind !== "Özel").map((s) => s.kind));
+  // refId (tek öğe) ya da rotateAll (tüm tür) olan slaytlar için ilgili listeyi çek.
+  const need = new Set(
+    slides.filter((s) => (s.refId || s.rotateAll) && s.kind && s.kind !== "Özel").map((s) => s.kind)
+  );
   if (need.size === 0) return slides;
   const [camps, books, programs, instructors] = await Promise.all([
     need.has("Kamp") ? getCamps() : Promise.resolve([] as any[]),
@@ -125,13 +131,42 @@ export async function resolveHeroSlides(slides: HeroSlide[]): Promise<HeroSlide[
   ]);
   const listFor = (kind?: string): any[] =>
     kind === "Kamp" ? camps : kind === "Kitap" ? books : kind === "Program" ? programs : kind === "Öğretmen" ? instructors : [];
-  return slides.map((s) => {
-    if (!s.refId || !s.kind || s.kind === "Özel") return s;
-    const ent = listFor(s.kind).find((e) => String(e.documentId) === s.refId || String(e.id) === s.refId);
-    if (!ent) return s;
-    const liveImage = slideFromEntity(s.kind as "Kamp" | "Kitap" | "Öğretmen" | "Program", ent).image;
-    return liveImage ? { ...s, image: liveImage } : s;
-  });
+
+  const out: HeroSlide[] = [];
+  for (const s of slides) {
+    const k = s.kind as "Kamp" | "Kitap" | "Öğretmen" | "Program";
+    if (s.rotateAll && s.kind && s.kind !== "Özel") {
+      // Tür slaytını o türün HER öğesi için bir slayta aç (sol içerik korunur, sağ kart = öğe).
+      for (const ent of listFor(s.kind)) {
+        const live = slideFromEntity(k, ent);
+        if (!live.image && !live.title) continue;
+        out.push({
+          ...s,
+          rotateAll: false,
+          refId: String(ent.documentId || ent.id),
+          image: live.image,
+          imageLink: s.imageLink || live.link,
+          link: live.link,
+          cardTitle: live.title,    // kart başlığı = öğenin ADI
+          subtitle: live.subtitle,  // alt yazı = branş/kategori
+          badge: s.badge || live.badge,
+        });
+      }
+    } else if (s.refId && s.kind && s.kind !== "Özel") {
+      const ent = listFor(s.kind).find((e) => String(e.documentId) === s.refId || String(e.id) === s.refId);
+      if (ent) {
+        const live = slideFromEntity(k, ent);
+        // Görsel: elle "kapak override" yüklenmişse onu kullan; yoksa içeriğin CANLI kapağı.
+        const cover = s.imageOverride && s.image ? s.image : (live.image || s.image);
+        out.push({ ...s, image: cover, cardTitle: live.title });
+      } else {
+        out.push(s);
+      }
+    } else {
+      out.push(s);
+    }
+  }
+  return out;
 }
 
 export type Camp = {

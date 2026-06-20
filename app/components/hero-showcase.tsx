@@ -89,7 +89,7 @@ export default function HeroShowcase({ slides, rotateSeconds = 6, floatingBadgeT
         ) : null}
       </div>
       <div className="course-body">
-        <h3 className="hero-course-title">{s.title}</h3>
+        {s.cardTitle ? <h3 className="hero-course-title">{s.cardTitle}</h3> : null}
         {s.subtitle ? (
           <p style={{ margin: "4px 0 0", color: "var(--text-muted)", fontSize: "0.9rem", fontWeight: 600 }}>{s.subtitle}</p>
         ) : null}
