@@ -42,15 +42,28 @@ export default function WeekCard({ index, weekNo, title, img, pdf, link, unitWor
         </div>
         <div className="week-actions">
           {previewType && (
-            <button
-              type="button"
-              className="btn-outline"
-              onClick={() => setOpen((o) => !o)}
-              aria-expanded={open}
-            >
-              <span className="ms">{open ? "expand_less" : "visibility"}</span>
-              {open ? "Kapat" : "Önizle"}
-            </button>
+            isMobile && previewType === "pdf" ? (
+              // Mobilde PDF doğrudan yeni sekmede açılsın — ara "Tam ekran aç" adımı yok
+              <a
+                href={previewSrc}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-outline"
+              >
+                <span className="ms">visibility</span>
+                Önizle
+              </a>
+            ) : (
+              <button
+                type="button"
+                className="btn-outline"
+                onClick={() => setOpen((o) => !o)}
+                aria-expanded={open}
+              >
+                <span className="ms">{open ? "expand_less" : "visibility"}</span>
+                {open ? "Kapat" : "Önizle"}
+              </button>
+            )
           )}
           {pdf && (
             <a href={pdf} target="_blank" rel="noopener noreferrer" download className="btn-danger">
