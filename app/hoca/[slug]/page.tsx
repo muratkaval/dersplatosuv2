@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { PageContainer } from "../../components/site-layout";
-import { getInstructorBySlug, toMediaUrl, toAbsoluteMediaUrl, getGlobalSettings } from "@/app/lib/strapi";
+import { getInstructorBySlug, toMediaUrl, toAbsoluteMediaUrl, getGlobalSettings, getProgramsByInstructor, programCategories, programDurationCount, periodUnitWord } from "@/app/lib/strapi";
 import BookCard from "../../components/book-card";
 import "./hoca.css";
 import { Metadata } from "next";
@@ -56,6 +57,9 @@ export default async function HocaDetayPage({ params }: { params: Promise<{ slug
     getInstructorBySlug(slug),
     getGlobalSettings()
   ]);
+  const programs = instructor
+    ? await getProgramsByInstructor(instructor.id, instructor.documentId)
+    : [];
   
   const siteName = settings?.siteName || "Ders Platosu";
 
@@ -175,6 +179,53 @@ export default async function HocaDetayPage({ params }: { params: Promise<{ slug
             </div>
         )}
 
+        {/* PROGRAMLAR */}
+        {programs.length > 0 && (
+            <div className="hoca-section">
+                <div className="hoca-section-title">📅 Programlar</div>
+                <div className="courses-grid">
+                    {programs.map((prog: any, idx: number) => {
+                        const coverUrl = toMediaUrl(prog.cover?.url);
+                        const pdfUrl = toMediaUrl(prog.downloadPdf?.url);
+                        const durCount = programDurationCount(prog);
+                        const unit = periodUnitWord(prog.periodType).toLowerCase();
+                        const subs = (prog.subOptions || []) as string[];
+                        return (
+                            <div key={prog.id || idx} className="course-card" style={{ display: "flex", flexDirection: "column" }}>
+                                <Link href={`/programlar/${prog.slug}`} style={{ display: "block", color: "inherit", textDecoration: "none" }}>
+                                    <div className="course-thumb" style={{ aspectRatio: "16 / 9", height: "auto", position: "relative", overflow: "hidden" }}>
+                                        {coverUrl ? (
+                                            <Image src={coverUrl} alt={prog.title || "Program"} fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
+                                        ) : (
+                                            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-secondary)", color: "var(--text-muted)" }}>
+                                                <span className="ms" style={{ fontSize: "2.5rem" }}>school</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </Link>
+                                <div className="course-body" style={{ display: "flex", flexDirection: "column", flexGrow: 1, gap: "10px" }}>
+                                    <Link href={`/programlar/${prog.slug}`} style={{ color: "inherit", textDecoration: "none" }}>
+                                        <h3 style={{ fontSize: "1.1rem", lineHeight: 1.4, margin: 0 }}>{prog.title || "Program"}</h3>
+                                    </Link>
+                                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                                        {programCategories(prog).map((c: string) => <span key={c} className="program-tag">{c}</span>)}
+                                        {subs.map((o: string) => <span key={o} className="program-tag">{o}</span>)}
+                                        {durCount > 0 && <span className="program-tag">{durCount} {unit}</span>}
+                                    </div>
+                                    <div style={{ display: "flex", gap: "8px", marginTop: "auto" }}>
+                                        <Link href={`/programlar/${prog.slug}`} className="btn-outline" style={{ flex: 1, textAlign: "center" }}>İncele</Link>
+                                        {pdfUrl && (
+                                            <a href={pdfUrl} target="_blank" rel="noopener noreferrer" download className="btn-danger" style={{ flex: 1, textAlign: "center" }}>PDF İndir</a>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        )}
+
         {/* KİTAPLAR */}
         {allBooks.length > 0 && (
             <div className="hoca-section">
@@ -187,7 +238,7 @@ export default async function HocaDetayPage({ params }: { params: Promise<{ slug
             </div>
         )}
 
-        {(camps.length === 0 && allBooks.length === 0) && (
+        {(camps.length === 0 && programs.length === 0 && allBooks.length === 0) && (
             <div style={{ color: 'var(--text-muted)', padding: '20px 0' }}>
                 Bu hocaya ait içerik henüz eklenmemiş.
             </div>

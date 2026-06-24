@@ -631,3 +631,22 @@ export async function getProgramBySlug(slug: string): Promise<Program | null> {
     instructors: mergedInstructors,
   };
 }
+
+export async function getProgramsByInstructor(instructorId: string | number, documentId?: string): Promise<Program[]> {
+  // Must explicitly populate instructors — PROGRAM_POPULATE does not include them
+  const data = await fetchWithFallback<{ data: any[] }>([
+    `/programs?${PROGRAM_POPULATE}&populate[instructors]=true&sort[0]=displayOrder:asc&pagination[pageSize]=100`,
+    `/programs?populate=*&sort[0]=displayOrder:asc&pagination[pageSize]=100`,
+  ]);
+  const items = flattenStrapi(data?.data || []);
+  const programs: Program[] = items.map((item: any) => ({ ...item, slug: item.slug || slugify(item.title) }));
+
+  return programs.filter((p: any) => {
+    const instructors: any[] = Array.isArray(p.instructors) ? p.instructors : (p.instructors?.data || []);
+    return instructors.some((i: any) => {
+      if (documentId && i.documentId && i.documentId === documentId) return true;
+      return String(i.id) === String(instructorId);
+    });
+  });
+}
+
