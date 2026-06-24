@@ -77,8 +77,8 @@ export default async function ProgramDetailPage({
         </div>
       </section>
 
-      <div className="container program-detail" style={{ maxWidth: "1040px", paddingBottom: "80px" }}>
-        <div className="program-infocard">
+      <div className="container program-detail" style={{ maxWidth: "1040px", paddingBottom: "80px", display: "flex", flexDirection: "column" }}>
+        <div className="program-infocard prog-s2">
           <div className="program-stats">
             {programCategories(program).length > 0 && (
               <div className="pstat">
@@ -125,7 +125,7 @@ export default async function ProgramDetailPage({
         </div>
 
         {videoUrl && (
-          <div className="program-video">
+          <div className="program-video prog-s3">
             <iframe
               src={videoUrl}
               title="Program tanıtım videosu"
@@ -135,13 +135,9 @@ export default async function ProgramDetailPage({
           </div>
         )}
 
+        <div className="prog-s1">
         {weeks.length > 0 ? (
           <>
-            <h2 className="weeks-heading">
-              <span className="ms">calendar_month</span>
-              {program.periodType || "Haftalık"} Program
-              <span className="weeks-heading-count">{durationCount} {unitWord.toLowerCase()}</span>
-            </h2>
 
             <div className="weeks-list">
               {weeks.map((w, i) => (
@@ -163,9 +159,10 @@ export default async function ProgramDetailPage({
             Bu program için içerik henüz eklenmemiş.
           </p>
         )}
+        </div>
 
         {(program.instructors || []).length > 0 && (
-          <section className="program-instructors">
+          <section className="program-instructors prog-s4">
             <h2 className="weeks-heading"><span className="ms">groups</span> Program Hocaları</h2>
             <div className="program-instructors-grid">
               {(program.instructors || []).map((inst: any) => {
@@ -192,7 +189,7 @@ export default async function ProgramDetailPage({
         )}
 
         {(program.books || []).length > 0 && (
-          <section className="program-books">
+          <section className="program-books prog-s5">
             <h2 className="weeks-heading"><span className="ms">menu_book</span> Bu Programda Kullanılacak Kitaplar</h2>
             <p className="program-books-sub">Bu program, aşağıdaki kaynak kitaplar üzerinden ilerler.</p>
             <div className="program-books-grid">
@@ -203,7 +200,7 @@ export default async function ProgramDetailPage({
           </section>
         )}
 
-        <div style={{ marginTop: "50px" }}>
+        <div className="prog-s6" style={{ marginTop: "50px" }}>
           <Link href="/programlar" className="btn-outline">
             ← Tüm programlar
           </Link>
@@ -234,12 +231,12 @@ export default async function ProgramDetailPage({
         body[data-theme="dark"] .weeks-heading-count{color:#93c5fd;background:rgba(96,165,250,0.16)}
 
         /* ---- week list (stacked, full width) ---- */
-        .program-video{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;margin:0 0 40px;box-shadow:0 12px 34px rgba(15,23,42,0.12)}
+        .program-video{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;margin:0;box-shadow:0 12px 34px rgba(15,23,42,0.12)}
         .program-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
         .weeks-list{display:flex;flex-direction:column;gap:16px}
 
         /* Program hocalari */
-        .program-instructors{margin-top:56px;padding-top:36px;border-top:1px solid rgba(148,163,184,0.18)}
+        .program-instructors{margin-top:32px;padding-top:36px;border-top:1px solid rgba(148,163,184,0.18)}
         .program-instructors .weeks-heading{margin-bottom:22px}
         .program-instructors-grid{display:flex;flex-wrap:wrap;gap:20px}
         .pi-card{display:flex;flex-direction:column;align-items:center;gap:10px;width:104px;text-decoration:none;color:inherit}
@@ -252,7 +249,7 @@ export default async function ProgramDetailPage({
         body[data-theme="dark"] .pi-card:hover .pi-photo{border-color:#60a5fa}
 
         /* Bu programda kullanilacak kitaplar */
-        .program-books{margin-top:56px;padding-top:36px;border-top:1px solid rgba(148,163,184,0.18)}
+        .program-books{margin-top:32px;padding-top:36px;border-top:1px solid rgba(148,163,184,0.18)}
         .program-books .weeks-heading{margin-bottom:6px}
         .program-books-sub{color:#64748b;font-size:0.98rem;margin:0 0 22px}
         body[data-theme="dark"] .program-books-sub{color:#94a3b8}
@@ -296,6 +293,103 @@ export default async function ProgramDetailPage({
         .program-detail .btn-outline:hover{background:rgba(37,99,235,0.08);border-color:#2563eb}
         .program-detail .btn-primary .ms,.program-detail .btn-outline .ms{font-size:18px}
 
+        /* ---- PDF İndir butonu base ---- */
+        .program-detail .btn-danger {
+          position: relative;
+          overflow: hidden;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          line-height: 1;
+          white-space: nowrap;
+          cursor: pointer;
+          text-decoration: none;
+          background: linear-gradient(135deg,#ef4444,#c41a1a);
+          color: #fff;
+          border: none;
+          animation: pdf-glow 2s ease-in-out infinite;
+          transition: transform .15s ease;
+        }
+        .program-detail .btn-danger:hover{transform:translateY(-2px) scale(1.02)}
+
+        /* ---- week actions buttons (Önizle & Programı İndir) matching size & typography ---- */
+        .program-detail .week-actions .btn-outline,
+        .program-detail .week-actions .btn-danger {
+          border-radius: 14px;
+          font-weight: 800;
+          line-height: 1;
+        }
+
+        /* Desktop matching sizes */
+        @media (min-width:641px){
+          .prog-s2{order:1} /* infocard */
+          .prog-s1{order:2;margin-top:8px} /* haftalık program */
+          .prog-s3{order:3;margin-top:32px} /* video — boşlukla aşağıda */
+          .prog-s4{order:4}
+          .prog-s5{order:5}
+          .prog-s6{order:6}
+
+          .program-detail .week-actions .btn-outline,
+          .program-detail .week-actions .btn-danger {
+            padding: 14px 28px !important;
+            font-size: 1.05rem !important;
+            font-weight: 800 !important;
+            border-radius: 14px !important;
+          }
+          .program-detail .week-actions .btn-outline .ms,
+          .program-detail .week-actions .btn-danger .ms {
+            font-size: 22px !important;
+          }
+        }
+
+        /* Mobile matching sizes */
+        @media (max-width:640px){
+          .program-detail .week-actions .btn-outline {
+            padding: 14px 20px !important;
+            font-size: 0.98rem !important;
+            font-weight: 700 !important;
+            border-radius: 12px !important;
+          }
+          .program-detail .week-actions .btn-outline .ms {
+            font-size: 20px !important;
+          }
+          .program-detail .week-actions .btn-danger {
+            padding: 34px 20px !important;
+            font-size: 1.2rem !important;
+            font-weight: 800 !important;
+            border-radius: 14px !important;
+          }
+          .program-detail .week-actions .btn-danger .ms {
+            font-size: 24px !important;
+          }
+        }
+        /* Üzerinden geçen parlak ışık hüzmesi */
+        .program-detail .btn-danger::after{
+          content:"";
+          position:absolute;
+          top:0;left:-80%;
+          width:60%;height:100%;
+          background:linear-gradient(
+            to right,
+            transparent 0%,
+            rgba(255,255,255,0.45) 50%,
+            transparent 100%
+          );
+          transform:skewX(-20deg);
+          animation:pdf-shine 2.2s ease-in-out infinite;
+        }
+        @keyframes pdf-shine{
+          0%{left:-80%}
+          55%,100%{left:130%}
+        }
+        @keyframes pdf-glow{
+          0%,100%{box-shadow:0 4px 14px rgba(220,38,38,0.5),0 0 0 0 rgba(239,68,68,0)}
+          50%{box-shadow:0 6px 22px rgba(220,38,38,0.75),0 0 0 5px rgba(239,68,68,0.15)}
+        }
+        .program-detail .btn-danger:hover{transform:translateY(-2px) scale(1.02)}
+        .program-detail .btn-danger .ms{font-size:18px}
+
         /* ---- dark ---- */
         body[data-theme="dark"] .week-card{background:#0b1530;border-color:rgba(255,255,255,0.08);box-shadow:0 6px 22px rgba(0,0,0,0.4)}
         body[data-theme="dark"] .week-card.open{border-color:rgba(96,165,250,0.5)}
@@ -307,7 +401,7 @@ export default async function ProgramDetailPage({
         /* ---- mobile ---- */
         @media (max-width:640px){
           .program-detail.container{padding-left:12px !important;padding-right:12px !important}
-          .program-infocard{margin-top:-22px;padding:18px;gap:14px 16px;width:auto}
+          .program-infocard{margin-top:0;padding:18px;gap:14px 16px;width:auto}
           .program-stats{gap:14px 16px}
           .pstat{flex:1 1 42%}
           .program-infocard-actions{width:100%}
@@ -319,6 +413,16 @@ export default async function ProgramDetailPage({
           .week-actions>*{flex:1 1 0}
           .week-preview-pad{padding:2px 12px 14px}
           .week-preview-pdf iframe{height:64vh}
+          /* Mobilde PDF butonu tam genişlik + büyük */
+          .program-detail .btn-danger{width:100%;padding:28px 20px;font-size:1.2rem;font-weight:800;border-radius:14px}
+          .program-detail .btn-danger .ms{font-size:24px}
+          /* Mobil sıra: Haftalık Program (indirme) önce, bilgi kartı sonra */
+          .prog-s1{order:1;margin-top:24px}
+          .prog-s2{order:2;margin-top:20px}
+          .prog-s3{order:3}
+          .prog-s4{order:4}
+          .prog-s5{order:5}
+          .prog-s6{order:6}
         }
       `}</style>
     </PageContainer>

@@ -67,7 +67,7 @@ export default function WeekCard({ index, weekNo, title, img, pdf, link, unitWor
           )}
           {pdf && (
             <a href={pdf} target="_blank" rel="noopener noreferrer" download className="btn-danger">
-              <span className="ms">download</span> PDF İndir
+              <span className="ms">download</span> Programı İndir
             </a>
           )}
           {link && (

@@ -44,7 +44,8 @@ export default async function ProgramlarPage() {
               aspectRatio: "16 / 9",
               borderRadius: "16px",
               overflow: "hidden",
-              margin: "0 0 50px",
+              margin: "48px 0 48px",
+              boxShadow: "0 12px 36px rgba(0, 0, 0, 0.25)",
             }}
           >
             <iframe
