@@ -86,9 +86,9 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
     if (!opt) return;
     setHeroSlides((p) => p.map((s) => (s._uid === u ? { ...s, kind: opt.kind, refId: opt.id, image: opt.image || "", imageOverride: false, imageLink: opt.imageLink || opt.link || "", subtitle: opt.subtitle || "", badge: opt.badge || "", _imageFile: undefined } : s)));
   }
-  // Sağ kartı entity bağından koparıp "kendi görselin" (elle resim) moduna alır (sol metni/butonları değiştirmez).
+  // Sağ kartı "Resim" (Özel) moduna alır: içerik bağını (refId/rotateAll) kaldırır; görsel/link/alt yazı/rozet KORUNUR.
   function setCardToImage(u: string) {
-    setHeroSlides((p) => p.map((s) => (s._uid === u ? { ...s, kind: "Özel", rotateAll: false, refId: "", image: "", imageLink: "", subtitle: "", badge: "", _imageFile: undefined } : s)));
+    setHeroSlides((p) => p.map((s) => (s._uid === u ? { ...s, kind: "Özel", rotateAll: false, refId: "" } : s)));
   }
   // İki kademeli seçici: türe göre öğe listesi + tür etiketi.
   function optionsFor(type: string): any[] {
@@ -96,6 +96,10 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
   }
   function labelFor(type: string): string {
     return type === "kamp" ? "Kamp" : type === "kitap" ? "Kitap" : type === "ogretmen" ? "Öğretmen" : type === "program" ? "Program" : "";
+  }
+  // Slaytın AKTİF türünü "Hazır içerik" dropdown değeri olarak verir (Program/Kamp/.../Resim).
+  function currentType(s: any): string {
+    return s.kind === "Kamp" ? "kamp" : s.kind === "Kitap" ? "kitap" : s.kind === "Öğretmen" ? "ogretmen" : s.kind === "Program" ? "program" : s.kind === "Özel" ? "resim" : "";
   }
   // Mevcut slaytı "o türün hepsi sırayla" moduna al (belirli öğe yok).
   function setCardRotateAll(u: string, type: string) {
@@ -284,6 +288,7 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
               ) : (
                 heroSlides.map((s, idx) => {
                   const preview = s.image ? (String(s.image).startsWith("blob") || String(s.image).startsWith("http") ? s.image : (process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1340") + s.image) : "";
+                  const effType = cardType[s._uid] || currentType(s); // dropdown'da gösterilecek aktif tür
                   const open = !collapsed.has(s._uid);
                   const grpLabel: React.CSSProperties = { fontSize: "0.7rem", color: "#94a3b8", fontWeight: 700 };
                   return (
@@ -322,7 +327,7 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
                             <label style={grpLabel}>SAĞ GÖRSEL KARTI</label>
                             <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", alignItems: "center", marginBottom: "2px" }}>
                               <span style={{ fontSize: "0.72rem", color: "#64748b", flexShrink: 0 }}>Hazır içerik:</span>
-                              <select value={cardType[s._uid] || ""} onChange={(e) => { const v = e.target.value; if (v === "resim") { setCardToImage(s._uid); setCardType((m) => ({ ...m, [s._uid]: "" })); } else setCardType((m) => ({ ...m, [s._uid]: v })); }} style={selStyle}>
+                              <select value={effType} onChange={(e) => { const v = e.target.value; if (v === "resim") { setCardToImage(s._uid); setCardType((m) => ({ ...m, [s._uid]: "" })); } else setCardType((m) => ({ ...m, [s._uid]: v })); }} style={selStyle}>
                                 <option value="" style={optStyle}>Tür seç…</option>
                                 <option value="kamp" style={optStyle}>Kamp</option>
                                 <option value="kitap" style={optStyle}>Kitap</option>
@@ -330,11 +335,11 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
                                 <option value="program" style={optStyle}>Program</option>
                                 <option value="resim" style={optStyle}>🖼️ Resim (kendi görselin)</option>
                               </select>
-                              {cardType[s._uid] ? (
-                                <select defaultValue="" onChange={(e) => { const v = e.target.value; if (v === "__ALL__") setCardRotateAll(s._uid, cardType[s._uid]); else { const opt = optionsFor(cardType[s._uid]).find((x: any) => x.id === v); if (opt) setCardFromEntity(s._uid, opt); } e.target.value = ""; }} style={{ ...selStyle, flex: 1, minWidth: "200px" }}>
-                                  <option value="" style={optStyle}>{labelFor(cardType[s._uid])} seç…</option>
+                              {["kamp", "kitap", "ogretmen", "program"].includes(effType) ? (
+                                <select defaultValue="" onChange={(e) => { const v = e.target.value; if (v === "__ALL__") setCardRotateAll(s._uid, effType); else { const opt = optionsFor(effType).find((x: any) => x.id === v); if (opt) setCardFromEntity(s._uid, opt); } e.target.value = ""; }} style={{ ...selStyle, flex: 1, minWidth: "200px" }}>
+                                  <option value="" style={optStyle}>{labelFor(effType)} seç…</option>
                                   <option value="__ALL__" style={optStyle}>⟳ Tümünü sırayla göster</option>
-                                  {optionsFor(cardType[s._uid]).map((o: any) => <option key={o.id} value={o.id} style={optStyle}>{o.title}</option>)}
+                                  {optionsFor(effType).map((o: any) => <option key={o.id} value={o.id} style={optStyle}>{o.title}</option>)}
                                 </select>
                               ) : null}
                             </div>

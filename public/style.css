@@ -152,6 +152,28 @@ ul {
     font-size: 1rem;
 }
 
+.btn-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.35);
+    text-decoration: none;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.5);
+}
+
 .btn-ghost {
     display: inline-flex;
     align-items: center;
@@ -3307,3 +3329,41 @@ section.hero {
         margin-top: 8px;
     }
 }
+
+/* ===== WEEK CARD ===== */
+.week-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.week-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+    .week-head {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .week-actions {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: 100%;
+    }
+
+    .week-actions .btn-outline,
+    .week-actions .btn-primary,
+    .week-actions .btn-danger {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+        box-sizing: border-box;
+    }
+}

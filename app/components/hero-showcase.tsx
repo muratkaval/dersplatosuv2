@@ -58,7 +58,9 @@ export default function HeroShowcase({ slides, rotateSeconds = 6, floatingBadgeT
   const img = toMediaUrl(s.image);
   const cardHref = s.imageLink || s.btn1Link || s.link || "#";
   const cardExternal = isExt(cardHref);
-  const cardClass = `hero-card course-card${reduceMotion ? "" : " floating"}`;
+  // "Resim" (Özel) kartı kutusuz/tam görsel render edilir: çerçeve/zemin/başlık yok, görsel kendi en-boyunda.
+  const bare = s.kind === "Özel" && !!img;
+  const cardClass = bare ? `hero-bare${reduceMotion ? "" : " floating"}` : `hero-card course-card${reduceMotion ? "" : " floating"}`;
 
   // Slayt alanı boşsa global hero ayarına düş (yarı-dolu/eski slaytlar boş görünmez).
   const eyebrow = s.eyebrow ?? fallback.eyebrow;
@@ -68,7 +70,10 @@ export default function HeroShowcase({ slides, rotateSeconds = 6, floatingBadgeT
   const b2Text = s.btn2Text || fallback.btn2Text;
   const b2Link = s.btn2Link || fallback.btn2Link || "#";
 
-  const visualInner = (
+  const visualInner = bare ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={img} alt={s.cardTitle || (s.title || "").replace(/[<>]/g, "")} style={{ display: "block", width: "100%", height: "auto", borderRadius: "14px" }} loading="eager" />
+  ) : (
     <>
       <div className="course-thumb hero-course-thumb relative overflow-hidden">
         {img ? (
@@ -145,11 +150,11 @@ export default function HeroShowcase({ slides, rotateSeconds = 6, floatingBadgeT
       {/* Sağ görsel */}
       <div className="hero-visual" key={`v-${active}`}>
         {cardExternal ? (
-          <a href={cardHref} target="_blank" rel="noopener noreferrer" className={cardClass} role="group" aria-label={`${active + 1} / ${count}`} onClickCapture={(e) => { if (swiped.current) { e.preventDefault(); swiped.current = false; } }}>
+          <a href={cardHref} target="_blank" rel="noopener noreferrer" className={cardClass} style={bare ? { display: "block", width: "100%", maxWidth: "380px", cursor: "pointer" } : undefined} role="group" aria-label={`${active + 1} / ${count}`} onClickCapture={(e) => { if (swiped.current) { e.preventDefault(); swiped.current = false; } }}>
             {visualInner}
           </a>
         ) : (
-          <Link href={cardHref} className={cardClass} role="group" aria-label={`${active + 1} / ${count}`} onClickCapture={(e) => { if (swiped.current) { e.preventDefault(); swiped.current = false; } }}>
+          <Link href={cardHref} className={cardClass} style={bare ? { display: "block", width: "100%", maxWidth: "380px", cursor: "pointer" } : undefined} role="group" aria-label={`${active + 1} / ${count}`} onClickCapture={(e) => { if (swiped.current) { e.preventDefault(); swiped.current = false; } }}>
             {visualInner}
           </Link>
         )}
