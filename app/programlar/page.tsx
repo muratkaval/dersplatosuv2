@@ -37,7 +37,7 @@ export default async function ProgramlarPage() {
       <PageHero pageKey="programlar" title="Ders Platosu" highlight="Programları" subtitle="Sınavını ve net aralığını seç, sana uygun çalışma programını indir." />
 
       <div className="container" style={{ maxWidth: "1100px" }}>
-        <section style={{ paddingBottom: "40px" }}>
+        <section style={{ paddingTop: "60px", paddingBottom: "40px" }}>
           <ProgramFilter programs={programs} categories={site.programCategoryOptions || []} />
         </section>
 

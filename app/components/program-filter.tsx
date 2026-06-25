@@ -20,12 +20,10 @@ export default function ProgramFilter({ programs, categories: catProp }: { progr
   const [selSub, setSelSub] = useState<string | null>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
 
-  // Mobilde bir ana kategori secilince, asagida acilan alt kategori + sonuclara yumusakca kaydir.
+  // Bir ana kategori secilince, asagida acilan alt kategori + sonuclara yumusakca kaydir.
   useEffect(() => {
     if (!selCat) return;
-    if (window.matchMedia("(max-width: 760px)").matches) {
-      resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [selCat]);
 
   const categories = useMemo<Category[]>(() => {
@@ -51,9 +49,22 @@ export default function ProgramFilter({ programs, categories: catProp }: { progr
   }, [programs, selCat, selSub]);
 
   const Step = ({ no, label }: { no: number; label: string }) => (
-    <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "0 0 14px" }}>
-      <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: "26px", height: "26px", borderRadius: "50%", background: "#2563eb", color: "#fff", fontSize: "0.85rem", fontWeight: 700, flexShrink: 0 }}>{no}</span>
-      <span style={{ fontWeight: 700, fontSize: "1.1rem" }}>{label}</span>
+    <div style={{ display: "flex", alignItems: "center", gap: "12px", margin: "0 0 20px" }}>
+      <span style={{ 
+        display: "inline-flex", 
+        alignItems: "center", 
+        justifyContent: "center", 
+        width: "30px", 
+        height: "30px", 
+        borderRadius: "50%", 
+        background: "linear-gradient(135deg, #3b82f6, #2563eb)", 
+        color: "#fff", 
+        fontSize: "0.9rem", 
+        fontWeight: 800, 
+        flexShrink: 0,
+        boxShadow: "0 4px 12px rgba(37,99,235,0.25)"
+      }}>{no}</span>
+      <span style={{ fontWeight: 800, fontSize: "1.25rem", color: "var(--text)", letterSpacing: "-0.02em" }}>{label}</span>
     </div>
   );
 
@@ -77,8 +88,8 @@ export default function ProgramFilter({ programs, categories: catProp }: { progr
         </div>
       </div>
 
-      {/* Mobilde kategori secilince buraya kaydirilir (alt kategori + sonuclar) */}
-      <div ref={resultsRef} aria-hidden style={{ scrollMarginTop: "16px" }} />
+      {/* Kategori secilince buraya kaydirilir (alt kategori + sonuclar) */}
+      <div ref={resultsRef} aria-hidden style={{ scrollMarginTop: "100px" }} />
 
       {/* 2 — Alt kategori */}
       {activeCat && activeCat.options.length > 0 && (
