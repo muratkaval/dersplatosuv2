@@ -698,4 +698,98 @@ body[data-theme="dark"] .exam-countdown-bottom-text h4 { color: #ffffff; }
   .exam-session-name,
   .exam-session-date,
   .exam-session-time { font-size: 0.85rem; padding: 10px 4px; }
+}
+
+/* ===== BOOKS SEARCH BAR ===== */
+.search-bar-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+  width: 100%;
+}
+.search-bar-inner {
+  position: relative;
+  width: 100%;
+}
+.search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  font-size: 20px;
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+.search-input-field {
+  width: 100%;
+  padding: 12px 16px 12px 48px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border-radius: 50px;
+  border: 1px solid rgba(203, 213, 225, 0.5);
+  background: rgba(241, 245, 249, 0.8);
+  color: #475569;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  backdrop-filter: blur(12px);
+}
+.search-input-field:focus {
+  background: #ffffff;
+  border-color: #3b82f6;
+  color: #2563eb;
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
+}
+.search-input-field:focus ~ .search-icon {
+  color: #2563eb;
+}
+.search-input-field::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+}
+.clear-search-btn {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.clear-search-btn:hover {
+  color: #ef4444;
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* Dark Mode Overrides */
+body[data-theme="dark"] .search-input-field {
+  background: rgba(15, 23, 42, 0.6) !important;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  color: #cbd5e1 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+body[data-theme="dark"] .search-input-field:focus {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  color: #e2e8f0 !important;
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.08) !important;
+}
+body[data-theme="dark"] .search-input-field:focus ~ .search-icon {
+  color: #e2e8f0 !important;
+}
+body[data-theme="dark"] .search-input-field::placeholder {
+  color: #64748b !important;
+}
+body[data-theme="dark"] .clear-search-btn {
+  color: #94a3b8 !important;
+}
+body[data-theme="dark"] .clear-search-btn:hover {
+  color: #f87171 !important;
 }

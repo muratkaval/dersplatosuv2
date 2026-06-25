@@ -86,7 +86,6 @@ export default function BookFilterableList({ initialBooks, subjects }: Props) {
       {/* Search Bar */}
       <div className="search-bar-wrapper">
         <div className="search-bar-inner">
-          <span className="ms search-icon">search</span>
           <input
             type="text"
             placeholder="Kitap adı ara..."
@@ -94,6 +93,7 @@ export default function BookFilterableList({ initialBooks, subjects }: Props) {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input-field"
           />
+          <span className="ms search-icon">search</span>
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
@@ -182,79 +182,6 @@ export default function BookFilterableList({ initialBooks, subjects }: Props) {
         .filterable-books {
           width: 100%;
         }
-        .search-bar-wrapper {
-          display: flex;
-          justify-content: center;
-          margin-bottom: 28px;
-          width: 100%;
-        }
-        .search-bar-inner {
-          position: relative;
-          width: 100%;
-          max-width: 520px;
-        }
-        .search-icon {
-          position: absolute;
-          left: 18px;
-          top: 50%;
-          transform: translateY(-50%);
-          color: var(--text-muted, #64748b);
-          font-size: 20px;
-          pointer-events: none;
-        }
-        .search-input-field {
-          width: 100%;
-          padding: 14px 16px 14px 48px;
-          font-size: 1rem;
-          border-radius: 50px;
-          border: 1.5px solid rgba(15, 23, 42, 0.08);
-          background: #fff;
-          color: #0f172a;
-          font-family: inherit;
-          outline: none;
-          transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
-        }
-        .search-input-field:focus {
-          border-color: #2563eb;
-          box-shadow: 0 4px 20px rgba(37, 99, 235, 0.12);
-        }
-        .search-input-field::placeholder {
-          color: var(--text-muted, #64748b);
-        }
-        .clear-search-btn {
-          position: absolute;
-          right: 18px;
-          top: 50%;
-          transform: translateY(-50%);
-          background: transparent;
-          border: none;
-          color: var(--text-muted, #64748b);
-          cursor: pointer;
-          padding: 0;
-          display: flex;
-          align-items: center;
-          transition: color 0.15s ease;
-        }
-        .clear-search-btn:hover {
-          color: #ef4444;
-        }
-        
-        /* Dark Mode Overrides */
-        body[data-theme="dark"] .search-input-field {
-          background: #0b1530;
-          border-color: rgba(255, 255, 255, 0.08);
-          color: #f1f5f9;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        body[data-theme="dark"] .search-input-field:focus {
-          border-color: #3b82f6;
-          box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
-        }
-        body[data-theme="dark"] .search-input-field::placeholder {
-          color: #94a3b8;
-        }
-
         .mt-8 {
           margin-top: 2rem;
         }

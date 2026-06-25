@@ -68,10 +68,6 @@ export default async function ProgramDetailPage({
     <PageContainer>
       <section className="page-hero">
         <div className="page-hero-inner">
-          <div className="page-hero-eyebrow">
-            {programCategories(program).join(" · ") || "Program"}
-            {subjectNames ? ` · ${subjectNames}` : ""}
-          </div>
           <h1>{program.title}</h1>
           {program.description && <p>{program.description}</p>}
         </div>
