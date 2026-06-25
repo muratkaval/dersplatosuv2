@@ -37,14 +37,20 @@ export default async function ProgramlarPage() {
       <PageHero pageKey="programlar" title="Ders Platosu" highlight="Programları" subtitle="Sınavını ve net aralığını seç, sana uygun çalışma programını indir." />
 
       <div className="container" style={{ maxWidth: "1100px" }}>
+        <section style={{ paddingBottom: "40px" }}>
+          <ProgramFilter programs={programs} categories={site.programCategoryOptions || []} />
+        </section>
+
         {videoUrl && (
           <div
             style={{
               position: "relative",
               aspectRatio: "16 / 9",
+              maxWidth: "760px",
+              width: "100%",
+              margin: "0 auto 40px",
               borderRadius: "16px",
               overflow: "hidden",
-              margin: "48px 0 48px",
               boxShadow: "0 12px 36px rgba(0, 0, 0, 0.25)",
             }}
           >
@@ -57,10 +63,6 @@ export default async function ProgramlarPage() {
             />
           </div>
         )}
-
-        <section style={{ paddingBottom: "60px" }}>
-          <ProgramFilter programs={programs} categories={site.programCategoryOptions || []} />
-        </section>
       </div>
 
       <section className="books-section" id="kitaplar">

@@ -101,7 +101,6 @@ export default function ExamCountdown({ countdown }: Props) {
       {/* Top: title + description (Page Hero style) */}
       <section className="page-hero">
         <div className="page-hero-inner" style={{ paddingBottom: "30px" }}>
-          <div className="page-hero-eyebrow">Ders Platosu</div>
           <h1>
             {firstPart} {lastWord && <span>{lastWord}</span>}
             {!lastWord && <span>{firstPart}</span>}

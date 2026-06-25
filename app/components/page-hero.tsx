@@ -27,7 +27,6 @@ export default async function PageHero({
   return (
     <section className="page-hero">
       <div className="page-hero-inner">
-        <div className="page-hero-eyebrow">Ders Platosu</div>
         <h1>
           {t}
           {hl ? (
