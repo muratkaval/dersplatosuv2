@@ -419,6 +419,7 @@ export default async function ProgramDetailPage({
           .prog-s4{order:4}
           .prog-s5{order:5}
           .prog-s6{order:6}
+          .program-instructors-grid{justify-content:center}
         }
       `}</style>
     </PageContainer>
