@@ -186,7 +186,7 @@ export default async function ProgramDetailPage({
 
         {(program.books || []).length > 0 && (
           <section className="program-books prog-s5">
-            <h2 className="weeks-heading"><span className="ms">menu_book</span> Bu Programda Kullanılacak Kitaplar</h2>
+            <h2 className="weeks-heading"><span className="ms">menu_book</span> Kullanılacak Kitaplar</h2>
             <p className="program-books-sub">Bu program, aşağıdaki kaynak kitaplar üzerinden ilerler.</p>
             <div className="program-books-grid">
               {(program.books || []).map((book: any) => (
@@ -413,7 +413,7 @@ export default async function ProgramDetailPage({
           .program-detail .btn-danger{width:100%;padding:28px 20px;font-size:1.2rem;font-weight:800;border-radius:14px}
           .program-detail .btn-danger .ms{font-size:24px}
           /* Mobil sıra: Haftalık Program (indirme) önce, bilgi kartı sonra */
-          .prog-s1{order:1;margin-top:24px}
+          .prog-s1{order:1;margin-top:12px}
           .prog-s2{order:2;margin-top:20px}
           .prog-s3{order:3}
           .prog-s4{order:4}

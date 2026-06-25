@@ -131,8 +131,22 @@ body[data-theme="dark"] .page-hero-eyebrow {
 }
 
 @media (max-width: 768px) {
-    .page-hero h1 { font-size: 2.5rem; }
-    .page-hero-inner { padding: calc(var(--nav-h, 64px) + 40px) 24px 40px; }
+    .page-hero h1 {
+        font-size: clamp(1.6rem, 7.5vw, 2.1rem);
+        line-height: 1.15;
+        letter-spacing: -0.03em;
+        margin-bottom: 12px;
+    }
+    .page-hero-inner {
+        padding: calc(var(--nav-h, 64px) + 24px) 20px 24px;
+    }
+    .page-hero p {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    .courses-section, .books-section {
+        padding: 24px 0 40px !important;
+    }
 }
 
 
