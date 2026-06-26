@@ -551,6 +551,9 @@ export type Program = {
   periodType?: string;
   durationCount?: number;
   videoUrl?: string;
+  buyUrl?: string;
+  buyButtonText?: string;
+  buyButtonIcon?: string;
   description?: string;
   cover?: { url?: string } | null;
   downloadPdf?: { url?: string } | null;

@@ -131,6 +131,14 @@ export default async function ProgramDetailPage({
           </div>
         )}
 
+        {program.buyUrl && (
+          <div className="program-buy-container prog-s3-buy" style={{ display: "flex", justifyContent: "center" }}>
+            <a href={program.buyUrl} target="_blank" rel="noopener noreferrer" className="btn-danger buy-btn">
+              <span className="ms">{program.buyButtonIcon || "shopping_cart"}</span> {program.buyButtonText || "Satın Al"}
+            </a>
+          </div>
+        )}
+
         <div className="prog-s1">
         {weeks.length > 0 ? (
           <>
@@ -322,6 +330,7 @@ export default async function ProgramDetailPage({
           .prog-s2{order:1} /* infocard */
           .prog-s1{order:2;margin-top:8px} /* haftalık program */
           .prog-s3{order:3;margin-top:32px} /* video — boşlukla aşağıda */
+          .prog-s3-buy{order:3;margin-top:24px} /* satin al butonu */
           .prog-s4{order:4}
           .prog-s5{order:5}
           .prog-s6{order:6}
@@ -336,6 +345,15 @@ export default async function ProgramDetailPage({
           .program-detail .week-actions .btn-outline .ms,
           .program-detail .week-actions .btn-danger .ms {
             font-size: 22px !important;
+          }
+          .program-detail .btn-danger.buy-btn {
+            padding: 18px 40px !important;
+            font-size: 1.25rem !important;
+            border-radius: 18px !important;
+            min-width: 320px;
+          }
+          .program-detail .btn-danger.buy-btn .ms {
+            font-size: 26px !important;
           }
         }
 
@@ -358,6 +376,15 @@ export default async function ProgramDetailPage({
           }
           .program-detail .week-actions .btn-danger .ms {
             font-size: 24px !important;
+          }
+          .program-detail .btn-danger.buy-btn {
+            width: 100% !important;
+            max-width: 400px;
+            padding: 24px 20px !important;
+            font-size: 1.4rem !important;
+          }
+          .program-detail .btn-danger.buy-btn .ms {
+            font-size: 28px !important;
           }
         }
         /* Üzerinden geçen parlak ışık hüzmesi */
@@ -416,6 +443,7 @@ export default async function ProgramDetailPage({
           .prog-s1{order:1;margin-top:12px}
           .prog-s2{order:2;margin-top:20px}
           .prog-s3{order:3}
+          .prog-s3-buy{order:3;margin-top:20px}
           .prog-s4{order:4}
           .prog-s5{order:5}
           .prog-s6{order:6}

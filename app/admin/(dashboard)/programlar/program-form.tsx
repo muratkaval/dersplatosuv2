@@ -83,6 +83,10 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
   const [netMax, setNetMax] = useState<string>(program?.netMax?.toString() ?? "");
   const [description, setDescription] = useState(program?.description || "");
   const [videoUrl, setVideoUrl] = useState(program?.videoUrl || "");
+  const [buyUrl, setBuyUrl] = useState(program?.buyUrl || "");
+  const [buyButtonText, setBuyButtonText] = useState(program?.buyButtonText || "");
+  const [buyButtonIcon, setBuyButtonIcon] = useState(program?.buyButtonIcon || "");
+  const [showIconPicker, setShowIconPicker] = useState(false);
   const [displayOrder, setDisplayOrder] = useState<string>(program?.displayOrder?.toString() ?? "");
   const [durationCount, setDurationCount] = useState<string>(program?.durationCount?.toString() ?? "");
   const [selSubjects, setSelSubjects] = useState<string[]>(
@@ -224,6 +228,9 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
         netMax: netMax === "" ? null : Number(netMax),
         description,
         videoUrl,
+        buyUrl,
+        buyButtonText,
+        buyButtonIcon,
         subjects: selSubjects,
         books: selBooks,
         instructors: selInstructors,
@@ -284,13 +291,17 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
               <div className="form-group" style={{ flex: 1 }}>
                 <label>Ana Kategori (çoklu seçim)</label>
                 {examOptions.length > 0 ? (
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                    {examOptions.map((ex) => {
-                      const on = selExamTypes.includes(ex);
+                  <div style={{ maxHeight: "220px", overflowY: "auto", border: "1.5px solid #1a2536", borderRadius: "12px", background: "#060d1a" }}>
+                    {examOptions.map((ex, idx) => {
+                      const selected = selExamTypes.includes(ex);
+                      const isLast = idx === examOptions.length - 1;
                       return (
                         <button key={ex} type="button" onClick={() => toggleExamType(ex)}
-                          style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "10px", border: on ? "1.5px solid #3b82f6" : "1.5px solid #1e3a5f", background: on ? "rgba(59,130,246,0.15)" : "transparent", color: on ? "#93c5fd" : "#94a3b8", cursor: "pointer", fontFamily: "inherit", fontSize: "0.85rem", fontWeight: on ? 700 : 500 }}>
-                          {on && <span className="ms" style={{ fontSize: "15px" }}>check</span>}{ex}
+                          style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", padding: "11px 16px", background: selected ? "rgba(59,130,246,0.12)" : "transparent", color: selected ? "#60a5fa" : "#94a3b8", border: "none", borderBottom: isLast ? "none" : "1px solid #111d2e", cursor: "pointer", fontFamily: "inherit", fontSize: "0.85rem", fontWeight: selected ? 600 : 400, textAlign: "left" }}>
+                          <span style={{ width: "18px", height: "18px", borderRadius: "5px", flexShrink: 0, border: selected ? "2px solid #3b82f6" : "2px solid #243249", background: selected ? "#3b82f6" : "transparent", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            {selected && <span className="ms" style={{ fontSize: "14px", color: "#060d1a", fontWeight: "bold" }}>check</span>}
+                          </span>
+                          <span style={{ flex: 1 }}>{ex}</span>
                         </button>
                       );
                     })}
@@ -313,13 +324,17 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
                       Bu kategori için alt seçenek yok. <a href="/admin/programlar/ayarlar" style={{ color: "#60a5fa" }}>Ayarlar&apos;dan ekle →</a>
                     </p>
                   ) : (
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                      {opts.map((o) => {
-                        const on = selSubOptions.includes(o);
+                    <div style={{ maxHeight: "220px", overflowY: "auto", border: "1.5px solid #1a2536", borderRadius: "12px", background: "#060d1a" }}>
+                      {opts.map((o, idx) => {
+                        const selected = selSubOptions.includes(o);
+                        const isLast = idx === opts.length - 1;
                         return (
                           <button key={o} type="button" onClick={() => toggleSubOption(o)}
-                            style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "10px", border: on ? "1.5px solid #3b82f6" : "1.5px solid #1e3a5f", background: on ? "rgba(59,130,246,0.15)" : "transparent", color: on ? "#93c5fd" : "#94a3b8", cursor: "pointer", fontFamily: "inherit", fontSize: "0.85rem", fontWeight: on ? 700 : 500 }}>
-                            {on && <span className="ms" style={{ fontSize: "15px" }}>check</span>}{o}
+                            style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", padding: "11px 16px", background: selected ? "rgba(56,189,248,0.12)" : "transparent", color: selected ? "#38bdf8" : "#94a3b8", border: "none", borderBottom: isLast ? "none" : "1px solid #111d2e", cursor: "pointer", fontFamily: "inherit", fontSize: "0.85rem", fontWeight: selected ? 600 : 400, textAlign: "left" }}>
+                            <span style={{ width: "18px", height: "18px", borderRadius: "5px", flexShrink: 0, border: selected ? "2px solid #0ea5e9" : "2px solid #243249", background: selected ? "#0ea5e9" : "transparent", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              {selected && <span className="ms" style={{ fontSize: "14px", color: "#060d1a", fontWeight: "bold" }}>check</span>}
+                            </span>
+                            <span style={{ flex: 1 }}>{o}</span>
                           </button>
                         );
                       })}
@@ -340,27 +355,101 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
               <input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://youtu.be/... — Haftalık Program üstünde gösterilir" />
             </div>
 
-            <div style={{ display: "flex", gap: "12px" }}>
-              <div className="form-group" style={{ width: "110px", marginBottom: 0 }}>
-                <label>Sıralama</label>
-                <input type="number" value={displayOrder} onChange={(e) => setDisplayOrder(e.target.value)} placeholder="99" />
+            <div style={{ padding: "12px", background: "rgba(255,255,255,0.02)", border: "1px solid #1e3a5f", borderRadius: "8px", marginBottom: "16px" }}>
+              <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "#94a3b8", marginBottom: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
+                <span className="ms" style={{ fontSize: "16px" }}>shopping_cart</span> Satın Al Butonu Ayarları
               </div>
-              <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
-                <label>İçerik Türü</label>
-                <select value={periodType} onChange={(e) => setPeriodType(e.target.value)} style={fieldStyle}>
-                  <option value="Haftalık">Haftalık</option>
-                  <option value="Günlük">Günlük</option>
-                  <option value="Aylık">Aylık</option>
-                </select>
+              <div className="form-group">
+                <label>Yönlendirme Linki (opsiyonel)</label>
+                <input value={buyUrl} onChange={(e) => setBuyUrl(e.target.value)} placeholder="https://... (Boş bırakılırsa buton sitede gizlenir)" />
               </div>
-              <div className="form-group" style={{ width: "150px", marginBottom: 0 }}>
-                <label>Süre ({periodUnitWord(periodType).toLowerCase()})</label>
-                <input type="number" min={0} value={durationCount} onChange={(e) => setDurationCount(e.target.value)} placeholder="otomatik" />
+              <div style={{ display: "flex", gap: "12px" }}>
+                <div className="form-group" style={{ flex: 1, marginBottom: 0, position: "relative" }}>
+                  <label>İkon Seçimi</label>
+                  <button
+                    type="button"
+                    onClick={() => setShowIconPicker(!showIconPicker)}
+                    style={{
+                      ...fieldStyle,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      textAlign: "left"
+                    }}
+                  >
+                    <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span className="ms" style={{ fontSize: "20px", color: "#60a5fa" }}>{buyButtonIcon || "shopping_cart"}</span>
+                      <span style={{ fontSize: "0.85rem", color: "#94a3b8" }}>{(buyButtonIcon || "shopping_cart").replace("_", " ")}</span>
+                    </span>
+                    <span className="ms" style={{ color: "#475569" }}>
+                      {showIconPicker ? "expand_less" : "expand_more"}
+                    </span>
+                  </button>
+
+                  {showIconPicker && (
+                    <>
+                      <div 
+                        onClick={() => setShowIconPicker(false)}
+                        style={{
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          zIndex: 998,
+                          cursor: "default"
+                        }}
+                      />
+                      <div 
+                        style={{
+                          position: "absolute",
+                          top: "calc(100% + 4px)",
+                          left: 0,
+                          right: 0,
+                          zIndex: 999,
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "6px",
+                          maxHeight: "180px",
+                          overflowY: "auto",
+                          padding: "10px",
+                          background: "#0b1329",
+                          border: "1.5px solid #1e3a5f",
+                          borderRadius: "8px",
+                          boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5)"
+                        }}
+                      >
+                        {[
+                          "shopping_cart", "shopping_bag", "storefront", "payment", "credit_card", "wallet", "local_offer", "sell", "receipt", "redeem", "card_giftcard", "loyalty", "diamond",
+                          "school", "menu_book", "play_circle", "smart_display", "cast_for_education", "laptop", "desktop_windows", "video_library",
+                          "star", "favorite", "thumb_up", "bolt", "rocket_launch", "workspace_premium", "verified", "emoji_events", "open_in_new", "link", "send", "chat", "support_agent", "headset_mic", "public", "language"
+                        ].map(ic => {
+                          const isSel = (buyButtonIcon || "shopping_cart") === ic;
+                          return (
+                            <button key={ic} type="button" 
+                              onClick={() => {
+                                setBuyButtonIcon(ic);
+                                setShowIconPicker(false);
+                              }} 
+                              title={ic}
+                              style={{ width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "6px", border: isSel ? "1.5px solid #3b82f6" : "1px solid #1e3a5f", background: isSel ? "rgba(59,130,246,0.15)" : "transparent", color: isSel ? "#60a5fa" : "#94a3b8", cursor: "pointer" }}>
+                              <span className="ms" style={{ fontSize: "20px" }}>{ic}</span>
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </>
+                  )}
+                </div>
+                <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+                  <label>Buton Metni</label>
+                  <input value={buyButtonText} onChange={(e) => setBuyButtonText(e.target.value)} placeholder="Satın Al" />
+                </div>
               </div>
             </div>
-            <p style={{ fontSize: "0.7rem", color: "#475569", marginTop: "8px" }}>
-              Boş bırakırsan kartda aşağıdaki içerik sayısı kadar görünür. Tüm haftaları tek dosyaya eklediysen gerçek {periodUnitWord(periodType).toLowerCase()} sayısını buraya yaz.
-            </p>
+
+
           </div>
 
           {/* Branş */}
@@ -487,10 +576,32 @@ export default function ProgramForm({ program, subjects, exams, nets, books = []
 
           {/* Haftalar */}
           <div className="info-card">
-            <div className="card-title" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div className="card-title" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
               <span><span className="ms">view_week</span> {periodType} Programlar ({weeks.length})</span>
               <button type="button" className="btn btn-ghost btn-sm" onClick={addWeek} style={{ padding: "4px 8px" }}><span className="ms">add</span> {periodUnitWord(periodType)} Ekle</button>
             </div>
+
+            <div style={{ display: "flex", gap: "12px" }}>
+              <div className="form-group" style={{ width: "110px", marginBottom: 0 }}>
+                <label>Sıralama</label>
+                <input type="number" value={displayOrder} onChange={(e) => setDisplayOrder(e.target.value)} placeholder="99" />
+              </div>
+              <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+                <label>İçerik Türü</label>
+                <select value={periodType} onChange={(e) => setPeriodType(e.target.value)} style={fieldStyle}>
+                  <option value="Haftalık">Haftalık</option>
+                  <option value="Günlük">Günlük</option>
+                  <option value="Aylık">Aylık</option>
+                </select>
+              </div>
+              <div className="form-group" style={{ width: "150px", marginBottom: 0 }}>
+                <label>Süre ({periodUnitWord(periodType).toLowerCase()})</label>
+                <input type="number" min={0} value={durationCount} onChange={(e) => setDurationCount(e.target.value)} placeholder="otomatik" />
+              </div>
+            </div>
+            <p style={{ fontSize: "0.7rem", color: "#475569", marginTop: "8px", marginBottom: "20px", paddingBottom: "20px", borderBottom: "1px dashed #1e3a5f" }}>
+              Boş bırakırsan kartda aşağıdaki içerik sayısı kadar görünür. Tüm haftaları tek dosyaya eklediysen gerçek {periodUnitWord(periodType).toLowerCase()} sayısını buraya yaz.
+            </p>
 
             {weeks.length === 0 ? (
               <div className="empty-state">İçerik eklenmemiş.</div>
