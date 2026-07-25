@@ -41,13 +41,13 @@ const settingsModules: SettingsModule[] = [
     active: true
   },
   {
-    id: "alt-tags",
-    title: "Görsel Alt Metinleri",
-    desc: "Kitap ve kamp görselleri için SEO uyumlu alt metinlerin toplu yönetimi.",
-    icon: "image_aspect_ratio",
-    href: "#",
+    id: "popup",
+    title: "Popup Alanı",
+    desc: "Sitede açılan duyuru/popup penceresi — resim, link ve aç/kapa yönetimi.",
+    icon: "web_asset",
+    href: "/admin/ayarlar/popup",
     color: "#fbbf24",
-    active: false
+    active: true
   },
   {
     id: "navigation",

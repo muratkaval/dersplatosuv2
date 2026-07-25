@@ -1,4 +1,5 @@
 import { SiteHeader, SiteFooter, type NavLink, type FooterColumn } from "./site-nav";
+import { SitePopup, type PopupConfig } from "./site-popup";
 
 // Re-export for any module importing these from site-layout (backward compat)
 export { SiteHeader, SiteFooter };
@@ -7,7 +8,7 @@ export { SiteHeader, SiteFooter };
 // navLinks only come back with that token, and `revalidate` (NOT no-store) so the
 // route stays static/ISR — a no-store fetch here would make every page dynamic and
 // re-trigger the "static to dynamic at runtime" 500 on routes like /[slug].
-async function getNavData(): Promise<{ navLinks?: NavLink[]; footerColumns?: FooterColumn[]; logo?: any[]; headerLogo?: any }> {
+async function getNavData(): Promise<{ navLinks?: NavLink[]; footerColumns?: FooterColumn[]; logo?: any[]; headerLogo?: any; popup?: PopupConfig }> {
   const token = (process.env.STRAPI_TOKEN || "").trim();
   const base = (process.env.STRAPI_URL || "http://localhost:1340").replace(/\/api\/?$/, "");
   try {
@@ -24,6 +25,16 @@ async function getNavData(): Promise<{ navLinks?: NavLink[]; footerColumns?: Foo
       logo: Array.isArray(d.logo) ? d.logo : (d.logo ? [d.logo] : undefined),
       // Header'a özel tekli logo. Boşsa SiteHeader footer logolarının ilkine, o da yoksa /logo.png'e düşer.
       headerLogo: d.headerLogo || undefined,
+      // Site geneli popup (duyuru) konfigürasyonu.
+      popup: {
+        enabled: !!d.popupEnabled,
+        image: d.popupImage || null,
+        imageAlt: d.popupImageAlt || "",
+        link: d.popupLink || "",
+        linkNewTab: !!d.popupLinkNewTab,
+        scope: (d.popupScope as "home" | "all") || "home",
+        frequency: (d.popupFrequency as "session" | "daily" | "always") || "session",
+      },
     };
   } catch {
     return {};
@@ -46,12 +57,14 @@ export async function PageContainer({ children, navLinks, footerColumns }: {
   if (!cols) cols = data.footerColumns;
   const logos = data.logo;
   const headerLogo = data.headerLogo;
+  const popup = data.popup;
 
   return (
     <>
       <SiteHeader navLinks={nav} logos={logos} headerLogo={headerLogo} />
       <main>{children}</main>
       <SiteFooter footerColumns={cols} logos={logos} />
+      <SitePopup popup={popup} />
     </>
   );
 }
