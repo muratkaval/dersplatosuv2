@@ -122,7 +122,7 @@ export default async function HocaDetayPage({ params }: { params: Promise<{ slug
                     )}
                 </div>
                 <div className="hoca-logo-circle">
-                    <img src="https://i.hizliresim.com/ag3gf4d.png" alt="Ders Platosu" />
+                    <img src="/logo.png" alt="Ders Platosu" />
                 </div>
             </div>
             <div className="hoca-info">

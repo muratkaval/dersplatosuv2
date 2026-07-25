@@ -7,7 +7,7 @@ export { SiteHeader, SiteFooter };
 // navLinks only come back with that token, and `revalidate` (NOT no-store) so the
 // route stays static/ISR — a no-store fetch here would make every page dynamic and
 // re-trigger the "static to dynamic at runtime" 500 on routes like /[slug].
-async function getNavData(): Promise<{ navLinks?: NavLink[]; footerColumns?: FooterColumn[]; logo?: any[] }> {
+async function getNavData(): Promise<{ navLinks?: NavLink[]; footerColumns?: FooterColumn[]; logo?: any[]; headerLogo?: any }> {
   const token = (process.env.STRAPI_TOKEN || "").trim();
   const base = (process.env.STRAPI_URL || "http://localhost:1340").replace(/\/api\/?$/, "");
   try {
@@ -22,6 +22,8 @@ async function getNavData(): Promise<{ navLinks?: NavLink[]; footerColumns?: Foo
       navLinks: Array.isArray(d.navLinks) && d.navLinks.length ? d.navLinks : undefined,
       footerColumns: Array.isArray(d.footerColumns) && d.footerColumns.length ? d.footerColumns : undefined,
       logo: Array.isArray(d.logo) ? d.logo : (d.logo ? [d.logo] : undefined),
+      // Header'a özel tekli logo. Boşsa SiteHeader footer logolarının ilkine, o da yoksa /logo.png'e düşer.
+      headerLogo: d.headerLogo || undefined,
     };
   } catch {
     return {};
@@ -43,10 +45,11 @@ export async function PageContainer({ children, navLinks, footerColumns }: {
   if (!nav) nav = data.navLinks;
   if (!cols) cols = data.footerColumns;
   const logos = data.logo;
+  const headerLogo = data.headerLogo;
 
   return (
     <>
-      <SiteHeader navLinks={nav} logos={logos} />
+      <SiteHeader navLinks={nav} logos={logos} headerLogo={headerLogo} />
       <main>{children}</main>
       <SiteFooter footerColumns={cols} logos={logos} />
     </>

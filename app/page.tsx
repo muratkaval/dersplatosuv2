@@ -61,9 +61,9 @@ export default async function Home() {
         "url": siteUrl,
         "logo": {
           "@type": "ImageObject",
-          "url": "https://i.hizliresim.com/ag3gf4d.png",
-          "width": 1200,
-          "height": 630
+          "url": `${siteUrl}/logo.png`,
+          "width": 779,
+          "height": 737
         },
         "sameAs": [
           "https://www.youtube.com/c/dersplatosu",

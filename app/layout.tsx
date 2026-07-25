@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
   
   // Custom media from Strapi or fallback
   const shareImgUrl = settings.shareImage ? toMediaUrl(settings.shareImage?.url || settings.shareImage) : null;
-  const defaultOgImage = shareImgUrl || "https://i.hizliresim.com/ag3gf4d.png";
+  const defaultOgImage = shareImgUrl || "/logo.png";
 
   return {
     metadataBase: new URL(siteUrl),

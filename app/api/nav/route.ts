@@ -13,6 +13,7 @@ export async function GET() {
       footer_title: data.footer_title || null,
       footer_description: data.footer_description || null,
       logo: data.logo || null,
+      headerLogo: data.headerLogo || null,
     });
   } catch {
     return NextResponse.json({ navLinks: null, footerColumns: null });

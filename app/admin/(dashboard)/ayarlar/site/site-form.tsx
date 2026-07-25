@@ -42,6 +42,9 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
     return [];
   });
 
+  // Header (menü) logosu: tekli. { id, url, file? } | null
+  const [headerLogo, setHeaderLogo] = useState<any>(settings.headerLogo || null);
+
   // Hero vitrin slaytları (her satır _uid ile; kayıtta temizlenir).
   // İlk (kayıtlı) slaytlara DETERMİNİSTİK _uid ver (s0, s1...) ki SSR ve client
   // aynı olsun (uid()=Math.random() SSR'de hydration uyumsuzluğu yaratıyordu).
@@ -165,6 +168,18 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
         }
       }
 
+      // Header logosu (tekli): yeni dosya varsa yükle → id; mevcut id varsa onu; hiç yoksa null (temizle)
+      let headerLogoId: number | null = null;
+      if (headerLogo?.file) {
+        const fd = new FormData();
+        fd.append("files", headerLogo.file);
+        const up = await fetch("/api/admin/upload", { method: "POST", body: fd });
+        const upData = await up.json();
+        if (up.ok && upData[0]) headerLogoId = upData[0].id;
+      } else if (headerLogo?.id) {
+        headerLogoId = headerLogo.id;
+      }
+
       // Hero slaytları: bekleyen görselleri yükle, geçici alanları temizle
       const cleanSlides = [];
       for (const s of heroSlides) {
@@ -209,6 +224,7 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
         footer_title: footerTitle,
         footer_description: footerDescription,
         logo: finalLogoIds,
+        headerLogo: headerLogoId,
         heroSlides: cleanSlides,
         heroRotateSeconds: Number(heroRotateSeconds) || 6,
       };
@@ -448,6 +464,46 @@ export function SiteForm({ initialData, token, campOptions = [], bookOptions = [
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label>İKİNCİ BUTON LİNKİ</label>
               <input value={heroBtn2Link} onChange={(e) => setHeroBtn2Link(e.target.value)} placeholder="Örn: /kitaplar" />
+            </div>
+          </div>
+
+          {/* Section: Header (Menü) Logosu */}
+          <div className="info-card" style={{ borderTop: "4px solid #22c55e", marginTop: "20px" }}>
+            <div className="card-title" style={{ color: "#22c55e" }}><span className="ms">web_asset</span> Header (Menü) Logosu</div>
+            <p style={{ fontSize: "0.78rem", color: "#94a3b8", margin: "-4px 0 12px" }}>
+              Üst menüde görünecek tekli logo. Boş bırakırsan sırasıyla footer logolarının ilki, o da yoksa varsayılan logo kullanılır.
+            </p>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              {headerLogo ? (
+                <div style={{ position: "relative", width: "80px", height: "80px", background: "rgba(255,255,255,0.05)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(255,255,255,0.1)", overflow: "hidden" }}>
+                  <img
+                    src={headerLogo.url?.startsWith("blob") ? headerLogo.url : (process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1340") + headerLogo.url}
+                    alt="Header Logo"
+                    style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                  />
+                  <button
+                    onClick={() => setHeaderLogo(null)}
+                    style={{ position: "absolute", top: "2px", right: "2px", background: "rgba(239,68,68,0.8)", border: "none", color: "white", borderRadius: "50%", width: "20px", height: "20px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                  >
+                    <span className="ms" style={{ fontSize: "14px" }}>close</span>
+                  </button>
+                </div>
+              ) : null}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) setHeaderLogo({ url: URL.createObjectURL(file), file });
+                  e.target.value = "";
+                }}
+                style={{ display: "none" }}
+                id="header-logo-upload"
+              />
+              <label htmlFor="header-logo-upload" style={{ width: "80px", height: "80px", border: "1px dashed rgba(255,255,255,0.2)", borderRadius: "10px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "rgba(255,255,255,0.4)" }}>
+                <span className="ms">add</span>
+                <span style={{ fontSize: "10px" }}>{headerLogo ? "Değiştir" : "Yükle"}</span>
+              </label>
             </div>
           </div>
 

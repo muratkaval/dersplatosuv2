@@ -39,11 +39,12 @@ const DEFAULT_FOOTER: FooterColumn[] = [
   },
 ];
 
-export function SiteHeader({ navLinks: propLinks, logos: propLogos }: { navLinks?: NavLink[]; logos?: any[] }) {
+export function SiteHeader({ navLinks: propLinks, logos: propLogos, headerLogo: propHeaderLogo }: { navLinks?: NavLink[]; logos?: any[]; headerLogo?: any }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [navLinks, setNavLinks] = useState<NavLink[]>(propLinks || DEFAULT_NAV);
   const [logos, setLogos] = useState<any[]>(propLogos || []);
+  const [headerLogo, setHeaderLogo] = useState<any>(propHeaderLogo || null);
   const [mobileExpanded, setMobileExpanded] = useState<number | null>(null);
 
   useEffect(() => {
@@ -58,9 +59,15 @@ export function SiteHeader({ navLinks: propLinks, logos: propLogos }: { navLinks
         if (d?.logo) {
           setLogos(Array.isArray(d.logo) ? d.logo : [d.logo]);
         }
+        if (d?.headerLogo) setHeaderLogo(d.headerLogo);
       }).catch(() => {});
     }
   }, []);
+
+  // Header logosu önceliği: özel headerLogo → footer logolarının ilki → gömülü /logo.png
+  const headerLogoSrc = headerLogo
+    ? toMediaUrl(headerLogo)
+    : (logos.length > 0 ? toMediaUrl(logos[0]) : "/logo.png");
 
   const toggleTheme = () => {
     const newTheme = !isDark;
@@ -79,11 +86,12 @@ export function SiteHeader({ navLinks: propLinks, logos: propLogos }: { navLinks
       <div className="nav-container">
         <Link href="/" className="nav-logo">
           <img
-            src={logos.length > 0 ? toMediaUrl(logos[0]) : "https://i.hizliresim.com/ag3gf4d.png"}
+            src={headerLogoSrc}
             className="logo-img"
             alt="Ders Platosu"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = "https://i.hizliresim.com/ag3gf4d.png";
+              const img = e.target as HTMLImageElement;
+              if (!img.src.endsWith("/logo.png")) img.src = "/logo.png";
             }}
           />
           <span className="logo-text">Ders Platosu</span>
@@ -192,16 +200,16 @@ export function SiteFooter({ footerColumns: propCols, logos: propLogos }: { foot
                   <img
                     key={i}
                     src={toMediaUrl(l)}
-                    alt="Logo"
+                    alt="Ders Platosu"
                     style={{ height: '42px', width: 'auto', borderRadius: '4px' }}
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = "https://i.hizliresim.com/ag3gf4d.png";
-                      (e.target as HTMLImageElement).style.width = "42px";
+                      const img = e.target as HTMLImageElement;
+                      if (!img.src.endsWith("/logo.png")) img.src = "/logo.png";
                     }}
                   />
                 ))
               ) : (
-                <img src="https://i.hizliresim.com/ag3gf4d.png" className="logo-img" alt="Logo" style={{ width: '42px', height: '42px', borderRadius: '8px' }} />
+                <img src="/logo.png" alt="Ders Platosu" style={{ height: '42px', width: 'auto', borderRadius: '4px' }} />
               )}
             </div>
           </div>
