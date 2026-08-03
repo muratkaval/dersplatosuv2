@@ -1,0 +1,380 @@
+/* ============================================================
+   DENEME SINAVI SAYFALARI
+   ============================================================ */
+
+.exam-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ---- Hero içindeki geri sayım ---- */
+.deneme-countdown {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.deneme-countdown-unit {
+  min-width: 86px;
+  padding: 14px 12px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+body[data-theme="dark"] .deneme-countdown-unit {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.deneme-countdown-value {
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+body[data-theme="dark"] .deneme-countdown-value {
+  color: #f1f5f9;
+}
+
+.deneme-countdown-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+body[data-theme="dark"] .deneme-countdown-label {
+  color: #94a3b8;
+}
+
+.deneme-countdown-started {
+  display: inline-block;
+  margin-top: 28px;
+  padding: 10px 24px;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.12);
+  color: #16a34a;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* ---- Hero altındaki butonlar ---- */
+.exam-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  margin-top: 28px;
+}
+
+.exam-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 30px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.exam-btn:hover {
+  transform: translateY(-2px);
+}
+
+.exam-btn-primary {
+  background: linear-gradient(135deg, #4289f7 0%, #6366f1 100%);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(66, 137, 247, 0.28);
+}
+
+.exam-btn-primary:hover {
+  box-shadow: 0 12px 30px rgba(66, 137, 247, 0.38);
+}
+
+.exam-btn-secondary {
+  background: transparent;
+  color: #4289f7;
+  border: 1.5px solid #4289f7;
+}
+
+.exam-btn-secondary:hover {
+  background: rgba(66, 137, 247, 0.08);
+}
+
+body[data-theme="dark"] .exam-btn-secondary {
+  color: #93b8fb;
+  border-color: #93b8fb;
+}
+
+/* ---- Video / görsel ---- */
+.exam-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 56px auto 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
+}
+
+.exam-media iframe,
+.exam-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+}
+
+.exam-media-plain {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 56px auto 0;
+  border-radius: 16px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
+}
+
+/* ---- Açıklama metni ---- */
+.exam-description {
+  margin-top: 48px;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #475569;
+  white-space: pre-line;
+}
+
+body[data-theme="dark"] .exam-description {
+  color: #94a3b8;
+}
+
+/* ---- Bölüm başlığı ---- */
+.exam-section-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-align: center;
+  margin: 64px 0 28px;
+  color: #0f172a;
+}
+
+body[data-theme="dark"] .exam-section-title {
+  color: #f1f5f9;
+}
+
+.exam-bottom-space {
+  height: 80px;
+}
+
+/* ---- Liste sayfası kartları ---- */
+.exam-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 60px 0 80px;
+}
+
+.exam-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  text-decoration: none;
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+
+.exam-card:hover {
+  transform: translateY(-4px);
+  border-color: #4289f7;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+}
+
+body[data-theme="dark"] .exam-card {
+  background: #111827;
+  border-color: #1e293b;
+}
+
+.exam-card-thumb {
+  aspect-ratio: 16 / 9;
+  background: #f1f5f9;
+  overflow: hidden;
+}
+
+body[data-theme="dark"] .exam-card-thumb {
+  background: #0f172a;
+}
+
+.exam-card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.exam-card-body {
+  padding: 18px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.exam-card-date {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #4289f7;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.exam-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.4;
+}
+
+body[data-theme="dark"] .exam-card-title {
+  color: #f1f5f9;
+}
+
+.exam-card-subtitle {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #64748b;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.exam-empty {
+  text-align: center;
+  padding: 100px 20px;
+  color: #64748b;
+  font-size: 1rem;
+}
+
+@media (max-width: 640px) {
+  .deneme-countdown {
+    gap: 8px;
+  }
+
+  .deneme-countdown-unit {
+    min-width: 0;
+    flex: 1;
+    padding: 12px 6px;
+  }
+
+  .deneme-countdown-value {
+    font-size: 1.45rem;
+  }
+
+  .exam-actions {
+    flex-direction: column;
+  }
+
+  .exam-btn {
+    justify-content: center;
+  }
+
+  .exam-media,
+  .exam-media-plain {
+    margin-top: 36px;
+  }
+
+  .exam-section-title {
+    font-size: 1.35rem;
+    margin: 48px 0 20px;
+  }
+}
+
+/* ============================================================
+   FAQ (kitaplar sayfasındaki görünümün aynısı)
+   ============================================================ */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  border: 1px solid var(--border, #1e293b);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.25s;
+  background: var(--bg-card, #111827);
+}
+
+body:not([data-theme="dark"]) .faq-item {
+  background: #fff;
+  border-color: #e2e8f0;
+}
+
+.faq-item.faq-open {
+  border-color: var(--accent-color, #4289f7);
+}
+
+.faq-question {
+  width: 100%;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text, #0f172a);
+  font-family: inherit;
+  transition: color 0.2s;
+}
+
+body[data-theme="dark"] .faq-question {
+  color: #e2e8f0;
+}
+
+.faq-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(66, 137, 247, 0.1);
+  color: #4289f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: all 0.25s;
+}
+
+.faq-answer {
+  overflow: hidden;
+}
+
+.faq-answer-inner {
+  padding: 0 20px 18px 64px;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: #64748b;
+  white-space: pre-line;
+}

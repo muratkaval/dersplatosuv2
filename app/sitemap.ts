@@ -1,14 +1,15 @@
 import type { MetadataRoute } from "next";
-import { getCamps, getInstructors, getBooks, getSubjects } from "@/app/lib/strapi";
+import { getCamps, getInstructors, getBooks, getSubjects, getExams } from "@/app/lib/strapi";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dersplatosu.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [camps, instructors, books, subjects] = await Promise.all([
+  const [camps, instructors, books, subjects, exams] = await Promise.all([
     getCamps(),
     getInstructors(),
     getBooks(),
     getSubjects(),
+    getExams(),
   ]);
 
   const now = new Date();
@@ -20,6 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/kitaplar`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
     { url: `${siteUrl}/youtuber-hocalar`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${siteUrl}/video-soru-cozumleri`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${siteUrl}/denemeler`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
   ];
 
   // 2. Camp Detail Routes
@@ -57,11 +59,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
   });
 
+  // 6. Deneme Detail Routes
+  const examRoutes: MetadataRoute.Sitemap = exams.map((exam) => ({
+    url: `${siteUrl}/denemeler/${exam.slug}`,
+    lastModified: exam.updatedAt ? new Date(exam.updatedAt) : now,
+    changeFrequency: "weekly",
+    priority: 0.8,
+  }));
+
   return [
     ...staticRoutes,
     ...campRoutes,
     ...instructorRoutes,
     ...bookRoutes,
     ...videoSolutionRoutes,
+    ...examRoutes,
   ];
 }

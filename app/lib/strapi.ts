@@ -635,6 +635,81 @@ export async function getProgramBySlug(slug: string): Promise<Program | null> {
   };
 }
 
+export type FaqItem = { q: string; a: string };
+
+export type Exam = {
+  id: number;
+  documentId?: string;
+  title: string;
+  slug: string;
+  subtitle?: string;
+  btn1Text?: string;
+  btn1Link?: string;
+  btn2Text?: string;
+  btn2Link?: string;
+  mediaType?: "video" | "image";
+  videoUrl?: string;
+  cover?: { url?: string } | null;
+  description?: string;
+  faq?: FaqItem[];
+  examDate?: string;
+  enabled?: boolean;
+  displayOrder?: number;
+  metaTitle?: string;
+  metaDescription?: string;
+  updatedAt?: string;
+};
+
+// Program'daki ile aynı gerekçe: Strapi v5 tekil medyada `populate[cover]=*`
+// isteğini reddediyor (polymorphic `related` -> 400). Alan başına `=true` kullan.
+const EXAM_POPULATE = "populate[cover]=true";
+
+// faq alanı json; Strapi'den dizi yerine string ya da bozuk kayıt gelirse
+// sayfayı düşürmemek için normalize et.
+function normalizeFaq(raw: any): FaqItem[] {
+  let list = raw;
+  if (typeof list === "string") {
+    try {
+      list = JSON.parse(list);
+    } catch {
+      return [];
+    }
+  }
+  if (!Array.isArray(list)) return [];
+  return list
+    .map((item: any) => ({ q: String(item?.q || "").trim(), a: String(item?.a || "").trim() }))
+    .filter((item) => item.q);
+}
+
+function mapExam(raw: any): Exam {
+  return {
+    ...raw,
+    slug: raw.slug || slugify(raw.title),
+    faq: normalizeFaq(raw.faq),
+  };
+}
+
+export async function getExams(): Promise<Exam[]> {
+  const data = await fetchWithFallback<{ data: any[] }>([
+    `/exams?filters[enabled][$eq]=true&${EXAM_POPULATE}&sort[0]=displayOrder:asc&sort[1]=createdAt:desc&pagination[pageSize]=100`,
+    `/exams?${EXAM_POPULATE}&sort[0]=displayOrder:asc&pagination[pageSize]=100`,
+    "/exams?populate=*&pagination[pageSize]=100",
+  ]);
+  const items = flattenStrapi(data?.data || []);
+  // Filtreli sorgu düşüp fallback'e inilirse yayında olmayanlar da gelir; burada ele.
+  return items.map(mapExam).filter((e: Exam) => e.enabled !== false);
+}
+
+export async function getExamBySlug(slug: string): Promise<Exam | null> {
+  const data = await fetchWithFallback<{ data: any[] }>([
+    `/exams?filters[slug][$eq]=${slug}&${EXAM_POPULATE}`,
+    `/exams?filters[slug][$eq]=${slug}&populate=*`,
+  ]);
+  const raw = flattenStrapi(data?.data?.[0] || null);
+  if (!raw) return null;
+  return mapExam(raw);
+}
+
 export async function getProgramsByInstructor(instructorId: string | number, documentId?: string): Promise<Program[]> {
   // Must explicitly populate instructors — PROGRAM_POPULATE does not include them
   const data = await fetchWithFallback<{ data: any[] }>([
