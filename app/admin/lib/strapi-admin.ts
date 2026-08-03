@@ -9,25 +9,41 @@ function getStrapiToken(): string {
   return (process.env.STRAPI_TOKEN || "").trim();
 }
 
+export const STRAPI_UNREACHABLE_MESSAGE =
+  "Strapi sunucusuna bağlanılamadı. Sunucu yeniden başlıyor olabilir, birkaç saniye sonra tekrar deneyin.";
+
 export async function strapiAdminFetch(
   path: string,
   options: RequestInit = {},
   _userToken?: string  // kept for back-compat, but STRAPI_TOKEN is used
 ) {
   const token = getStrapiToken();
-  const res = await fetch(`${STRAPI_API_BASE}${path}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      ...(options.headers || {}),
-    },
-    cache: "no-store",
-  });
-  const contentType = res.headers.get("content-type") || "";
-  const hasBody = contentType.includes("application/json") && res.status !== 204;
-  const data = hasBody ? await res.json() : {};
-  return { ok: res.ok, status: res.status, data };
+  try {
+    const res = await fetch(`${STRAPI_API_BASE}${path}`, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        ...(options.headers || {}),
+      },
+      cache: "no-store",
+    });
+    const contentType = res.headers.get("content-type") || "";
+    const hasBody = contentType.includes("application/json") && res.status !== 204;
+    const data = hasBody ? await res.json() : {};
+    return { ok: res.ok, status: res.status, data };
+  } catch (err) {
+    // Strapi kapaliysa ya da yeniden basliyorsa fetch throw eder. Bunu yukari
+    // birakirsak cagiran Server Component komple coker (kirmizi hata ekrani).
+    // Yapisal hata donerek sayfalarin bos/uyarili render olmasini sagliyoruz;
+    // API rotalari da zaten res.ok kontrol edip 503 ve bu mesaji donuyor.
+    console.error(`[strapi-admin] ${path} istegi basarisiz:`, err);
+    return {
+      ok: false,
+      status: 503,
+      data: { error: { message: STRAPI_UNREACHABLE_MESSAGE } },
+    };
+  }
 }
 
 export async function adminGet(path: string, token: string) {

@@ -3,6 +3,7 @@ import { getAdminToken, logoutAction } from "@/app/admin/lib/auth";
 import Link from "next/link";
 import AdminNav from "./admin-nav";
 import AdminMobileToggle from "./admin-mobile-toggle";
+import StrapiStatusBanner from "./strapi-status";
 import type { Metadata } from "next";
 import "./admin.css";
 
@@ -54,6 +55,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
       {/* Main */}
       <main className="admin-main">
+        <StrapiStatusBanner />
         {children}
       </main>
     </div>
