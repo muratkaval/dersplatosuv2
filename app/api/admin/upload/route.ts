@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     // Strapi'ye yuklerken, diger tum admin kayit islemleriyle AYNI env token'i kullan.
     // (Onceden cookie token'i kullaniliyordu; prod'da Strapi /api/upload bunu
     //  reddedip yuklemeyi bosa dusuruyordu -> logolar kaydedilmiyordu.)
-    const strapiToken = process.env.STRAPI_TOKEN || "";
+    const strapiToken = (process.env.STRAPI_TOKEN || "").trim();
 
     const res = await fetch(`${strapiOrigin}/api/upload`, {
       method: "POST",

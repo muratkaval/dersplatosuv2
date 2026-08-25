@@ -13,6 +13,7 @@ interface ProgramRow {
   netMax: number | null;
   subjects: string[];
   duration: string;
+  routeCode?: string;
 }
 
 interface Props {
@@ -79,6 +80,14 @@ export default function ProgramlarTable({ initialPrograms }: Props) {
                 <tr key={p.documentId}>
                   <td>
                     <strong style={{ color: "#e2e8f0" }}>{p.title || "—"}</strong>
+                    {p.routeCode && (
+                      <span
+                        title="Canlı deneme net eşleştirmesine atanmış program"
+                        style={{ marginLeft: "8px", fontSize: "0.68rem", fontWeight: 700, padding: "2px 7px", borderRadius: "5px", background: "rgba(34,197,94,0.16)", color: "#4ade80", whiteSpace: "nowrap" }}
+                      >
+                        Rota {p.routeCode}
+                      </span>
+                    )}
                     <br />
                     <small style={{ color: "#475569" }}>{p.slug}</small>
                   </td>

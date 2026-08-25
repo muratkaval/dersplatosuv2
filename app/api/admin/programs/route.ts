@@ -21,6 +21,8 @@ export async function POST(req: NextRequest) {
   // Yeni programın 1 dk beklemeden görünmesi için listeyi ve detay sayfalarını anında tazele.
   revalidatePath("/programlar");
   revalidatePath("/programlar/[slug]", "page");
+  revalidatePath("/canli-deneme");
+  revalidatePath("/canli-deneme/[slug]", "page");
 
   return NextResponse.json({ success: true, data: res.data });
 }

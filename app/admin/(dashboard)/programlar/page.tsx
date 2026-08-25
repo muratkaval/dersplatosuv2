@@ -3,7 +3,7 @@ import { adminGet } from "@/app/admin/lib/strapi-admin";
 import Link from "next/link";
 import ProgramlarTable from "./programlar-table";
 import PageHeaderEditor from "../page-header-editor";
-import { periodUnitWord, programDurationCount, programCategories } from "@/app/lib/strapi";
+import { periodUnitWord, programDurationCount, programCategories, isLiveExamRelated } from "@/app/lib/strapi";
 
 export const metadata = { title: "Programlar | Admin" };
 
@@ -18,7 +18,9 @@ export default async function ProgramlarPage() {
   const gs = await adminGet("/global-setting", token);
   const pageHeaders = gs.data?.data?.pageHeaders || {};
 
-  const programs = (d.data?.data || []).map((item: any) => {
+  // Canli deneme rotalari bu listede yer almaz; onlar /admin/canli-deneme
+  // ekranindan yonetiliyor. Iki mantik birbirine karismasin.
+  const programs = (d.data?.data || []).filter((item: any) => !isLiveExamRelated(item)).map((item: any) => {
     const count = programDurationCount(item);
     return {
       id: item.id,
@@ -30,6 +32,7 @@ export default async function ProgramlarPage() {
       netMax: item.netMax,
       subjects: (item.subjects || []).map((s: any) => s.name).filter(Boolean),
       duration: count > 0 ? `${count} ${periodUnitWord(item.periodType).toLowerCase()}` : "—",
+      routeCode: item.routeCode || "",
     };
   });
 

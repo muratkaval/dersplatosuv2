@@ -22,6 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/youtuber-hocalar`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${siteUrl}/video-soru-cozumleri`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${siteUrl}/denemeler`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${siteUrl}/canli-deneme`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
   ];
 
   // 2. Camp Detail Routes

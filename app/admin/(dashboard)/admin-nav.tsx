@@ -8,6 +8,7 @@ const navItems = [
   { href: "/admin/kamplar", icon: "camping", label: "Kamplar" },
   { href: "/admin/programlar", icon: "calendar_month", label: "Programlar" },
   { href: "/admin/denemeler", icon: "fact_check", label: "Denemeler" },
+  { href: "/admin/canli-deneme", icon: "track_changes", label: "Canlı Deneme" },
   { href: "/admin/kitaplar", icon: "menu_book", label: "Kitaplar" },
   { href: "/admin/soru-cozumleri", icon: "play_circle", label: "Soru Çözümleri" },
   { href: "/admin/egitimciler", icon: "supervisor_account", label: "Eğitimciler" },
