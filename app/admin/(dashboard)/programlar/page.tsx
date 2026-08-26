@@ -18,7 +18,7 @@ export default async function ProgramlarPage() {
   const gs = await adminGet("/global-setting", token);
   const pageHeaders = gs.data?.data?.pageHeaders || {};
 
-  // Canli deneme rotalari bu listede yer almaz; onlar /admin/canli-deneme
+  // Analiz rotalari bu listede yer almaz; onlar /admin/analiz
   // ekranindan yonetiliyor. Iki mantik birbirine karismasin.
   const programs = (d.data?.data || []).filter((item: any) => !isLiveExamRelated(item)).map((item: any) => {
     const count = programDurationCount(item);

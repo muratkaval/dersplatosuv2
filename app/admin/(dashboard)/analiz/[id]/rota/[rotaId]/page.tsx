@@ -2,9 +2,9 @@ import { requireAdminToken } from "@/app/admin/lib/auth";
 import { adminGet } from "@/app/admin/lib/strapi-admin";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import RotaForm from "../rota-form";
+import RotaForm from "../../../rota-form";
 import {
-  readLiveExamConfig,
+  analysisConfig,
   activeNetBranches,
   isLiveExamProgram,
   programNetLevels,
@@ -18,27 +18,28 @@ export const metadata = { title: "Rota Programı Düzenle | Admin" };
 export default async function RotaDuzenlePage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; rotaId: string }>;
 }) {
   const token = await requireAdminToken();
-  const { id } = await params;
+  const { id, rotaId } = await params;
 
-  const res = await adminGet(
-    `/programs/${id}?populate[cover]=true&populate[downloadPdf]=true`,
-    token
-  );
-  const program = res.data?.data;
-  if (!program) return notFound();
-
-  const [gs, pr] = await Promise.all([
-    adminGet("/global-setting", token),
-    adminGet("/programs?pagination[pageSize]=200", token),
+  const [an, res, pr] = await Promise.all([
+    adminGet(`/analyses/${id}`, token),
+    adminGet(`/programs/${rotaId}?populate[cover]=true&populate[downloadPdf]=true`, token),
+    adminGet(
+      `/programs?filters[analysis][documentId][$eq]=${id}&pagination[pageSize]=200`,
+      token
+    ),
   ]);
 
-  const config = readLiveExamConfig(gs.data?.data?.liveExamConfig);
+  const analysis = an.data?.data;
+  const program = res.data?.data;
+  if (!analysis || !program) return notFound();
+
+  const config = analysisConfig(analysis);
   const branches = activeNetBranches(config);
 
-  // Dolu kombinasyonlar - düzenlenen programın kendisi hariç, yoksa kendi
+  // Dolu kombinasyonlar — düzenlenen programın kendisi hariç, yoksa kendi
   // kombinasyonu pasif görünür ve kaydedilemez.
   const taken: Record<string, string> = {};
   for (const p of (pr.data?.data || []).filter(isLiveExamProgram)) {
@@ -61,17 +62,21 @@ export default async function RotaDuzenlePage({
         <div className="topbar-title">
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
             <Link
-              href="/admin/canli-deneme"
+              href={`/admin/analiz/${id}`}
               style={{ color: "var(--text-muted)", textDecoration: "none", fontSize: "0.8rem", display: "flex", alignItems: "center" }}
             >
-              <span className="ms" style={{ fontSize: "16px" }}>arrow_back</span> Canlı Denemeye Dön
+              <span className="ms" style={{ fontSize: "16px" }}>arrow_back</span> {analysis.title}
             </Link>
           </div>
           <h1>Rota Düzenle: {program.title}</h1>
         </div>
         <div className="topbar-actions">
-          {program.slug && (
-            <Link href={`/canli-deneme/${program.slug}`} target="_blank" className="btn btn-ghost">
+          {program.slug && analysis.slug && (
+            <Link
+              href={`/analiz/${analysis.slug}/${program.slug}`}
+              target="_blank"
+              className="btn btn-ghost"
+            >
               <span className="ms">open_in_new</span>
               Sayfayı Gör
             </Link>
@@ -86,6 +91,8 @@ export default async function RotaDuzenlePage({
           branches={branches}
           config={config}
           taken={taken}
+          analizId={id}
+          analizSlug={analysis.slug || ""}
         />
       </div>
     </>

@@ -3,9 +3,9 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import {
-  getLiveExamPrograms,
-  getGlobalSettings,
-  readLiveExamConfig,
+  getAnalysisBySlug,
+  getAnalysisProgramBySlug,
+  analysisConfig,
   programNetLevels,
   netLevelWord,
   activeNetBranches,
@@ -13,7 +13,7 @@ import {
   toMediaUrl,
   type NetBranch,
 } from "@/app/lib/strapi";
-import "../canli-deneme.css";
+import "../../analiz.css";
 
 const TONES: Record<NetBranch, string> = {
   mat: "blue",
@@ -32,38 +32,37 @@ function youtubeEmbed(input?: string): string | null {
   return id ? `https://www.youtube.com/embed/${id}` : null;
 }
 
-async function findRoute(slug: string) {
-  const programs = await getLiveExamPrograms();
-  return programs.find((p) => p.slug === slug) || null;
-}
+
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ analiz: string; rota: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const program = await findRoute(slug);
+  const { analiz, rota } = await params;
+  const program = await getAnalysisProgramBySlug(analiz, rota);
   if (!program) return {};
   return {
     title: program.routeCode ? `Rota ${program.routeCode} — ${program.title}` : program.title,
     description:
       program.description ||
-      "Canlı deneme netlerine göre sana özel belirlenen çalışma programı.",
+      "Deneme netlerine göre sana özel belirlenen çalışma programı.",
   };
 }
 
 export default async function RotaDetayPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ analiz: string; rota: string }>;
 }) {
-  const { slug } = await params;
-  const [program, globalSettings] = await Promise.all([findRoute(slug), getGlobalSettings()]);
-  if (!program) notFound();
+  const { analiz, rota } = await params;
+  const [analysis, program] = await Promise.all([
+    getAnalysisBySlug(analiz),
+    getAnalysisProgramBySlug(analiz, rota),
+  ]);
+  if (!analysis || !program) notFound();
 
-  const site = globalSettings?.attributes || globalSettings || {};
-  const config = readLiveExamConfig(site.liveExamConfig);
+  const config = analysisConfig(analysis);
   const branches = activeNetBranches(config);
   const levels = programNetLevels(program);
   const embed = youtubeEmbed(program.videoUrl);
@@ -73,7 +72,7 @@ export default async function RotaDetayPage({
     <PageContainer>
       <div className="container cd-container">
         <section className="cd-detail-hero">
-          <Link href="/canli-deneme" className="cd-detail-back">
+          <Link href={`/analiz/${analiz}`} className="cd-detail-back">
             <span className="ms">arrow_back</span> Netini tekrar gir
           </Link>
 

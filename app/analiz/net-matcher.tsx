@@ -74,9 +74,12 @@ function fmtNet(n: number): string {
 export default function NetMatcher({
   routes,
   config,
+  analizSlug,
 }: {
   routes: RouteProgram[];
   config: LiveExamConfig;
+  /** Rota linkleri bu analizin altina kurulur: /analiz/[analizSlug]/[rota] */
+  analizSlug: string;
 }) {
   // Eşleştirmeye giren branşlar (sosyal kapalıysa 3, açıksa 4) ve
   // ekranda kutusu görünen branşlar farklı olabilir: sosyal sadece
@@ -114,7 +117,7 @@ export default function NetMatcher({
   // Sayfadan cikilirken bekleyen zamanlayicilar kalmasin.
   useEffect(() => clearTimers, []);
 
-  // Paylaşılan linki geri yükle: /canli-deneme?mat=12&turkce=18&fen=8
+  // Paylaşılan linki geri yükle: /analiz/[analiz]?mat=12&turkce=18&fen=8
   // Eşleştirmeye giren branşların hepsi varsa sonuç doğrudan açılır.
   useEffect(() => {
     const sp = new URLSearchParams(window.location.search);
@@ -391,7 +394,7 @@ export default function NetMatcher({
                 ))}
               </ul>
 
-              <Link href={`/canli-deneme/${match.slug}`} className="cd-btn cd-btn-primary">
+              <Link href={`/analiz/${analizSlug}/${match.slug}`} className="cd-btn cd-btn-primary">
                 Programı Görüntüle <span className="ms">arrow_forward</span>
               </Link>
               {match.pdfUrl && (
@@ -457,7 +460,7 @@ export default function NetMatcher({
             );
             const cls = `cd-route${isActive ? " is-active" : ""}${p ? "" : " is-empty"}`;
             return p ? (
-              <Link key={netLevelsKey(combo, activeBranches)} href={`/canli-deneme/${p.slug}`} className={cls}>
+              <Link key={netLevelsKey(combo, activeBranches)} href={`/analiz/${analizSlug}/${p.slug}`} className={cls}>
                 {card}
               </Link>
             ) : (

@@ -2,7 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   async redirects() {
-    return [];
+    return [
+      // Coklu analize gecmeden once tek sayfa /canli-deneme idi.
+      // Eski linkler ve paylasilan sonuclar kirilmasin.
+      { source: "/canli-deneme", destination: "/analiz/canli-deneme", permanent: true },
+      { source: "/canli-deneme/:rota", destination: "/analiz/canli-deneme/:rota", permanent: true },
+    ];
   },
   async rewrites() {
     const raw = process.env.STRAPI_URL || "http://localhost:1340";

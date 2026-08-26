@@ -1,9 +1,10 @@
 import { requireAdminToken } from "@/app/admin/lib/auth";
 import { adminGet } from "@/app/admin/lib/strapi-admin";
 import Link from "next/link";
-import RotaForm from "../rota-form";
+import { notFound } from "next/navigation";
+import RotaForm from "../../../rota-form";
 import {
-  readLiveExamConfig,
+  analysisConfig,
   activeNetBranches,
   isLiveExamProgram,
   programNetLevels,
@@ -14,22 +15,32 @@ import {
 export const metadata = { title: "Yeni Rota Programı | Admin" };
 
 export default async function YeniRotaPage({
+  params,
   searchParams,
 }: {
+  params: Promise<{ id: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const token = await requireAdminToken();
+  const { id } = await params;
   const sp = await searchParams;
 
-  const [gs, pr] = await Promise.all([
-    adminGet("/global-setting", token),
-    adminGet("/programs?pagination[pageSize]=200", token),
+  const [an, pr] = await Promise.all([
+    adminGet(`/analyses/${id}`, token),
+    // Dolu kombinasyon kontrolu SADECE bu analiz icinde yapilir; ayni
+    // kombinasyon baska analizlerde serbest.
+    adminGet(
+      `/programs?filters[analysis][documentId][$eq]=${id}&pagination[pageSize]=200`,
+      token
+    ),
   ]);
 
-  const config = readLiveExamConfig(gs.data?.data?.liveExamConfig);
+  const analysis = an.data?.data;
+  if (!analysis) return notFound();
+
+  const config = analysisConfig(analysis);
   const branches = activeNetBranches(config);
 
-  // Dolu kombinasyonlar: formda pasif görünecekler.
   const taken: Record<string, string> = {};
   for (const p of (pr.data?.data || []).filter(isLiveExamProgram)) {
     const levels = programNetLevels(p);
@@ -55,10 +66,10 @@ export default async function YeniRotaPage({
         <div className="topbar-title">
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
             <Link
-              href="/admin/canli-deneme"
+              href={`/admin/analiz/${id}`}
               style={{ color: "var(--text-muted)", textDecoration: "none", fontSize: "0.8rem", display: "flex", alignItems: "center" }}
             >
-              <span className="ms" style={{ fontSize: "16px" }}>arrow_back</span> Canlı Denemeye Dön
+              <span className="ms" style={{ fontSize: "16px" }}>arrow_back</span> {analysis.title}
             </Link>
           </div>
           <h1>Yeni Rota Programı</h1>
@@ -71,6 +82,8 @@ export default async function YeniRotaPage({
           branches={branches}
           config={config}
           taken={taken}
+          analizId={id}
+          analizSlug={analysis.slug || ""}
         />
       </div>
     </>

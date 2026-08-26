@@ -1,15 +1,24 @@
 import type { MetadataRoute } from "next";
-import { getCamps, getInstructors, getBooks, getSubjects, getExams } from "@/app/lib/strapi";
+import {
+  getCamps,
+  getInstructors,
+  getBooks,
+  getSubjects,
+  getExams,
+  getAnalyses,
+  getAnalysisPrograms,
+} from "@/app/lib/strapi";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dersplatosu.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [camps, instructors, books, subjects, exams] = await Promise.all([
+  const [camps, instructors, books, subjects, exams, analyses] = await Promise.all([
     getCamps(),
     getInstructors(),
     getBooks(),
     getSubjects(),
     getExams(),
+    getAnalyses(),
   ]);
 
   const now = new Date();
@@ -22,7 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/youtuber-hocalar`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${siteUrl}/video-soru-cozumleri`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${siteUrl}/denemeler`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${siteUrl}/canli-deneme`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${siteUrl}/analiz`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
   ];
 
   // 2. Camp Detail Routes
@@ -68,6 +77,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  // 7. Analiz sayfalari ve her analizin rota programlari
+  const analysisRoutes: MetadataRoute.Sitemap = [];
+  for (const a of analyses.filter((x) => x.isActive !== false)) {
+    analysisRoutes.push({
+      url: `${siteUrl}/analiz/${a.slug}`,
+      lastModified: a.updatedAt ? new Date(a.updatedAt) : now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    });
+    const rotalar = await getAnalysisPrograms(a.slug);
+    for (const p of rotalar) {
+      analysisRoutes.push({
+        url: `${siteUrl}/analiz/${a.slug}/${p.slug}`,
+        lastModified: p.updatedAt ? new Date(p.updatedAt) : now,
+        changeFrequency: "weekly",
+        priority: 0.7,
+      });
+    }
+  }
+
   return [
     ...staticRoutes,
     ...campRoutes,
@@ -75,5 +104,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...bookRoutes,
     ...videoSolutionRoutes,
     ...examRoutes,
+    ...analysisRoutes,
   ];
 }

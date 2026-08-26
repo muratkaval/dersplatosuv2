@@ -29,7 +29,7 @@ export default async function ProgramlarPage() {
     getGlobalSettings(),
   ]);
 
-  // Canli deneme rotalari bu listede yer almaz: onlar /canli-deneme sayfasinda
+  // Analiz rotalari bu listede yer almaz: onlar /analiz sayfalarinda
   // net girisine gore onerilir, buradaki sinav/net filtresiyle karismasin.
   const programs = allPrograms.filter((p) => !isLiveExamRelated(p));
 

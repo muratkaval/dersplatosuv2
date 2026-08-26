@@ -565,9 +565,11 @@ export type Program = {
   displayOrder?: number;
   updatedAt?: string;
   // --- Canli deneme net eslestirmesi ---
-  // routeCode dolu VE uc brans da etiketli ise program /canli-deneme havuzuna girer.
+  // routeCode dolu VE uc brans da etiketli ise program analiz havuzuna girer.
   // Bos birakilan programlar (mevcut tum programlar) bu sistemden etkilenmez.
   routeCode?: string;
+  /** Rotanin bagli oldugu analiz (deneme). */
+  analysis?: { id?: number; documentId?: string; slug?: string; title?: string } | null;
   matLevel?: NetLevel;
   turkceLevel?: NetLevel;
   fenLevel?: NetLevel;
@@ -806,34 +808,6 @@ export const DEFAULT_LIVE_EXAM_CONFIG: LiveExamConfig = {
   bannerEnabled: false,
 };
 
-// global-setting.liveExamConfig JSON'unu güvenli oku: eksik ya da bozuk
-// alan varsayılana düşer, sayfa hiçbir durumda boş kalmaz.
-export function readLiveExamConfig(raw: any): LiveExamConfig {
-  const d = DEFAULT_LIVE_EXAM_CONFIG;
-  const num = (v: any, fb: number) =>
-    typeof v === "number" && isFinite(v) && v > 0 ? v : fb;
-  const t = raw?.thresholds || {};
-  const m = raw?.maxNets || {};
-  const sosyalEnabled = raw?.sosyalEnabled === true;
-  return {
-    thresholds: {
-      mat: num(t.mat, d.thresholds.mat),
-      turkce: num(t.turkce, d.thresholds.turkce),
-      fen: num(t.fen, d.thresholds.fen),
-      sosyal: num(t.sosyal, d.thresholds.sosyal),
-    },
-    maxNets: {
-      mat: num(m.mat, d.maxNets.mat),
-      turkce: num(m.turkce, d.maxNets.turkce),
-      fen: num(m.fen, d.maxNets.fen),
-      sosyal: num(m.sosyal, d.maxNets.sosyal),
-    },
-    sosyalEnabled,
-    // Eşleştirmeye dahilse kutu zorunlu olarak görünür.
-    collectSosyal: sosyalEnabled ? true : raw?.collectSosyal !== false,
-    bannerEnabled: raw?.bannerEnabled === true,
-  };
-}
 
 /** Eşleştirmeye giren branşlar. Sosyal kapalıysa 3, açıksa 4 tane. */
 export function activeNetBranches(config: LiveExamConfig): NetBranch[] {
@@ -929,7 +903,105 @@ export function isLiveExamRelated(p: NetTaggable & Pick<Program, "examType">): b
   return isLiveExamProgram(p) || p.examType === LIVE_EXAM_TYPE;
 }
 
-export async function getLiveExamPrograms(): Promise<Program[]> {
-  const all = await getPrograms();
-  return all.filter(isLiveExamProgram);
+
+/* ============================================================
+   ANALİZLER
+   ------------------------------------------------------------
+   Her analiz bir deneme demek: kendi eşikleri, kendi Sosyal
+   anahtarı, kendi banner'ı ve kendi rota programları.
+
+   Eşleştirme motoru (netLevel, liveExamCombinations,
+   matchLiveExamProgram) hiç değişmedi; sadece ayarların nereden
+   okunduğu değişti. Önce global-setting'de tekil duruyordu,
+   artık her analiz kendi ayarını taşıyor.
+   ============================================================ */
+
+export type Analysis = {
+  id: number;
+  documentId?: string;
+  title: string;
+  slug: string;
+  description?: string;
+  matEsik?: number;
+  turkceEsik?: number;
+  fenEsik?: number;
+  sosyalEsik?: number;
+  sosyalEnabled?: boolean;
+  collectSosyal?: boolean;
+  banner?: { url?: string } | null;
+  bannerEnabled?: boolean;
+  isActive?: boolean;
+  displayOrder?: number;
+  updatedAt?: string;
+};
+
+/**
+ * Analiz kaydını, sayfaların zaten kullandığı LiveExamConfig şekline çevirir.
+ * Böylece net-matcher ve rota sayfaları hiç değişmeden çalışmaya devam eder.
+ * Eksik/bozuk alan varsayılana düşer.
+ */
+export function analysisConfig(a: Analysis | null | undefined): LiveExamConfig {
+  const d = DEFAULT_LIVE_EXAM_CONFIG;
+  const num = (v: any, fb: number) =>
+    typeof v === "number" && isFinite(v) && v > 0 ? v : fb;
+  const sosyalEnabled = a?.sosyalEnabled === true;
+  return {
+    thresholds: {
+      mat: num(a?.matEsik, d.thresholds.mat),
+      turkce: num(a?.turkceEsik, d.thresholds.turkce),
+      fen: num(a?.fenEsik, d.thresholds.fen),
+      sosyal: num(a?.sosyalEsik, d.thresholds.sosyal),
+    },
+    // Slider üst sınırları analiz başına değişmiyor; varsayılan kalıyor.
+    maxNets: { ...d.maxNets },
+    sosyalEnabled,
+    collectSosyal: sosyalEnabled ? true : a?.collectSosyal !== false,
+    bannerEnabled: a?.bannerEnabled === true,
+  };
+}
+
+const ANALYSIS_POPULATE = "populate[banner]=true";
+
+export async function getAnalyses(): Promise<Analysis[]> {
+  const data = await fetchWithFallback<{ data: any[] }>([
+    `/analyses?${ANALYSIS_POPULATE}&sort[0]=displayOrder:asc&sort[1]=createdAt:desc&pagination[pageSize]=100`,
+    "/analyses?populate=*&pagination[pageSize]=100",
+  ]);
+  const items = flattenStrapi(data?.data || []);
+  return items.map((item: any) => ({
+    ...item,
+    slug: item.slug || slugify(item.title),
+  }));
+}
+
+export async function getAnalysisBySlug(slug: string): Promise<Analysis | null> {
+  const data = await fetchWithFallback<{ data: any[] }>([
+    `/analyses?filters[slug][$eq]=${encodeURIComponent(slug)}&${ANALYSIS_POPULATE}`,
+    `/analyses?filters[slug][$eq]=${encodeURIComponent(slug)}&populate=*`,
+  ]);
+  const raw = flattenStrapi(data?.data?.[0] || null);
+  if (!raw) return null;
+  return { ...raw, slug: raw.slug || slugify(raw.title) };
+}
+
+/** Bir analize bağlı rota programları. Etiketi eksik olanlar elenir. */
+export async function getAnalysisPrograms(analysisSlug: string): Promise<Program[]> {
+  const filter = `filters[analysis][slug][$eq]=${encodeURIComponent(analysisSlug)}`;
+  const data = await fetchWithFallback<{ data: any[] }>([
+    `/programs?${filter}&${PROGRAM_POPULATE}&sort[0]=routeCode:asc&pagination[pageSize]=100`,
+    `/programs?${filter}&populate=*&pagination[pageSize]=100`,
+  ]);
+  const items = flattenStrapi(data?.data || []);
+  return items
+    .map((item: any) => ({ ...item, slug: item.slug || slugify(item.title) }))
+    .filter(isLiveExamProgram);
+}
+
+/** Analize bağlı tek bir rota programı (detay sayfası için). */
+export async function getAnalysisProgramBySlug(
+  analysisSlug: string,
+  programSlug: string
+): Promise<Program | null> {
+  const programs = await getAnalysisPrograms(analysisSlug);
+  return programs.find((p) => p.slug === programSlug) || null;
 }

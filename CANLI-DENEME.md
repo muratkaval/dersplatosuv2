@@ -175,6 +175,82 @@ bileşeninden prop olarak alıyor.
 - [ ] Girilen netleri anonim kaydet → hangi rota kaç kişi
 - [ ] Deneme bazlı eşik (her denemenin kendi 15/20/10 değeri)
 
+
+### FAZ 6 — Çoklu analiz ⬜ (planlandı, başlanmadı)
+
+**Neden.** Bugün eşikler, Sosyal anahtarı ve banner `global-setting` içinde
+**tekil** duruyor; ayrıca bir kombinasyona yalnızca bir program düşebiliyor.
+Yani sistem tek bir denemeye kilitli. Yarın ikinci bir deneme yapıldığında
+kendi eşikleri, kendi banner'ı ve kendi program seti olmalı.
+
+**Hedef adresler.** "Analiz" üst bölüm olur, her deneme onun altında bir kayıt:
+
+```
+/analiz                       yayındaki analizlerin listesi
+/analiz/canli-deneme          net girişi + sonuç
+/analiz/canli-deneme/rota-a   program detayı
+/canli-deneme                 -> /analiz/canli-deneme (kalıcı yönlendirme)
+```
+
+`/denemeler` bölümüne dokunulmaz; bu alan yalnızca canlı deneme tipi
+sınavlar için kalır.
+
+#### 6.1 Şema (dp-green-cms)
+- [x] Yeni collection type `analysis` (pluralName `analyses`):
+      `title`, `slug` (uid), `description`,
+      `matEsik` / `turkceEsik` / `fenEsik` / `sosyalEsik` (integer),
+      `sosyalEnabled` / `collectSosyal` (boolean),
+      `banner` (media) / `bannerEnabled` (boolean),
+      `isActive` (boolean), `displayOrder` (integer)
+- [x] `program` -> `analysis` ilişkisi (manyToOne)
+- [ ] `global-setting.liveExamConfig` ve `liveExamImage` **şimdilik durur**;
+      taşıma doğrulanana kadar geri dönüş yolu açık kalsın (6.6'da silinir)
+
+#### 6.2 Veri taşıma (tek seferlik)
+- [x] Mevcut `liveExamConfig` + `liveExamImage` okunup **"Canlı Deneme"**
+      adlı ilk `analysis` kaydı oluşturulur (slug: `canli-deneme`)
+- [x] Mevcut 8 rota programı bu kayda bağlanır
+- [x] Doğrulama: 8/8 kombinasyon dolu, eşikler birebir aynı, banner yerinde
+
+#### 6.3 Motor (app/lib/strapi.ts)
+- [x] `readLiveExamConfig(globalSetting)` -> `readAnalysisConfig(analysis)`
+- [x] `getAnalyses()`, `getAnalysisBySlug(slug)`
+- [x] `getLiveExamPrograms()` -> `getAnalysisPrograms(analysisId)`
+- [x] `matchLiveExamProgram`, `liveExamCombinations`, `netLevel` **aynı kalır**
+      (zaten branş sayısından bağımsız yazılmıştı)
+
+#### 6.4 Public sayfalar
+- [x] `app/analiz/page.tsx` — analiz listesi
+- [x] `app/analiz/[analiz]/page.tsx` — bugünkü `canli-deneme/page.tsx` taşınır
+- [x] `app/analiz/[analiz]/[rota]/page.tsx` — bugünkü rota detayı taşınır
+- [x] `net-matcher.tsx` — analiz bağlamı prop olarak alınır, linkler güncellenir
+- [x] `next.config.ts` — `/canli-deneme` ve `/canli-deneme/:rota` yönlendirmeleri
+- [x] `app/sitemap.ts` — analiz ve rota adresleri
+
+#### 6.5 Panel
+- [x] `app/admin/(dashboard)/analiz/page.tsx` — liste + "Yeni Analiz"
+- [x] `.../analiz/[id]/page.tsx` — bugünkü rota-panel ekranı, analize bağlı
+- [x] `rota-form.tsx` — kombinasyon "dolu mu" kontrolü artık **analiz içinde**
+      yapılır; aynı kombinasyon farklı analizlerde serbest
+- [x] `admin-nav.tsx` — "Canlı Deneme" -> "Analizler"
+- [x] Eski `admin/(dashboard)/canli-deneme/` klasörü kaldırılır
+
+#### 6.6 Temizlik
+- [x] `global-setting`'ten `liveExamConfig` + `liveExamImage` kaldırılır
+- [x] Bu dosya güncellenir
+
+**Sıra.** 6.1 -> 6.2 -> 6.3 -> 6.4 -> 6.5 -> 6.6. Taşıma bitene kadar mevcut
+`/canli-deneme` sayfası çalışmaya devam eder; her adım sonunda `tsc` ve sayfa
+kontrolü yapılır.
+
+**Riskler.**
+- Rota adresleri derinleşiyor (`/canli-deneme/rota-a` ->
+  `/analiz/canli-deneme/rota-a`). Yönlendirme ile karşılanır, eski link kırılmaz.
+- Analize bağlanmamış rota programı "sahipsiz" kalır; panelde ayrı bölümde
+  listelenip uyarı verilir (bugünkü "kombinasyonu tutmayan rotalar" gibi).
+- `program` üzerindeki rota alanları artık analiz olmadan anlamsız; bu yüzden
+  ilişki zorunlu değil ama panel eksikse uyarır.
+
 ---
 
 ## Yol boyunca düzeltilen yan hatalar

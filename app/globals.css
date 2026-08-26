@@ -430,9 +430,7 @@ body[data-theme="dark"] .filter-scroll-btn {
 
 /* Modern App-Style Navbar for Dark Mode */
 body[data-theme="dark"] .navbar {
-  background: rgba(5, 11, 31, 0.8) !important;
-  backdrop-filter: blur(15px) !important;
-  -webkit-backdrop-filter: blur(15px) !important;
+  background: #050b1f !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 

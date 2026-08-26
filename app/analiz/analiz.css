@@ -738,14 +738,17 @@ a.cd-route:hover {
 }
 
 .cd-detail-back {
-  display: inline-flex;
+  /* Blok seviyesinde olmali: satir ici kalirsa hemen ardindaki "Rota X"
+     rozetiyle ayni satira biniyor (hero text-align: center). */
+  display: flex;
+  width: fit-content;
+  margin: 0 auto 18px;
   align-items: center;
   gap: 6px;
   font-size: 0.8rem;
   font-weight: 600;
   text-decoration: none;
   color: var(--cd-text-soft);
-  margin-bottom: 18px;
 }
 
 .cd-detail-back:hover {
@@ -1101,4 +1104,113 @@ body[data-theme="dark"] .cd-detail-back:hover {
 
 .cd-result-stale .cd-btn {
   margin-top: 6px;
+}
+
+/* ---- Analiz listesi ---- */
+.cd-analiz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin: 24px 0 70px;
+}
+
+.cd-analiz-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 16px;
+  background: var(--cd-surface);
+  border: 1px solid var(--cd-border);
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cd-analiz-card:hover {
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+  box-shadow: var(--cd-shadow);
+}
+
+.cd-analiz-cover {
+  display: block;
+  height: 92px;
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  background-position: center;
+}
+
+.cd-analiz-body {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 16px 18px 18px;
+}
+
+.cd-analiz-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.3;
+  color: var(--cd-text);
+}
+
+.cd-analiz-desc {
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--cd-text-soft);
+}
+
+.cd-analiz-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.cd-analiz-chip {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 7px;
+  white-space: nowrap;
+  color: #2563eb;
+  background: rgba(59, 130, 246, 0.12);
+}
+
+body[data-theme="dark"] .cd-analiz-chip {
+  color: #60a5fa;
+}
+
+.cd-analiz-chip-soft {
+  color: var(--cd-text-soft);
+  background: var(--cd-surface-2);
+}
+
+body[data-theme="dark"] .cd-analiz-chip-soft {
+  color: var(--cd-text-soft);
+}
+
+.cd-analiz-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+body[data-theme="dark"] .cd-analiz-cta {
+  color: #60a5fa;
+}
+
+.cd-analiz-cta .ms {
+  font-size: 17px;
+}
+
+@media (max-width: 640px) {
+  .cd-analiz-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }

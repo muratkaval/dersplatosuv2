@@ -55,6 +55,8 @@ export default function RotaForm({
   branches,
   config,
   taken,
+  analizId,
+  analizSlug,
 }: {
   program?: any;
   /** Kapsama şeridinden gelen ön seçim. Yoksa ilk boş kombinasyon seçilir. */
@@ -63,6 +65,10 @@ export default function RotaForm({
   config: LiveExamConfig;
   /** Başka programların tuttuğu kombinasyonlar: comboKey -> program başlığı. */
   taken: Record<string, string>;
+  /** Programin baglanacagi analizin documentId degeri. */
+  analizId: string;
+  /** Sadece slug ipucunu gostermek icin. */
+  analizSlug: string;
 }) {
   const router = useRouter();
   const isEdit = !!program?.documentId;
@@ -136,6 +142,7 @@ export default function RotaForm({
         // Şemada examType zorunlu; rota programlarına sabit değer veriyoruz.
         examType: LIVE_EXAM_TYPE,
         examTypes: [LIVE_EXAM_TYPE],
+        analysis: analizId,
         routeCode: routeCode.trim() || null,
         matLevel: levels.mat || null,
         turkceLevel: levels.turkce || null,
@@ -161,7 +168,7 @@ export default function RotaForm({
         return;
       }
       showToast(isEdit ? "Program güncellendi ✓" : "Program eklendi ✓");
-      setTimeout(() => router.push("/admin/canli-deneme"), 900);
+      setTimeout(() => router.push(`/admin/analiz/${analizId}`), 900);
     } catch {
       showToast("Bağlantı hatası", "error");
     } finally {
@@ -242,7 +249,7 @@ export default function RotaForm({
               <label>URL Slug</label>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <span style={{ color: "#64748b", fontSize: "0.8rem", whiteSpace: "nowrap" }}>
-                  /canli-deneme/
+                  /analiz/${analizSlug}/
                 </span>
                 <input value={slug} onChange={(e) => setSlug(slugify(e.target.value))} placeholder="rota-a" />
               </div>
@@ -344,7 +351,7 @@ export default function RotaForm({
       </div>
 
       <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "20px" }}>
-        <button type="button" className="btn btn-ghost" onClick={() => router.push("/admin/canli-deneme")}>
+        <button type="button" className="btn btn-ghost" onClick={() => router.push(`/admin/analiz/${analizId}`)}>
           Vazgeç
         </button>
         <button type="submit" className="btn btn-primary" disabled={saving}>
