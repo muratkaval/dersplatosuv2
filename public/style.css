@@ -269,14 +269,13 @@ ul {
     right: 0;
     height: var(--nav-h);
     z-index: 1000;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px);
+    background: #ffffff;
     border-bottom: 1px solid var(--border);
     transition: background var(--transition), box-shadow var(--transition);
 }
 
 [data-theme="dark"] .navbar {
-    background: rgba(11, 15, 26, 0.9);
+    background: #0b0f1a;
 }
 
 .navbar.scrolled {

@@ -8,6 +8,9 @@ import { getAdminToken } from "@/app/admin/lib/auth";
 function revalidateProgramPaths() {
   revalidatePath("/programlar");
   revalidatePath("/programlar/[slug]", "page");
+  revalidatePath("/analiz");
+  revalidatePath("/analiz/[analiz]", "page");
+  revalidatePath("/analiz/[analiz]/[rota]", "page");
 }
 
 export async function DELETE(

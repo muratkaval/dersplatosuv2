@@ -1,0 +1,1216 @@
+/* ============================================================
+   CANLI DENEME - NET EŞLEŞTİRME SAYFASI
+   ------------------------------------------------------------
+   Renkler tek yerde token olarak tanımlı. Koyu tema için tüm
+   bileşenleri tek tek ezmek yerine sadece token'lar değişiyor.
+   ============================================================ */
+
+.cd-container {
+  max-width: 1100px;
+
+  --cd-surface: #ffffff;
+  --cd-surface-2: #f8fafc;
+  --cd-border: #e2e8f0;
+  --cd-border-strong: #cbd5e1;
+  --cd-text: #0f172a;
+  --cd-text-soft: #64748b;
+  --cd-track: #e2e8f0;
+  --cd-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+
+  /* Site navbar sabit ve 68px. Yapiskan sonuc paneli onun altina girmesin. */
+  --cd-nav-h: 68px;
+}
+
+body[data-theme="dark"] .cd-container {
+  --cd-surface: rgba(255, 255, 255, 0.04);
+  --cd-surface-2: rgba(255, 255, 255, 0.02);
+  --cd-border: rgba(255, 255, 255, 0.1);
+  --cd-border-strong: rgba(255, 255, 255, 0.18);
+  --cd-text: #f1f5f9;
+  --cd-text-soft: #94a3b8;
+  --cd-track: rgba(255, 255, 255, 0.12);
+  --cd-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Branş renkleri */
+.cd-tone-blue {
+  --cd-tone: #3b82f6;
+  --cd-tone-soft: rgba(59, 130, 246, 0.12);
+}
+.cd-tone-orange {
+  --cd-tone: #f97316;
+  --cd-tone-soft: rgba(249, 115, 22, 0.13);
+}
+.cd-tone-green {
+  --cd-tone: #22c55e;
+  --cd-tone-soft: rgba(34, 197, 94, 0.13);
+}
+.cd-tone-purple {
+  --cd-tone: #a855f7;
+  --cd-tone-soft: rgba(168, 85, 247, 0.13);
+}
+
+/* ---- Hero altı özellik şeridi ---- */
+.cd-features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 28px 0 36px;
+}
+
+.cd-feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--cd-surface);
+  border: 1px solid var(--cd-border);
+}
+
+.cd-feature-icon {
+  font-size: 22px;
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.12);
+  border-radius: 10px;
+  padding: 8px;
+  flex-shrink: 0;
+}
+
+.cd-feature-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cd-feature-text strong {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--cd-text);
+}
+
+.cd-feature-text span {
+  font-size: 0.78rem;
+  color: var(--cd-text-soft);
+  line-height: 1.35;
+}
+
+/* ---- Ana panel ---- */
+.cd-panel {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 20px;
+  align-items: start;
+  padding: 24px;
+  border-radius: 22px;
+  background: var(--cd-surface-2);
+  border: 1px solid var(--cd-border);
+  box-shadow: var(--cd-shadow);
+}
+
+/* ---- Adımlar ---- */
+.cd-steps {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+}
+
+.cd-steps li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--cd-text-soft);
+  white-space: nowrap;
+}
+
+/* İkinci adım kalan boşluğu alır; çizgi de onun içinde esneyerek satırı
+   uçtan uca doldurur. Böylece adım şeridi panelin tam genişliğinde durur. */
+.cd-steps li + li {
+  flex: 1;
+}
+
+.cd-steps li + li::before {
+  content: "";
+  flex: 1;
+  min-width: 20px;
+  height: 3px;
+  border-radius: 3px;
+  margin-right: 4px;
+  background-color: var(--cd-track);
+  background-image: linear-gradient(90deg, #3b82f6, #2563eb);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Program oluşturulunca çizgi soldan sağa dolar. */
+.cd-steps li.is-active::before {
+  background-size: 100% 100%;
+}
+
+.cd-steps li.is-active {
+  color: var(--cd-text);
+}
+
+.cd-step-no {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 0.76rem;
+  font-weight: 800;
+  background: var(--cd-track);
+  color: var(--cd-text-soft);
+  transition: background 0.45s ease, color 0.45s ease, transform 0.45s ease;
+}
+
+.cd-steps li.is-active .cd-step-no {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff;
+}
+
+/* İkinci adım dolduğu anda rozet kısa bir vurgu yapar. */
+.cd-steps li + li.is-active .cd-step-no {
+  animation: cd-step-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.45s both;
+}
+
+@keyframes cd-step-pop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.22);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cd-steps li + li::before,
+  .cd-step-no {
+    transition: none;
+  }
+
+  .cd-steps li + li.is-active .cd-step-no {
+    animation: none;
+  }
+}
+
+.cd-form-intro {
+  font-size: 0.84rem;
+  color: var(--cd-text-soft);
+  margin: 0 0 16px;
+}
+
+/* ---- Branş kartı ---- */
+.cd-branch {
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--cd-surface);
+  border: 1px solid var(--cd-border);
+  margin-bottom: 12px;
+}
+
+.cd-branch-muted {
+  opacity: 0.82;
+}
+
+.cd-branch-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cd-branch-icon {
+  font-size: 22px;
+  color: var(--cd-tone);
+  background: var(--cd-tone-soft);
+  border-radius: 10px;
+  padding: 8px;
+  flex-shrink: 0;
+}
+
+.cd-branch-name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 130px;
+}
+
+.cd-branch-name strong {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--cd-text);
+}
+
+.cd-branch-name small {
+  font-size: 0.74rem;
+  color: var(--cd-text-soft);
+}
+
+.cd-branch-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.cd-branch-input label {
+  font-size: 0.78rem;
+  color: var(--cd-text-soft);
+  white-space: nowrap;
+}
+
+.cd-branch-input input {
+  width: 62px;
+  padding: 7px 10px;
+  border-radius: 9px;
+  border: 1.5px solid var(--cd-border-strong);
+  background: var(--cd-surface-2);
+  color: var(--cd-text);
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+}
+
+.cd-branch-input input:focus {
+  border-color: var(--cd-tone);
+  box-shadow: 0 0 0 3px var(--cd-tone-soft);
+}
+
+.cd-branch-input small {
+  font-size: 0.76rem;
+  color: var(--cd-text-soft);
+}
+
+/* ---- Slider ---- */
+.cd-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  margin: 18px 0 8px;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(
+    to right,
+    var(--cd-tone) 0%,
+    var(--cd-tone) var(--cd-fill, 0%),
+    var(--cd-track) var(--cd-fill, 0%),
+    var(--cd-track) 100%
+  );
+}
+
+.cd-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid var(--cd-tone);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
+  cursor: pointer;
+}
+
+.cd-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid var(--cd-tone);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
+  cursor: pointer;
+}
+
+.cd-slider:focus-visible {
+  box-shadow: 0 0 0 3px var(--cd-tone-soft);
+}
+
+.cd-branch-scale {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cd-branch-scale small {
+  font-size: 0.72rem;
+  color: var(--cd-text-soft);
+  white-space: nowrap;
+}
+
+.cd-verdict {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: var(--cd-tone-soft);
+  color: var(--cd-tone);
+}
+
+/* ---- Gönder ---- */
+.cd-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 15px 20px;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cd-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+}
+
+.cd-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cd-submit-hint {
+  font-size: 0.76rem;
+  color: var(--cd-text-soft);
+  text-align: center;
+  margin: 8px 0 0;
+}
+
+/* ---- Sonuç paneli ---- */
+.cd-result {
+  position: sticky;
+  top: calc(var(--cd-nav-h) + 20px);
+  padding: 20px;
+  border-radius: 18px;
+  background: var(--cd-surface);
+  border: 1px solid var(--cd-border);
+}
+
+.cd-result-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.cd-result-head > span:first-child {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--cd-text);
+}
+
+.cd-result-trophy {
+  font-size: 22px;
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.12);
+  border-radius: 50%;
+  padding: 9px;
+}
+
+.cd-result-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding: 26px 12px;
+  border-radius: 14px;
+  border: 1.5px dashed var(--cd-border-strong);
+}
+
+.cd-result-empty .ms {
+  font-size: 34px;
+  color: var(--cd-text-soft);
+}
+
+.cd-result-empty p {
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--cd-text-soft);
+  margin: 0;
+}
+
+.cd-result-missing .ms {
+  color: #f97316;
+}
+
+.cd-result-title {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #2563eb;
+  margin: 0 0 4px;
+}
+
+body[data-theme="dark"] .cd-result-title {
+  color: #60a5fa;
+}
+
+.cd-result-program {
+  font-size: 0.8rem;
+  color: var(--cd-text-soft);
+  margin: 0 0 12px;
+  line-height: 1.4;
+}
+
+.cd-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+
+.cd-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  background: var(--cd-tone-soft);
+  color: var(--cd-tone);
+}
+
+.cd-result-desc {
+  font-size: 0.83rem;
+  line-height: 1.55;
+  color: var(--cd-text-soft);
+  margin: 0 0 14px;
+}
+
+.cd-benefits {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--cd-surface-2);
+  border: 1px solid var(--cd-border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cd-benefits li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-size: 0.81rem;
+  line-height: 1.4;
+  color: var(--cd-text);
+}
+
+.cd-benefits .ms {
+  font-size: 15px;
+  color: #ffffff;
+  background: #3b82f6;
+  border-radius: 5px;
+  padding: 2px;
+  flex-shrink: 0;
+}
+
+.cd-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px 18px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cd-btn + .cd-btn {
+  margin-top: 9px;
+}
+
+.cd-btn .ms {
+  font-size: 18px;
+}
+
+.cd-btn-primary {
+  color: #ffffff;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.cd-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+}
+
+.cd-btn-ghost {
+  color: var(--cd-text);
+  background: transparent;
+  border: 1.5px solid var(--cd-border-strong);
+}
+
+.cd-btn-ghost:hover {
+  border-color: #3b82f6;
+  color: #2563eb;
+}
+
+body[data-theme="dark"] .cd-btn-ghost:hover {
+  color: #60a5fa;
+}
+
+/* ---- 8 rota ---- */
+.cd-routes {
+  margin: 32px 0 0;
+  padding: 24px 20px;
+  border-radius: 22px;
+  background: var(--cd-surface-2);
+  border: 1px solid var(--cd-border);
+}
+
+.cd-routes-head {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.cd-routes-head h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--cd-text);
+  margin: 0 0 5px;
+}
+
+.cd-routes-head p {
+  font-size: 0.83rem;
+  color: var(--cd-text-soft);
+  margin: 0;
+}
+
+.cd-routes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 14px;
+}
+
+.cd-route {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  text-align: center;
+  padding: 16px 14px;
+  border-radius: 14px;
+  background: var(--cd-surface);
+  border: 1.5px solid var(--cd-border);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.cd-route.is-active {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.16);
+  transform: translateY(-2px);
+}
+
+.cd-route.is-empty {
+  opacity: 0.55;
+  border-style: dashed;
+}
+
+.cd-route-code {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #2563eb;
+}
+
+body[data-theme="dark"] .cd-route-code {
+  color: #60a5fa;
+}
+
+.cd-route.is-empty .cd-route-code {
+  color: var(--cd-text-soft);
+}
+
+.cd-route-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+}
+
+.cd-route-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+body[data-theme="dark"] .cd-route-flag {
+  color: #60a5fa;
+}
+
+.cd-route-flag .ms {
+  font-size: 15px;
+}
+
+/* ---- Alt bilgi kartları ---- */
+.cd-notes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin: 28px 0 70px;
+}
+
+.cd-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 18px;
+  border-radius: 16px;
+  background: var(--cd-surface);
+  border: 1px solid var(--cd-border);
+}
+
+.cd-note-icon {
+  font-size: 22px;
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.12);
+  border-radius: 10px;
+  padding: 9px;
+  flex-shrink: 0;
+}
+
+.cd-note h3 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #2563eb;
+  margin: 0 0 5px;
+}
+
+body[data-theme="dark"] .cd-note h3 {
+  color: #60a5fa;
+}
+
+.cd-note p {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--cd-text-soft);
+  margin: 0;
+}
+
+/* ---- Rota detay sayfası ---- */
+.cd-route {
+  text-decoration: none;
+  color: inherit;
+}
+
+a.cd-route:hover {
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+}
+
+.cd-detail-hero {
+  padding: 46px 0 26px;
+  text-align: center;
+}
+
+.cd-detail-back {
+  /* Blok seviyesinde olmali: satir ici kalirsa hemen ardindaki "Rota X"
+     rozetiyle ayni satira biniyor (hero text-align: center). */
+  display: flex;
+  width: fit-content;
+  margin: 0 auto 18px;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--cd-text-soft);
+}
+
+.cd-detail-back:hover {
+  color: #2563eb;
+}
+
+body[data-theme="dark"] .cd-detail-back:hover {
+  color: #60a5fa;
+}
+
+.cd-detail-back .ms {
+  font-size: 17px;
+}
+
+.cd-detail-code {
+  display: inline-block;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 13px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  margin-bottom: 12px;
+}
+
+.cd-detail-title {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--cd-text);
+  margin: 0 0 14px;
+}
+
+.cd-detail-badges {
+  justify-content: center;
+}
+
+.cd-detail-desc {
+  max-width: 640px;
+  margin: 4px auto 0;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--cd-text-soft);
+}
+
+.cd-detail-video {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  max-width: 780px;
+  width: 100%;
+  margin: 0 auto 24px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--cd-shadow);
+}
+
+.cd-detail-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.cd-detail-actions {
+  max-width: 420px;
+  margin: 0 auto 70px;
+}
+
+/* ---- Duyarlı ---- */
+@media (max-width: 980px) {
+  .cd-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .cd-result {
+    position: static;
+  }
+
+  .cd-features {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .cd-panel,
+  .cd-routes {
+    padding: 16px 14px;
+    border-radius: 18px;
+  }
+
+  .cd-notes {
+    grid-template-columns: 1fr;
+    margin: 20px 0 56px;
+  }
+
+  /* Özellik şeridi dar ekranda aracı aşağı itmesin: alt alta uzun kartlar
+     yerine tek satırda üç kompakt kutu, açıklamalar gizli. */
+  .cd-features {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 18px 0 22px;
+  }
+
+  .cd-feature {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 7px;
+    padding: 12px 7px;
+  }
+
+  .cd-feature-icon {
+    font-size: 20px;
+    padding: 7px;
+  }
+
+  .cd-feature-text strong {
+    font-size: 0.75rem;
+    line-height: 1.25;
+  }
+
+  .cd-feature-text > span {
+    display: none;
+  }
+
+  .cd-branch {
+    padding: 14px;
+  }
+
+  .cd-branch-head {
+    gap: 10px;
+  }
+
+  /* Baslikta esik yaziyor, slider altindaki rozette de. Dar ekranda
+     tekrari kaldir. Sosyal kartindaki aciklama farkli, o kalir. */
+  .cd-branch:not(.cd-branch-muted) .cd-branch-name small {
+    display: none;
+  }
+
+  /* Net kutusu alt satıra sarıyor; kazara kaymış görünmesin diye ayırıcı. */
+  .cd-branch-input {
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 4px;
+    padding-top: 12px;
+    border-top: 1px solid var(--cd-border);
+  }
+
+  /* 16px altı font, iOS Safari odaklanınca sayfayı zorla yakınlaştırır. */
+  .cd-branch-input input {
+    font-size: 1rem;
+    min-height: 44px;
+    width: 84px;
+  }
+
+  .cd-branch-input label {
+    font-size: 0.82rem;
+  }
+
+  /* Uçlardaki eşik etiketleri kart başlığında zaten yazıyor; dar ekranda
+     tekrar etmek yerine sonucu ortada ve okunur boyutta göster. */
+  .cd-branch-scale {
+    justify-content: center;
+  }
+
+  .cd-branch-scale small {
+    display: none;
+  }
+
+  .cd-verdict {
+    font-size: 0.82rem;
+    padding: 6px 16px;
+  }
+
+  /* Dokunma alanı 40px, görünen çubuk yine 8px: track arka plan görseli
+     olarak dikeyde ortalanıyor, böylece parmakla rahat yakalanıyor. */
+  .cd-slider {
+    height: 40px;
+    margin: 6px 0 2px;
+    background: linear-gradient(
+        to right,
+        var(--cd-tone) 0%,
+        var(--cd-tone) var(--cd-fill, 0%),
+        var(--cd-track) var(--cd-fill, 0%),
+        var(--cd-track) 100%
+      )
+      no-repeat center / 100% 8px;
+  }
+
+  .cd-slider::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+    border-width: 4px;
+  }
+
+  .cd-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-width: 4px;
+  }
+
+  .cd-steps li + li::before {
+    width: 22px;
+  }
+
+  .cd-submit {
+    min-height: 52px;
+  }
+
+  .cd-result {
+    margin-top: 4px;
+  }
+
+  .cd-result-title {
+    font-size: 1.7rem;
+  }
+
+  .cd-btn {
+    min-height: 48px;
+  }
+
+  .cd-detail-hero {
+    padding: 32px 0 20px;
+  }
+
+  .cd-detail-title {
+    font-size: 1.55rem;
+  }
+
+  .cd-detail-actions {
+    margin-bottom: 56px;
+  }
+}
+
+/* ---- Başlık altı banner şeridi ----
+   Sayfa kabının dışında durur, bu yüzden doğal olarak ekranı boydan boya
+   kaplar (100vw kullanmıyoruz; o, kaydırma çubuğu genişliği kadar yatay
+   taşma yaratırdı). Görsel yatayda tekrarlanır, yüksekliğe göre ölçeklenir. */
+.cd-banner {
+  width: 100%;
+  height: clamp(96px, 12vw, 152px);
+  background-repeat: repeat-x;
+  background-position: center center;
+  background-size: auto 100%;
+  border-top: 1px solid rgba(148, 163, 184, 0.18);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+@media (max-width: 640px) {
+  .cd-banner {
+    height: clamp(74px, 24vw, 112px);
+  }
+}
+
+/* ---- Program hazırlanıyor ---- */
+.cd-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+  padding: 30px 16px;
+  border-radius: 14px;
+  border: 1.5px solid var(--cd-border);
+  background: var(--cd-surface-2);
+}
+
+.cd-loading-ring {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 3px solid var(--cd-track);
+  border-top-color: #3b82f6;
+  border-right-color: #2563eb;
+  animation: cd-spin 0.9s linear infinite;
+}
+
+@keyframes cd-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mesaj her adımda key değiştiği için yeniden monte olur ve animasyon tekrar oynar.
+   min-height, iki satırlık mesajda panelin zıplamasını engeller. */
+.cd-loading-msg {
+  margin: 0;
+  min-height: 2.7em;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--cd-text);
+  animation: cd-msg-in 0.45s ease both;
+}
+
+@keyframes cd-msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.cd-loading-bar {
+  display: block;
+  width: 100%;
+  max-width: 240px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--cd-track);
+  overflow: hidden;
+}
+
+.cd-loading-bar > span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cd-loading-sub {
+  margin: 0;
+  font-size: 0.76rem;
+  color: var(--cd-text-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cd-loading-ring {
+    animation-duration: 2.4s;
+  }
+
+  .cd-loading-msg {
+    animation: none;
+  }
+
+  .cd-loading-bar > span {
+    transition: none;
+  }
+}
+
+/* Netler degisince donan sonuc paneli */
+.cd-result-stale .ms {
+  color: #3b82f6;
+}
+
+.cd-result-stale .cd-btn {
+  margin-top: 6px;
+}
+
+/* ---- Analiz listesi ---- */
+.cd-analiz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin: 24px 0 70px;
+}
+
+.cd-analiz-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 16px;
+  background: var(--cd-surface);
+  border: 1px solid var(--cd-border);
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cd-analiz-card:hover {
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+  box-shadow: var(--cd-shadow);
+}
+
+.cd-analiz-cover {
+  display: block;
+  height: 92px;
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  background-position: center;
+}
+
+.cd-analiz-body {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 16px 18px 18px;
+}
+
+.cd-analiz-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.3;
+  color: var(--cd-text);
+}
+
+.cd-analiz-desc {
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--cd-text-soft);
+}
+
+.cd-analiz-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.cd-analiz-chip {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 7px;
+  white-space: nowrap;
+  color: #2563eb;
+  background: rgba(59, 130, 246, 0.12);
+}
+
+body[data-theme="dark"] .cd-analiz-chip {
+  color: #60a5fa;
+}
+
+.cd-analiz-chip-soft {
+  color: var(--cd-text-soft);
+  background: var(--cd-surface-2);
+}
+
+body[data-theme="dark"] .cd-analiz-chip-soft {
+  color: var(--cd-text-soft);
+}
+
+.cd-analiz-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+body[data-theme="dark"] .cd-analiz-cta {
+  color: #60a5fa;
+}
+
+.cd-analiz-cta .ms {
+  font-size: 17px;
+}
+
+@media (max-width: 640px) {
+  .cd-analiz-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}

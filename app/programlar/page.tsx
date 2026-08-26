@@ -1,7 +1,7 @@
 import { PageContainer } from "@/app/components/site-layout";
 import BookCard from "@/app/components/book-card";
 import ProgramFilter from "@/app/components/program-filter";
-import { getPrograms, getBooks, getGlobalSettings } from "@/app/lib/strapi";
+import { getPrograms, getBooks, getGlobalSettings, isLiveExamRelated } from "@/app/lib/strapi";
 import PageHero from "@/app/components/page-hero";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -23,11 +23,15 @@ function youtubeEmbed(input?: string): string | null {
 }
 
 export default async function ProgramlarPage() {
-  const [programs, featuredBooks, globalSettings] = await Promise.all([
+  const [allPrograms, featuredBooks, globalSettings] = await Promise.all([
     getPrograms(),
     getBooks(true),
     getGlobalSettings(),
   ]);
+
+  // Analiz rotalari bu listede yer almaz: onlar /analiz sayfalarinda
+  // net girisine gore onerilir, buradaki sinav/net filtresiyle karismasin.
+  const programs = allPrograms.filter((p) => !isLiveExamRelated(p));
 
   const site = globalSettings?.attributes || globalSettings || {};
   const videoUrl = youtubeEmbed(site.programsPageVideo);

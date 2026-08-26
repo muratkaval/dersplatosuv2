@@ -564,6 +564,16 @@ export type Program = {
   subOptions?: string[];
   displayOrder?: number;
   updatedAt?: string;
+  // --- Canli deneme net eslestirmesi ---
+  // routeCode dolu VE uc brans da etiketli ise program analiz havuzuna girer.
+  // Bos birakilan programlar (mevcut tum programlar) bu sistemden etkilenmez.
+  routeCode?: string;
+  /** Rotanin bagli oldugu analiz (deneme). */
+  analysis?: { id?: number; documentId?: string; slug?: string; title?: string } | null;
+  matLevel?: NetLevel;
+  turkceLevel?: NetLevel;
+  fenLevel?: NetLevel;
+  sosyalLevel?: NetLevel;
 };
 
 // "Haftalık"/"Günlük"/"Aylık" -> birim kelimesi. Kart, detay ve admin formu ortak kullanır.
@@ -728,3 +738,270 @@ export async function getProgramsByInstructor(instructorId: string | number, doc
   });
 }
 
+
+/* ============================================================
+   CANLI DENEME - NET EŞLEŞTİRME
+   ------------------------------------------------------------
+   Öğrenci branş netlerini girer; her branş kendi eşiğine göre
+   "alti"/"ustu" etiketlenir. Oluşan etiket kümesi, panelde aynı
+   kümeyle işaretlenmiş programa denk gelir.
+
+   Branş sayısı sabit DEĞİL: Sosyal kapalıyken 3 branş -> 2^3 = 8
+   kombinasyon, açıkken 4 branş -> 2^4 = 16 kombinasyon. Panelden
+   açılıp kapanır, kod değişmez.
+
+   Eşleştirme tablosu da kodda değil Strapi'de durur: bir rota
+   yanlış eşleşirse panelden düzeltilir, deploy gerekmez.
+   ============================================================ */
+
+export type NetLevel = "alti" | "ustu";
+export type NetBranch = "mat" | "turkce" | "fen" | "sosyal";
+
+// Aktif branşların her biri için bir etiket. Sosyal kapalıyken
+// "sosyal" anahtarı hiç bulunmaz.
+export type NetLevels = Partial<Record<NetBranch, NetLevel>>;
+
+export const CORE_NET_BRANCHES: NetBranch[] = ["mat", "turkce", "fen"];
+
+/** Rota programlarinin examType degeri. Semada examType zorunlu oldugu icin
+ *  sabit bir deger veriyoruz; ayni zamanda normal programlardan ikinci bir
+ *  ayrim katmani saglar. */
+export const LIVE_EXAM_TYPE = "Canlı Deneme";
+
+export const NET_BRANCH_LABELS: Record<NetBranch, string> = {
+  mat: "Matematik",
+  turkce: "Türkçe",
+  fen: "Fen Bilimleri",
+  sosyal: "Sosyal Bilimler",
+};
+
+export const NET_BRANCH_SHORT: Record<NetBranch, string> = {
+  mat: "Mat",
+  turkce: "Türkçe",
+  fen: "Fen",
+  sosyal: "Sosyal",
+};
+
+export const NET_BRANCH_ICONS: Record<NetBranch, string> = {
+  mat: "calculate",
+  turkce: "menu_book",
+  fen: "science",
+  sosyal: "groups",
+};
+
+export type LiveExamConfig = {
+  thresholds: Record<NetBranch, number>;
+  maxNets: Record<NetBranch, number>;
+  /** Sosyal eşleştirmeye dahil mi? false ise net alınır ama programı etkilemez. */
+  sosyalEnabled: boolean;
+  /** Sosyal net kutusu ekranda görünsün mü? sosyalEnabled true ise her hâlükârda görünür. */
+  collectSosyal: boolean;
+  /** Başlık altındaki tam genişlik banner şeridi açık mı? */
+  bannerEnabled: boolean;
+};
+
+export const DEFAULT_LIVE_EXAM_CONFIG: LiveExamConfig = {
+  thresholds: { mat: 15, turkce: 20, fen: 10, sosyal: 10 },
+  maxNets: { mat: 40, turkce: 40, fen: 20, sosyal: 20 },
+  sosyalEnabled: false,
+  collectSosyal: true,
+  bannerEnabled: false,
+};
+
+
+/** Eşleştirmeye giren branşlar. Sosyal kapalıysa 3, açıksa 4 tane. */
+export function activeNetBranches(config: LiveExamConfig): NetBranch[] {
+  return config.sosyalEnabled ? [...CORE_NET_BRANCHES, "sosyal"] : [...CORE_NET_BRANCHES];
+}
+
+/** Ekranda net kutusu gösterilecek branşlar (sosyal bilgi amaçlı da olabilir). */
+export function visibleNetBranches(config: LiveExamConfig): NetBranch[] {
+  return config.sosyalEnabled || config.collectSosyal
+    ? [...CORE_NET_BRANCHES, "sosyal"]
+    : [...CORE_NET_BRANCHES];
+}
+
+// Eşik DAHİL üstü sayılır: net === eşik ise "ustu".
+export function netLevel(net: number, threshold: number): NetLevel {
+  return net >= threshold ? "ustu" : "alti";
+}
+
+export function netLevelWord(level?: NetLevel): string {
+  return level === "ustu" ? "üstü" : "altı";
+}
+
+/**
+ * Verilen branşlar için tüm kombinasyonlar (2^n).
+ * Sıra sabittir: ilk branş en yavaş değişir, son branş en hızlı.
+ * Hem sayfadaki rota ızgarası hem paneldeki kapsama listesi bunu
+ * kullanır ki ikisi asla ayrışmasın.
+ */
+export function liveExamCombinations(branches: NetBranch[]): NetLevels[] {
+  let out: NetLevels[] = [{}];
+  for (const b of branches) {
+    const next: NetLevels[] = [];
+    for (const partial of out) {
+      next.push({ ...partial, [b]: "alti" as NetLevel });
+      next.push({ ...partial, [b]: "ustu" as NetLevel });
+    }
+    out = next;
+  }
+  return out;
+}
+
+export function netLevelsKey(levels: NetLevels, branches: NetBranch[]): string {
+  return branches.map((b) => `${b}:${levels[b] ?? "-"}`).join("|");
+}
+
+export type NetTaggable = Pick<
+  Program,
+  "routeCode" | "matLevel" | "turkceLevel" | "fenLevel" | "sosyalLevel"
+>;
+
+/**
+ * Program eşleştirmeye giriyor mu? Rota kodu ve üç ana branş etiketi şart.
+ * Bunlar boş olan programlar (mevcut tüm programlar) sistemin dışındadır.
+ */
+export function isLiveExamProgram(p: NetTaggable): boolean {
+  return !!(p.routeCode && p.matLevel && p.turkceLevel && p.fenLevel);
+}
+
+export function programNetLevels(p: NetTaggable): NetLevels | null {
+  if (!isLiveExamProgram(p)) return null;
+  const levels: NetLevels = {
+    mat: p.matLevel as NetLevel,
+    turkce: p.turkceLevel as NetLevel,
+    fen: p.fenLevel as NetLevel,
+  };
+  if (p.sosyalLevel) levels.sosyal = p.sosyalLevel as NetLevel;
+  return levels;
+}
+
+/**
+ * Girilen netlere denk gelen program. Aynı kombinasyon yanlışlıkla birden
+ * fazla programa verilmişse displayOrder'ı küçük olan kazanır (getPrograms
+ * zaten öyle sıralı döner) - sayfa yine bir sonuç gösterir, sessizce patlamaz.
+ */
+export function matchLiveExamProgram<T extends NetTaggable>(
+  programs: T[],
+  levels: NetLevels,
+  branches: NetBranch[]
+): T | null {
+  const key = netLevelsKey(levels, branches);
+  return (
+    programs.find((p) => {
+      const l = programNetLevels(p);
+      return l ? netLevelsKey(l, branches) === key : false;
+    }) || null
+  );
+}
+
+/** Rota olarak isaretli VEYA canli deneme examType degerine sahip programlar.
+ *  /programlar listesi bunlari disarida birakir: bir rota slottan cikarilip
+ *  etiketleri temizlense bile normal program listesine sizmasin. */
+export function isLiveExamRelated(p: NetTaggable & Pick<Program, "examType">): boolean {
+  return isLiveExamProgram(p) || p.examType === LIVE_EXAM_TYPE;
+}
+
+
+/* ============================================================
+   ANALİZLER
+   ------------------------------------------------------------
+   Her analiz bir deneme demek: kendi eşikleri, kendi Sosyal
+   anahtarı, kendi banner'ı ve kendi rota programları.
+
+   Eşleştirme motoru (netLevel, liveExamCombinations,
+   matchLiveExamProgram) hiç değişmedi; sadece ayarların nereden
+   okunduğu değişti. Önce global-setting'de tekil duruyordu,
+   artık her analiz kendi ayarını taşıyor.
+   ============================================================ */
+
+export type Analysis = {
+  id: number;
+  documentId?: string;
+  title: string;
+  slug: string;
+  description?: string;
+  matEsik?: number;
+  turkceEsik?: number;
+  fenEsik?: number;
+  sosyalEsik?: number;
+  sosyalEnabled?: boolean;
+  collectSosyal?: boolean;
+  banner?: { url?: string } | null;
+  bannerEnabled?: boolean;
+  isActive?: boolean;
+  displayOrder?: number;
+  updatedAt?: string;
+};
+
+/**
+ * Analiz kaydını, sayfaların zaten kullandığı LiveExamConfig şekline çevirir.
+ * Böylece net-matcher ve rota sayfaları hiç değişmeden çalışmaya devam eder.
+ * Eksik/bozuk alan varsayılana düşer.
+ */
+export function analysisConfig(a: Analysis | null | undefined): LiveExamConfig {
+  const d = DEFAULT_LIVE_EXAM_CONFIG;
+  const num = (v: any, fb: number) =>
+    typeof v === "number" && isFinite(v) && v > 0 ? v : fb;
+  const sosyalEnabled = a?.sosyalEnabled === true;
+  return {
+    thresholds: {
+      mat: num(a?.matEsik, d.thresholds.mat),
+      turkce: num(a?.turkceEsik, d.thresholds.turkce),
+      fen: num(a?.fenEsik, d.thresholds.fen),
+      sosyal: num(a?.sosyalEsik, d.thresholds.sosyal),
+    },
+    // Slider üst sınırları analiz başına değişmiyor; varsayılan kalıyor.
+    maxNets: { ...d.maxNets },
+    sosyalEnabled,
+    collectSosyal: sosyalEnabled ? true : a?.collectSosyal !== false,
+    bannerEnabled: a?.bannerEnabled === true,
+  };
+}
+
+const ANALYSIS_POPULATE = "populate[banner]=true";
+
+export async function getAnalyses(): Promise<Analysis[]> {
+  const data = await fetchWithFallback<{ data: any[] }>([
+    `/analyses?${ANALYSIS_POPULATE}&sort[0]=displayOrder:asc&sort[1]=createdAt:desc&pagination[pageSize]=100`,
+    "/analyses?populate=*&pagination[pageSize]=100",
+  ]);
+  const items = flattenStrapi(data?.data || []);
+  return items.map((item: any) => ({
+    ...item,
+    slug: item.slug || slugify(item.title),
+  }));
+}
+
+export async function getAnalysisBySlug(slug: string): Promise<Analysis | null> {
+  const data = await fetchWithFallback<{ data: any[] }>([
+    `/analyses?filters[slug][$eq]=${encodeURIComponent(slug)}&${ANALYSIS_POPULATE}`,
+    `/analyses?filters[slug][$eq]=${encodeURIComponent(slug)}&populate=*`,
+  ]);
+  const raw = flattenStrapi(data?.data?.[0] || null);
+  if (!raw) return null;
+  return { ...raw, slug: raw.slug || slugify(raw.title) };
+}
+
+/** Bir analize bağlı rota programları. Etiketi eksik olanlar elenir. */
+export async function getAnalysisPrograms(analysisSlug: string): Promise<Program[]> {
+  const filter = `filters[analysis][slug][$eq]=${encodeURIComponent(analysisSlug)}`;
+  const data = await fetchWithFallback<{ data: any[] }>([
+    `/programs?${filter}&${PROGRAM_POPULATE}&sort[0]=routeCode:asc&pagination[pageSize]=100`,
+    `/programs?${filter}&populate=*&pagination[pageSize]=100`,
+  ]);
+  const items = flattenStrapi(data?.data || []);
+  return items
+    .map((item: any) => ({ ...item, slug: item.slug || slugify(item.title) }))
+    .filter(isLiveExamProgram);
+}
+
+/** Analize bağlı tek bir rota programı (detay sayfası için). */
+export async function getAnalysisProgramBySlug(
+  analysisSlug: string,
+  programSlug: string
+): Promise<Program | null> {
+  const programs = await getAnalysisPrograms(analysisSlug);
+  return programs.find((p) => p.slug === programSlug) || null;
+}
