@@ -997,11 +997,39 @@ export async function getAnalysisPrograms(analysisSlug: string): Promise<Program
     .filter(isLiveExamProgram);
 }
 
-/** Analize bağlı tek bir rota programı (detay sayfası için). */
+/**
+ * Analize bağlı tek bir rota programı (detay sayfası için).
+ * Kitaplar ve hocalar ilişkiden yalnızca id ile geliyor; kapak/fotoğraf
+ * için tam kayıtlarla birleştiriyoruz - getProgramBySlug ile aynı yöntem.
+ */
 export async function getAnalysisProgramBySlug(
   analysisSlug: string,
   programSlug: string
 ): Promise<Program | null> {
-  const programs = await getAnalysisPrograms(analysisSlug);
-  return programs.find((p) => p.slug === programSlug) || null;
+  const filter =
+    `filters[analysis][slug][$eq]=${encodeURIComponent(analysisSlug)}` +
+    `&filters[slug][$eq]=${encodeURIComponent(programSlug)}`;
+  const [data, allBooks, allInstructors] = await Promise.all([
+    fetchWithFallback<{ data: any[] }>([
+      `/programs?${filter}&${PROGRAM_POPULATE}&populate[books]=true&populate[instructors]=true`,
+      `/programs?${filter}&${PROGRAM_POPULATE}`,
+      `/programs?${filter}&populate=*`,
+    ]),
+    getBooks(),
+    getInstructors(),
+  ]);
+  const raw = flattenStrapi(data?.data?.[0] || null);
+  if (!raw || !isLiveExamProgram(raw)) return null;
+  const mergedBooks = (raw.books || [])
+    .map((rb: any) => allBooks.find((b) => b.id === rb.id || b.documentId === rb.documentId) || rb)
+    .filter(Boolean);
+  const mergedInstructors = (raw.instructors || [])
+    .map((ri: any) => allInstructors.find((i) => i.id === ri.id || i.documentId === ri.documentId) || ri)
+    .filter(Boolean);
+  return {
+    ...raw,
+    slug: raw.slug || slugify(raw.title),
+    books: mergedBooks,
+    instructors: mergedInstructors,
+  };
 }

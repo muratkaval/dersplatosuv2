@@ -1214,3 +1214,184 @@ body[data-theme="dark"] .cd-analiz-cta {
     gap: 12px;
   }
 }
+
+/* ---- Hero basligi: mobilde iki satir ----
+   "Netlerine Özel" ustte, "Programını Al!" altta. Satir ici birakinca
+   ekran dar oldugunda rastgele yerden kiriliyordu. */
+@media (max-width: 640px) {
+  .cd-hero h1 span {
+    display: block;
+  }
+}
+
+/* ---- Rota detayi: PDF eylemleri + gomulu onizleme ---- */
+.cd-detail-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 640px;
+  margin: 0 auto 24px;
+}
+
+.cd-detail-actions .cd-btn {
+  width: auto;
+  flex: 1 1 220px;
+  max-width: 320px;
+}
+
+/* Yan yana dururken dikey bosluk kuralini iptal et. */
+.cd-detail-actions .cd-btn + .cd-btn {
+  margin-top: 0;
+}
+
+.cd-pdf-onizleme {
+  max-width: 900px;
+  margin: 0 auto 70px;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--cd-surface);
+  border: 1px solid var(--cd-border);
+}
+
+.cd-pdf-onizleme iframe {
+  width: 100%;
+  height: 78vh;
+  min-height: 420px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--cd-surface-2);
+  display: block;
+}
+
+.cd-pdf-onizleme .cd-btn {
+  width: auto;
+  max-width: 320px;
+  margin: 12px auto 0;
+}
+
+@media (max-width: 640px) {
+  .cd-detail-actions {
+    flex-direction: column;
+    margin-bottom: 60px;
+  }
+
+  .cd-detail-actions .cd-btn {
+    flex: 1 1 auto;
+    max-width: none;
+  }
+}
+
+/* ---- Rota detayi: hocalar ve kitaplar ----
+   Programlar detay sayfasindaki gorunumun ayni; oradaki stiller o sayfaya
+   gomulu oldugu icin burada kendi siniflarimizla tekrarliyoruz. */
+.cd-detail-block {
+  max-width: 900px;
+  margin: 0 auto;
+  padding-top: 32px;
+  border-top: 1px solid var(--cd-border);
+}
+
+.cd-detail-block + .cd-detail-block {
+  margin-top: 32px;
+}
+
+.cd-detail-block:last-child {
+  margin-bottom: 70px;
+}
+
+.cd-detail-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--cd-text);
+  margin: 0 0 18px;
+}
+
+.cd-detail-heading .ms {
+  font-size: 22px;
+  color: #3b82f6;
+}
+
+.cd-detail-sub {
+  font-size: 0.92rem;
+  color: var(--cd-text-soft);
+  margin: -10px 0 20px;
+}
+
+.cd-instructors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.cd-pi-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 104px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cd-pi-photo {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(37, 99, 235, 0.25);
+  background: #0f172a;
+}
+
+.ms.cd-pi-photo-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  color: #94a3b8;
+}
+
+.cd-pi-name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.3;
+  color: var(--cd-text);
+}
+
+.cd-pi-card:hover .cd-pi-photo {
+  border-color: #2563eb;
+}
+
+body[data-theme="dark"] .cd-pi-photo {
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+body[data-theme="dark"] .cd-pi-card:hover .cd-pi-photo {
+  border-color: #60a5fa;
+}
+
+.cd-books {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 18px;
+}
+
+@media (max-width: 640px) {
+  .cd-instructors {
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .cd-books {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+
+  .cd-detail-heading {
+    font-size: 1.1rem;
+  }
+}

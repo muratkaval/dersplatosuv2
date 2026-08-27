@@ -57,6 +57,8 @@ export default function RotaForm({
   taken,
   analizId,
   analizSlug,
+  books = [],
+  instructors = [],
 }: {
   program?: any;
   /** Kapsama şeridinden gelen ön seçim. Yoksa ilk boş kombinasyon seçilir. */
@@ -69,6 +71,8 @@ export default function RotaForm({
   analizId: string;
   /** Sadece slug ipucunu gostermek icin. */
   analizSlug: string;
+  books?: any[];
+  instructors?: any[];
 }) {
   const router = useRouter();
   const isEdit = !!program?.documentId;
@@ -98,6 +102,18 @@ export default function RotaForm({
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [pdfName, setPdfName] = useState<string>(program?.downloadPdf?.name || "");
   const pdfId = program?.downloadPdf?.id ?? null;
+
+  const [selBooks, setSelBooks] = useState<string[]>(
+    (program?.books || []).map((b: any) => b.documentId || String(b.id))
+  );
+  const [selInstructors, setSelInstructors] = useState<string[]>(
+    (program?.instructors || []).map((i: any) => i.documentId || String(i.id))
+  );
+
+  const toggle = (setter: (fn: (p: string[]) => string[]) => void) => (id: string) =>
+    setter((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  const toggleBook = toggle(setSelBooks);
+  const toggleInstructor = toggle(setSelInstructors);
 
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
@@ -150,6 +166,8 @@ export default function RotaForm({
         sosyalLevel: levels.sosyal || null,
         description,
         videoUrl,
+        books: selBooks,
+        instructors: selInstructors,
         ...(finalCoverId ? { cover: finalCoverId } : {}),
         ...(finalPdfId ? { downloadPdf: finalPdfId } : {}),
       };
@@ -346,6 +364,73 @@ export default function RotaForm({
                 </label>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+
+      {/* Kitaplar ve hocalar - programlar formundaki ile ayni secim listesi.
+          Iliskiler zaten program kaydinda; rota detay sayfasinda gosteriliyor. */}
+      <div className="admin-2col-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", alignItems: "start", marginTop: "20px" }}>
+        <div className="info-card">
+          <div className="card-title"><span className="ms">menu_book</span> Kitaplar (bu programda kullanılacak)</div>
+          <div style={{ maxHeight: "300px", overflowY: "auto", border: "1.5px solid #1a2536", borderRadius: "12px", background: "#060d1a" }}>
+            {books.length === 0 ? (
+              <div className="empty-state">Kitap bulunamadı.</div>
+            ) : (
+              books.map((b: any, idx: number) => {
+                const id = b.documentId || String(b.id);
+                const selected = selBooks.includes(id);
+                const isLast = idx === books.length - 1;
+                const cov = toMediaUrl(b.cover?.url);
+                return (
+                  <button key={id} type="button" onClick={() => toggleBook(id)}
+                    style={{ display: "flex", alignItems: "center", gap: "12px", width: "100%", padding: "9px 14px", background: selected ? "rgba(251,191,36,0.10)" : "transparent", color: selected ? "#fbbf24" : "#94a3b8", border: "none", borderBottom: isLast ? "none" : "1px solid #111d2e", cursor: "pointer", fontFamily: "inherit", fontSize: "0.85rem", fontWeight: selected ? 600 : 400, textAlign: "left" }}>
+                    <span style={{ width: "18px", height: "18px", borderRadius: "5px", flexShrink: 0, border: selected ? "2px solid #fbbf24" : "2px solid #243249", background: selected ? "#fbbf24" : "transparent", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      {selected && <span className="ms" style={{ fontSize: "14px", color: "#060d1a", fontWeight: "bold" }}>check</span>}
+                    </span>
+                    {cov ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={cov} alt="" style={{ width: "30px", height: "40px", objectFit: "cover", borderRadius: "4px", flexShrink: 0 }} />
+                    ) : (
+                      <span className="ms" style={{ fontSize: "20px", opacity: 0.3, width: "30px", textAlign: "center", flexShrink: 0 }}>menu_book</span>
+                    )}
+                    <span style={{ flex: 1 }}>{b.title}</span>
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        <div className="info-card">
+          <div className="card-title"><span className="ms">groups</span> Hocalar (programı anlatan)</div>
+          <div style={{ maxHeight: "300px", overflowY: "auto", border: "1.5px solid #1a2536", borderRadius: "12px", background: "#060d1a" }}>
+            {instructors.length === 0 ? (
+              <div className="empty-state">Hoca bulunamadı.</div>
+            ) : (
+              instructors.map((ins: any, idx: number) => {
+                const id = ins.documentId || String(ins.id);
+                const selected = selInstructors.includes(id);
+                const isLast = idx === instructors.length - 1;
+                const photo = toMediaUrl(ins.photo?.url);
+                return (
+                  <button key={id} type="button" onClick={() => toggleInstructor(id)}
+                    style={{ display: "flex", alignItems: "center", gap: "12px", width: "100%", padding: "9px 14px", background: selected ? "rgba(16,185,129,0.10)" : "transparent", color: selected ? "#34d399" : "#94a3b8", border: "none", borderBottom: isLast ? "none" : "1px solid #111d2e", cursor: "pointer", fontFamily: "inherit", fontSize: "0.85rem", fontWeight: selected ? 600 : 400, textAlign: "left" }}>
+                    <span style={{ width: "18px", height: "18px", borderRadius: "5px", flexShrink: 0, border: selected ? "2px solid #34d399" : "2px solid #243249", background: selected ? "#34d399" : "transparent", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      {selected && <span className="ms" style={{ fontSize: "14px", color: "#060d1a", fontWeight: "bold" }}>check</span>}
+                    </span>
+                    {photo ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={photo} alt="" style={{ width: "34px", height: "34px", borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
+                    ) : (
+                      <span className="ms" style={{ fontSize: "20px", opacity: 0.3, width: "34px", textAlign: "center", flexShrink: 0 }}>person</span>
+                    )}
+                    <span style={{ flex: 1 }}>{ins.name}</span>
+                  </button>
+                );
+              })
+            )}
           </div>
         </div>
       </div>
