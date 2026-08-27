@@ -78,6 +78,7 @@ export default async function AnalizPage({
       {/* Her analizin başlığı panelden ayrı ayrı düzenlenebilsin diye
           pageKey slug'a bağlı; girilmemişse analizin kendi adına düşer. */}
       <PageHero
+        className="cd-hero"
         pageKey={`analiz-${analiz}`}
         title="Netlerine Özel"
         highlight="Programını Al!"

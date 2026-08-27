@@ -5,11 +5,14 @@ export default async function PageHero({
   title,
   highlight = "",
   subtitle,
+  className = "",
 }: {
   pageKey: string;
   title: string;
   highlight?: string;
   subtitle: string;
+  /** Sayfaya ozel hero davranisi icin ek sinif. */
+  className?: string;
 }) {
   let h: any = {};
   try {
@@ -25,7 +28,7 @@ export default async function PageHero({
   const sub = h.subtitle ?? subtitle;
 
   return (
-    <section className="page-hero">
+    <section className={`page-hero${className ? ` ${className}` : ""}`}>
       <div className="page-hero-inner">
         <h1>
           {t}

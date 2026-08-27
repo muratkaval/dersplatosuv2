@@ -13,6 +13,8 @@ import {
   toMediaUrl,
   type NetBranch,
 } from "@/app/lib/strapi";
+import BookCard from "@/app/components/book-card";
+import PdfOnizleme from "../../pdf-onizleme";
 import "../../analiz.css";
 
 const TONES: Record<NetBranch, string> = {
@@ -103,25 +105,62 @@ export default async function RotaDetayPage({
           </div>
         )}
 
-        {pdf && (
-          <div className="cd-detail-actions">
-            <a
-              href={pdf}
-              download={`${program.slug || "program"}.pdf`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="cd-btn cd-btn-primary"
-            >
-              <span className="ms">download</span> Programı PDF Olarak İndir
-            </a>
-          </div>
-        )}
+        {pdf && <PdfOnizleme url={pdf} title={program.title} />}
 
         {!embed && !pdf && (
           <div className="cd-result-empty" style={{ margin: "0 0 40px" }}>
             <span className="ms">hourglass_empty</span>
             <p>Bu rotanın içeriği henüz yüklenmedi. Çok yakında burada olacak.</p>
           </div>
+        )}
+
+        {/* Programlar detay sayfasindaki ile ayni iki bolum: hocalar ve kitaplar.
+           Iliskiler zaten program kaydinda var, panelden secilir. */}
+        {(program.instructors || []).length > 0 && (
+          <section className="cd-detail-block">
+            <h2 className="cd-detail-heading">
+              <span className="ms">groups</span> Program Hocaları
+            </h2>
+            <div className="cd-instructors">
+              {(program.instructors || []).map((inst: any) => {
+                const photo = toMediaUrl(inst.photo?.url);
+                const inner = (
+                  <>
+                    {photo ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={photo} alt={inst.name} className="cd-pi-photo" />
+                    ) : (
+                      <span className="cd-pi-photo cd-pi-photo-empty ms">person</span>
+                    )}
+                    <span className="cd-pi-name">{inst.name}</span>
+                  </>
+                );
+                return inst.slug ? (
+                  <Link key={inst.id} href={`/hoca/${inst.slug}`} className="cd-pi-card">
+                    {inner}
+                  </Link>
+                ) : (
+                  <div key={inst.id} className="cd-pi-card">
+                    {inner}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {(program.books || []).length > 0 && (
+          <section className="cd-detail-block">
+            <h2 className="cd-detail-heading">
+              <span className="ms">menu_book</span> Kullanılacak Kitaplar
+            </h2>
+            <p className="cd-detail-sub">Bu program, aşağıdaki kaynak kitaplar üzerinden ilerler.</p>
+            <div className="cd-books">
+              {(program.books || []).map((book: any) => (
+                <BookCard key={book.id} book={book} />
+              ))}
+            </div>
+          </section>
         )}
       </div>
     </PageContainer>

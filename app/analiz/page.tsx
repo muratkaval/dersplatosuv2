@@ -25,6 +25,7 @@ export default async function AnalizListPage() {
   return (
     <PageContainer>
       <PageHero
+        className="cd-hero"
         pageKey="analiz"
         title="Deneme"
         highlight="Analizleri"

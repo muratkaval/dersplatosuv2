@@ -25,7 +25,7 @@ export default async function YeniRotaPage({
   const { id } = await params;
   const sp = await searchParams;
 
-  const [an, pr] = await Promise.all([
+  const [an, pr, bk, ins] = await Promise.all([
     adminGet(`/analyses/${id}`, token),
     // Dolu kombinasyon kontrolu SADECE bu analiz icinde yapilir; ayni
     // kombinasyon baska analizlerde serbest.
@@ -33,6 +33,8 @@ export default async function YeniRotaPage({
       `/programs?filters[analysis][documentId][$eq]=${id}&pagination[pageSize]=200`,
       token
     ),
+    adminGet("/books?populate[cover]=true&sort=title:asc&pagination[pageSize]=100", token),
+    adminGet("/instructors?populate[photo]=true&sort=displayOrder:asc&pagination[pageSize]=100", token),
   ]);
 
   const analysis = an.data?.data;
@@ -84,6 +86,8 @@ export default async function YeniRotaPage({
           taken={taken}
           analizId={id}
           analizSlug={analysis.slug || ""}
+          books={bk.data?.data || []}
+          instructors={ins.data?.data || []}
         />
       </div>
     </>

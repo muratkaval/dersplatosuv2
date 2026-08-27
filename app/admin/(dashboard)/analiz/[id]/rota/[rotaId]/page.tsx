@@ -23,13 +23,18 @@ export default async function RotaDuzenlePage({
   const token = await requireAdminToken();
   const { id, rotaId } = await params;
 
-  const [an, res, pr] = await Promise.all([
+  const [an, res, pr, bk, ins] = await Promise.all([
     adminGet(`/analyses/${id}`, token),
-    adminGet(`/programs/${rotaId}?populate[cover]=true&populate[downloadPdf]=true`, token),
+    adminGet(
+      `/programs/${rotaId}?populate[cover]=true&populate[downloadPdf]=true&populate[books]=true&populate[instructors]=true`,
+      token
+    ),
     adminGet(
       `/programs?filters[analysis][documentId][$eq]=${id}&pagination[pageSize]=200`,
       token
     ),
+    adminGet("/books?populate[cover]=true&sort=title:asc&pagination[pageSize]=100", token),
+    adminGet("/instructors?populate[photo]=true&sort=displayOrder:asc&pagination[pageSize]=100", token),
   ]);
 
   const analysis = an.data?.data;
@@ -93,6 +98,8 @@ export default async function RotaDuzenlePage({
           taken={taken}
           analizId={id}
           analizSlug={analysis.slug || ""}
+          books={bk.data?.data || []}
+          instructors={ins.data?.data || []}
         />
       </div>
     </>
